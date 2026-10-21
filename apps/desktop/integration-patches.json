@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "patches": [
+    {
+      "id": "desktop-api-key-environment-isolation",
+      "paths": [
+        "apps/desktop/src/xiaojing-product.ts"
+      ]
+    },
+    {
+      "id": "profile-runtime-shadow-protection",
+      "paths": [
+        "apps/cli/src/plugin.ts",
+        "apps/cli/src/profile-boot.ts",
+        "packages/boot/app-boot/src/index.ts",
+        "packages/boot/app-boot/src/profile.ts"
+      ]
+    },
+    {
+      "id": "file-upload-composer-repair",
+      "paths": [
+        "patches/dsh-file-uploads@1.0.0.patch"
+      ]
+    }
+  ]
+}

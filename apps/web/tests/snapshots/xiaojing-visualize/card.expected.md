@@ -1,0 +1,7 @@
+- text: Persistent visualization {{cwd}}/viz/persistent-visualization-da6ca438.html
+- iframe
+- button "Copy"
+- button "Good response"
+- button "Bad response"
+- button "Branch into a new conversation"
+- text: {{clock}}

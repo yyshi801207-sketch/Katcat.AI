@@ -1,0 +1,22 @@
+# Bilingual-pair consistency record for 2026-09-04-reimbursement-draft-attachments.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-04-reimbursement-draft-attachments.md
+/agent-note-private-attachments-and-confirmed-reimbursement-drafts:
+  en: 4f5ab83cea638266
+  zh: abca666dea097c13
+/agent-note-private-attachments-and-confirmed-reimbursement-drafts/problem:
+  en: 0644161c2ca7035f
+  zh: a22ecc321942ee18
+/agent-note-private-attachments-and-confirmed-reimbursement-drafts/decision:
+  en: 6693c425439616dd
+  zh: e4d2cbe26e1b057e
+/agent-note-private-attachments-and-confirmed-reimbursement-drafts/alternatives-considered:
+  en: 4693f8e12763d3f1
+  zh: 6515fa5aa0928481
+/agent-note-private-attachments-and-confirmed-reimbursement-drafts/consequences:
+  en: 4bf156f3994d5152
+  zh: 4ac316d9bd0a3736
+/agent-note-private-attachments-and-confirmed-reimbursement-drafts/verification:
+  en: 540dd334f8039ec6
+  zh: a38504be41a098fa

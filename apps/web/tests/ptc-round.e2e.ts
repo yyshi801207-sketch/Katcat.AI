@@ -1,0 +1,326 @@
+// PTC mode browser round trip with nested sub-calls and details selection.
+// Record: DSH_SNAPSHOT=record writes the current Session generation, then a keyless
+// DSH_SNAPSHOT=refresh regenerates ui.expected.md.
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import type { Browser, Page } from 'playwright'
+import { chromium } from 'playwright'
+import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
+import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import {
+  acknowledgeReloadConnectionLoss, assertFixtureInventory, captureExpandedTurnProcessAria, captureStableAria,
+  compareOrRefreshGolden, fixtureUserPrompts,
+  launchWebScaffold, recordFixture, watchConsole, webSnapshotMode, type WebScaffold,
+} from './scaffold.ts'
+import { connectFreshWorkspace, expandOwningTurnProcess, newEnglishPage, saveFailureShot } from './support.ts'
+import { XIAOJING_REPLAY_PROVIDERS } from './xiaojing-replay-catalog.ts'
+
+const WINDOWS_XIAOJING = process.platform === 'win32' && process.env.DSH_CLIENT_BUILD_PROFILE === 'xiaojing'
+const EXPECTED_DIR = fileURLToPath(new URL(WINDOWS_XIAOJING ? './expected/ptc-round-xiaojing-033/' : '../../../snapshots/web/ptc-round/', import.meta.url))
+const FIXTURE = join(EXPECTED_DIR, WINDOWS_XIAOJING ? 'session.v4.jsonl' : 'session.v3.jsonl')
+const UI_EXPECTED = join(EXPECTED_DIR, 'ui.expected.md')
+const TRAJECTORY_EXPECTED = join(EXPECTED_DIR, 'trajectory.expected.md')
+const CODE_EXPECTED = join(EXPECTED_DIR, 'code.expected.md')
+const PREPARING_EXPECTED = join(EXPECTED_DIR, 'preparing.expected.md')
+const REQUEST_LIFECYCLE_EXPECTED = join(EXPECTED_DIR, 'request-lifecycle.expected.md')
+const MODE = webSnapshotMode()
+const SHELL_TOOL = WINDOWS_XIAOJING ? 'pwsh' : 'bash'
+const SHELL_COMMAND = WINDOWS_XIAOJING ? "Write-Output 'CODE_ROUND_OK'" : 'echo CODE_ROUND_OK'
+
+/** Redact only this owned missing-file path after aria escapes Windows backslashes. */
+function ownedPathReplacements(cwd: string): [string, string][] {
+  const path = join(cwd, 'workspace', 'missing.txt')
+  const escaped = JSON.stringify(path).slice(1, -1)
+  return [
+    [escaped.replaceAll('\\', '\\\\'), '{{cwd}}/workspace/missing.txt'],
+    [escaped, '{{cwd}}/workspace/missing.txt'],
+  ]
+}
+
+// Elicits the successful and failed sub-rows this scenario asserts.
+const PROMPT = `Using ONE run_code program: run ${SHELL_TOOL} \`${SHELL_COMMAND}\`, then read the file missing.txt `
+  + 'catching its error in the program. Return an object with both outcomes. Then reply DONE and stop.'
+
+describe('web e2e: PTC mode round renders nested sub-calls', () => {
+  let scaffold: WebScaffold
+  let browser: Browser
+  let page: Page
+  let tripwire: ReturnType<typeof watchConsole>
+  const sessionEvents: SessionEvent[] = []
+  let releasePreparation: (() => void) | undefined
+
+  beforeAll(async () => {
+    scaffold = await launchWebScaffold({
+      agentPresets: { default: 'ptc' },
+      compareReplaySession: true,
+      ...WINDOWS_XIAOJING ? { replayProviders: XIAOJING_REPLAY_PROVIDERS } : {},
+      ...(MODE === 'record' ? {} : { replayFixture: FIXTURE, paceMs: 15 }),
+    })
+    scaffold.ctx.on('session/event', (_session, event: SessionEvent) => { sessionEvents.push(event) })
+    browser = await chromium.launch()
+    page = await newEnglishPage(browser)
+    tripwire = watchConsole(page)
+    await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
+    await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
+    await connectFreshWorkspace(page, scaffold.workspaceCwd)
+  }, 120_000)
+
+  afterAll(async () => {
+    releasePreparation?.()
+    const failures: unknown[] = []
+    await browser?.close().catch((error: unknown) => failures.push(error))
+    await scaffold?.close().catch((error: unknown) => failures.push(error))
+    if (failures.length === 1) throw failures[0]
+    if (failures.length > 1) throw new AggregateError(failures, 'PTC round teardown failed')
+  })
+
+  it('drives the recorded prompt to a settled turn (all modes)', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-ptc-drive'))
+    const requestStates: string[] = []
+    if (MODE !== 'record') {
+      expect(fixtureUserPrompts(await readFile(FIXTURE, 'utf8'))).toEqual([PROMPT])
+    }
+    const input = page.locator('[data-composer-input]').first()
+    await input.waitFor({ timeout: 10_000 })
+    const settled = scaffold.whenTurnSettled()
+    const gate = Promise.withResolvers<undefined>()
+    const waiting = Promise.withResolvers<undefined>()
+    const start = Promise.withResolvers<undefined>()
+    const dispose = scaffold.ctx.on('llm/stream', async function* (_options, next) {
+      waiting.resolve(undefined)
+      await start.promise
+      let held = false
+      for await (const chunk of next()) {
+        yield chunk
+        if (!held && chunk.type === 'tool-call-delta' && chunk.name) {
+          held = true
+          await gate.promise
+        }
+      }
+    }, { prepend: true })
+    releasePreparation = () => { start.resolve(undefined); gate.resolve(undefined); dispose() }
+    const observePreparation = async () => {
+      try {
+        await input.fill(PROMPT)
+        await input.press('Enter')
+        await waiting.promise
+        await page.getByRole('tab', { name: 'Trajectory', exact: true }).click()
+        const request = page.getByRole('table').getByRole('button', { name: 'Request #1', exact: true })
+        await request.click()
+        const panel = page.getByRole('tabpanel')
+        await panel.locator('dl').first().getByText('Pending', { exact: true }).waitFor()
+        expect(await panel.getByRole('button', { name: 'Assistant Message', exact: true }).count()).toBe(0)
+        requestStates.push('# Waiting for output', await panel.locator('dl').first().ariaSnapshot())
+        await page.getByRole('tab', { name: 'Chat', exact: true }).click()
+        start.resolve(undefined)
+        const row = page.locator('[data-chat-call-id] [data-state="preparing"]').first()
+        await row.waitFor({ state: 'attached', timeout: 30_000 })
+        await expandOwningTurnProcess(page, row)
+        await row.waitFor({ state: 'visible' })
+        await row.getByText('Code', { exact: true }).waitFor()
+        expect(await row.getAttribute('data-tool')).toBe('run_code')
+        expect(sessionEvents.some(event => event.type === 'tool/call')).toBe(false)
+        expect(await row.getByRole('button').count()).toBe(0)
+        expect(await row.locator('pre').count()).toBe(0)
+        const group = row.locator('xpath=ancestor::*[@data-chat-group-key][1]')
+        await compareOrRefreshGolden(PREPARING_EXPECTED, await group.ariaSnapshot(), MODE)
+        await page.getByRole('tab', { name: 'Trajectory', exact: true }).click()
+        const assistant = page.locator('tr[data-kind="message"][data-running="true"]').first()
+        await assistant.click()
+        await panel.locator('dl').first().getByText('Pending', { exact: true }).waitFor()
+        expect(await panel.getByText('Completed', { exact: true }).count()).toBe(0)
+        requestStates.push('# Streaming assistant', await panel.locator('dl').first().ariaSnapshot())
+        await panel.getByRole('button', { name: 'Request Timing', exact: true }).click()
+        expect(await panel.getByText('Not recorded', { exact: true }).count()).toBe(0)
+        expect(await panel.locator('dt').filter({ hasText: /^Started$/ }).locator('..').getByRole('button').count()).toBe(1)
+        await request.click()
+        await panel.locator('dl').first().getByText('Pending', { exact: true }).waitFor()
+        requestStates.push('# Streaming request', await panel.locator('dl').first().ariaSnapshot())
+        await page.getByRole('tab', { name: 'Chat', exact: true }).click()
+      } finally {
+        releasePreparation?.()
+      }
+    }
+    try {
+      const [sessionId] = await Promise.all([settled, observePreparation()])
+      expect(sessionEvents.filter(event => event.type === 'turn/end')).toMatchObject([
+        { data: { reason: { kind: 'completed' } } },
+      ])
+      await expect.poll(() => page.locator('[data-state="preparing"]').count(), { timeout: 15_000 }).toBe(0)
+      if (MODE === 'record') {
+        await recordFixture(scaffold, sessionId, FIXTURE)
+      } else {
+        await page.getByRole('tab', { name: 'Trajectory', exact: true }).click()
+        await page.getByRole('table').getByRole('button', { name: 'Request #1', exact: true }).click()
+        const panel = page.getByRole('tabpanel')
+        await panel.getByText('Completed', { exact: true }).waitFor()
+        requestStates.push('# Settled request', await panel.locator('dl').first().ariaSnapshot())
+        await panel.getByRole('button', { name: 'Assistant Message', exact: true }).click()
+        await panel.getByText('Completed', { exact: true }).waitFor()
+        requestStates.push('# Settled assistant', await panel.locator('dl').first().ariaSnapshot())
+        await compareOrRefreshGolden(REQUEST_LIFECYCLE_EXPECTED, requestStates.join('\n\n'), MODE)
+      }
+    } finally {
+      releasePreparation?.()
+      await page.getByRole('tab', { name: 'Chat', exact: true }).click()
+    }
+  }, 200_000)
+
+  it.skipIf(MODE === 'record')('the durable log carries run_code with full-content sub-dispatches', () => {
+    const calls = sessionEvents.filter(event => event.type === 'tool/call')
+    expect(calls.length).toBeGreaterThanOrEqual(1)
+    expect(new Set(calls.map(call => (call.data as { name: string }).name))).toEqual(new Set(['run_code']))
+    const starts = sessionEvents.filter(event => event.type === 'tool/ptc-dispatch-start')
+    const dispatches = sessionEvents.filter(event => event.type === 'tool/ptc-dispatch')
+    expect(dispatches.length).toBeGreaterThanOrEqual(2)
+    for (const dispatch of dispatches) {
+      const data = dispatch.data
+      expect(calls.some(call => call.data.callId === data.rootCallId)).toBe(true)
+      expect(data.parentCallId).toBe(data.rootCallId)
+      expect(starts.filter(start => start.data.subCallId === data.subCallId)).toMatchObject([{
+        data: {
+          rootCallId: data.rootCallId,
+          parentCallId: data.parentCallId,
+          subCallId: data.subCallId,
+          name: data.name,
+          arguments: data.arguments,
+        },
+      }])
+      expect(Array.isArray(data.content)).toBe(true)
+      expect(typeof data.isError).toBe('boolean')
+    }
+    expect(dispatches.map(dispatch => dispatch.data.name)).toEqual([SHELL_TOOL, 'read'])
+    expect(dispatches.map(dispatch => dispatch.data.isError)).toEqual([false, true])
+    const bash = dispatches.find(dispatch => dispatch.data.name === SHELL_TOOL)
+    expect(bash).toBeDefined()
+    const bashContent = (bash!.data as { content: { type: string; text?: string }[] }).content
+    expect(bashContent.filter(block => block.type === 'text').map(block => block.text).join('')).toContain('CODE_ROUND_OK')
+    const result = sessionEvents.find(event => event.type === 'tool/result')
+    if (result?.type !== 'tool/result') throw new Error('PTC parent produced no durable result')
+    expect(result.data.message.isError).toBe(false)
+    const outcome = result.data.message.content.find(block => block.type === 'text')
+    if (outcome?.type !== 'text') throw new Error('PTC parent produced no text result')
+    expect(outcome.text).toBe(JSON.stringify({
+      [SHELL_TOOL]: 'CODE_ROUND_OK',
+      readError: { toolName: 'read', message: `cannot read "${join(scaffold.workspaceCwd, 'workspace', 'missing.txt')}": not found` },
+    }, null, 2) + (WINDOWS_XIAOJING ? '\nFile sandbox enforcement is partial on this host.' : ''))
+  })
+
+  it.skipIf(MODE === 'record')('renders the code parent row with always-visible nested sub-rows', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-ptc-rows'))
+    await expect.poll(() => page.getByText('DONE', { exact: true }).count(), { timeout: 15_000 }).toBeGreaterThanOrEqual(1)
+    // The parent run_code row wears the code variant with the model-authored
+    // description as its summary (the presentCall contract).
+    const codeRow = page.locator('[data-variant="code"]').first()
+    await expandOwningTurnProcess(page, codeRow)
+    await codeRow.waitFor({ timeout: 10_000 })
+    const nest = page.locator('[data-subcalls]').first()
+    await nest.waitFor({ timeout: 10_000 })
+    expect(await nest.locator(WINDOWS_XIAOJING ? '[data-tool="pwsh"]' : '[data-sample="bash"]').count()).toBe(1)
+    expect(await nest.locator('[data-state="error"]').count()).toBe(1)
+  }, 60_000)
+
+  it.skipIf(MODE === 'record')('expands the nested bash terminal inline before and after reload', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-ptc-rightbar'))
+    let liveTerminalAria: string | undefined
+    for (const reloaded of [false, true]) {
+      if (reloaded) {
+        const warningStart = tripwire.warnings.length
+        await page.reload({ waitUntil: 'load' })
+        acknowledgeReloadConnectionLoss(tripwire, warningStart)
+        await page.getByText('DONE', { exact: true }).waitFor({ timeout: 15_000 })
+        await expect.poll(() => page.locator('[data-state="preparing"]').count(), { timeout: 15_000 }).toBe(0)
+      }
+      const nest = page.locator('[data-subcalls]').first()
+      const frame = page.locator('[style*="grid-template-columns"]').first()
+      expect(await frame.getAttribute('data-rightbar-collapsed')).toBe('true')
+      await expandOwningTurnProcess(page, nest)
+      const shell = nest.locator(WINDOWS_XIAOJING ? '[data-tool="pwsh"]' : '[data-sample="bash"]').first()
+      const row = WINDOWS_XIAOJING ? shell.locator('[data-disclosure-row]') : shell
+      await expect.poll(() => shell.getAttribute('data-state')).toBe('ok')
+      await expect.poll(() => row.getAttribute('aria-expanded')).toBe('false')
+      await row.click()
+      await expect.poll(() => row.getAttribute('aria-expanded')).toBe('true')
+      const terminal = (WINDOWS_XIAOJING ? shell : row.locator('xpath=..')).locator('[data-terminal]')
+      await terminal.waitFor()
+      await terminal.getByText(SHELL_COMMAND, { exact: true }).waitFor()
+      await terminal.getByText('CODE_ROUND_OK', { exact: true }).waitFor()
+      await expect.poll(() => terminal.locator('[data-state]').getAttribute('data-state')).toBe('done')
+      await expect.poll(() => frame.getAttribute('data-rightbar-collapsed'), { timeout: 5_000 }).toBe('true')
+      const aria = await terminal.ariaSnapshot()
+      if (reloaded) expect(aria).toBe(liveTerminalAria)
+      else liveTerminalAria = aria
+    }
+  })
+
+  it.skipIf(MODE === 'record')('matches the expanded conversation aria golden with stable anchors', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-ptc-aria'))
+    const shell = page.locator(WINDOWS_XIAOJING ? '[data-subcalls] [data-tool="pwsh"]' : '[data-subcalls] [data-sample="bash"]').first()
+    const row = WINDOWS_XIAOJING ? shell.locator('[data-disclosure-row]') : shell
+    await expandOwningTurnProcess(page, row)
+    if (await row.getAttribute('aria-expanded') !== 'true') await row.click()
+    const snapshot = await captureExpandedTurnProcessAria(
+      page,
+      '[class*="centerCol"]',
+      scaffold.workspaceCwd,
+    )
+    const ownedSnapshot = ownedPathReplacements(scaffold.workspaceCwd)
+      .reduce((text, [path, replacement]) => text.replaceAll(path, replacement), snapshot)
+    await compareOrRefreshGolden(UI_EXPECTED, ownedSnapshot, MODE)
+  })
+
+  it.skipIf(MODE === 'record')('inspects recorded PTC source, wrapping, and original JSON in the trajectory', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-ptc-inspector'))
+    const call = sessionEvents.find(event => event.type === 'tool/call' && event.data.name === 'run_code')
+    if (call?.type !== 'tool/call') throw new Error('recorded PTC call missing')
+    const args = JSON.parse(call.data.arguments) as { code: string; description: string }
+    await page.getByRole('tab', { name: 'Trajectory', exact: true }).click()
+    const row = page.locator('tr[data-kind="tool"]').filter({ hasText: 'run_code' }).first()
+    await row.click()
+    await page.getByRole('tab', { name: 'Code', exact: true }).waitFor()
+    expect(await page.getByRole('tabpanel').textContent()).toContain(args.description)
+    expect(await page.getByRole('tabpanel').locator('dl').first().locator('dt').allTextContents())
+      .toEqual(['Hierarchy', 'Status'])
+    const overview = await Promise.all([1, 2].map(index => captureStableAria(
+      page, `[role="tabpanel"] [class*="overviewSections"] > section:nth-child(${index})`, scaffold.workspaceCwd,
+      { replacements: ownedPathReplacements(scaffold.workspaceCwd) },
+    )))
+    await compareOrRefreshGolden(TRAJECTORY_EXPECTED, overview.join('\n'), MODE)
+
+    await page.getByRole('button', { name: 'Code', exact: true }).click()
+    const source = page.locator('[data-line-numbers] pre')
+    await source.waitFor()
+    expect(await source.textContent()).toBe(args.code.endsWith('\n') ? args.code.slice(0, -1) : args.code)
+    const wrap = page.getByRole('button', { name: 'Wrap lines', exact: true })
+    expect(await wrap.getAttribute('aria-pressed')).toBe('false')
+    const content = page.locator('[data-wrap]').filter({ has: source })
+    expect(await content.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true)
+    await wrap.click()
+    expect(await wrap.getAttribute('aria-pressed')).toBe('true')
+    await expect.poll(() => content.evaluate(element => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1)
+    const code = await captureStableAria(page, '[role="tabpanel"]', scaffold.workspaceCwd)
+    await compareOrRefreshGolden(CODE_EXPECTED, code, MODE)
+
+    await page.getByRole('button', { name: 'Original JSON' }).click()
+    const json = page.getByRole('tree', { name: 'parameters JSON' })
+    await json.waitFor()
+    expect(await json.textContent()).toContain(args.description)
+    await page.getByRole('button', { name: 'Original JSON' }).click()
+    expect(await source.textContent()).toBe(args.code.endsWith('\n') ? args.code.slice(0, -1) : args.code)
+    await page.getByRole('tab', { name: 'Summary', exact: true }).click()
+    expect(await wrap.getAttribute('aria-pressed')).toBe('true')
+  })
+
+  it.skipIf(MODE === 'record')('stayed clean: no page errors, no reconnect churn', () => {
+    expect(tripwire.pageErrors).toEqual([])
+    expect(tripwire.warnings).toEqual([])
+  })
+
+  it.skipIf(!WINDOWS_XIAOJING)('keeps the Xiaojing fixture inventory closed', async () => {
+    await assertFixtureInventory(EXPECTED_DIR, [
+      'code.expected.md', 'preparing.expected.md', 'request-lifecycle.expected.md',
+      'session.v4.jsonl', 'trajectory.expected.md', 'ui.expected.md',
+    ])
+  })
+})

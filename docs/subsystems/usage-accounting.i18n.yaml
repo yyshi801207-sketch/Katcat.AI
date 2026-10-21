@@ -1,0 +1,13 @@
+# Bilingual-pair consistency record for usage-accounting.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/subsystems/usage-accounting.md
+/usage-accounting:
+  en: 0c1cb1625f77820f
+  zh: b24408f04e23ee58
+/usage-accounting/usageaccountingday:
+  en: b449834ca002b8ba
+  zh: 1f927abaafa45535
+/usage-accounting/usageaccountingsnapshot:
+  en: 3508462a151e7273
+  zh: 92c0c49b4dde5c9b

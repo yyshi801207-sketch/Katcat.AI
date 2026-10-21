@@ -1,0 +1,6 @@
+- button "Usage unavailable"
+- navigation "Global panels":
+  - button "Plugins"
+  - button "Automation tasks"
+- button "Settings"
+- button "Reconnecting, reconnect now": Reconnecting

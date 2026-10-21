@@ -1,0 +1,13 @@
+- heading "模型" [level=2]
+- paragraph: 填入各提供商的 API 密钥即可使用其模型。
+- list:
+  - listitem:
+    - text: DeepSeek deepseek-official API 密钥
+    - button "认证说明": "?"
+    - textbox "API 密钥":
+      - /placeholder: 留空使用环境认证（DEEPSEEK_API_KEY）
+    - paragraph: 未检测到环境变量。请填写 API 密钥，或设置环境变量 DEEPSEEK_API_KEY。
+    - group: 自定义设置
+    - button "取消"
+    - button "保存"
+- button "添加模型提供商"

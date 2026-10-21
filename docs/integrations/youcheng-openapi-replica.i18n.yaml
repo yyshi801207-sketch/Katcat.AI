@@ -1,0 +1,13 @@
+# Bilingual-pair consistency record for youcheng-openapi-replica.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/integrations/youcheng-openapi-replica.md
+/youcheng-openapi-source-snapshot:
+  en: d71aa23f6f283dc1
+  zh: 74503ba8e7898a01
+/youcheng-openapi-source-snapshot/scope-and-source:
+  en: 6b6f07e229c89345
+  zh: 9854409f54543c09
+/youcheng-openapi-source-snapshot/maintenance:
+  en: 18ab8099eab133b0
+  zh: c47d9486c6eb282c

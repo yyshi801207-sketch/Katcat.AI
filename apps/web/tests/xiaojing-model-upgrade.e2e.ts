@@ -1,0 +1,124 @@
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { afterEach, expect, it, vi } from 'vitest'
+import { credentialRef } from '@deepseek-ai/dsh-credentials'
+import { launchWebScaffold, webClientProfile, type WebScaffold } from './scaffold.ts'
+
+let scaffold: WebScaffold | undefined
+let home: string | undefined
+
+async function authorizeDiscovery(scaffold: WebScaffold): Promise<void> {
+  expect(await scaffold.ctx.llm.listModels('deepseek-official')).toEqual([])
+  await scaffold.ctx.credentials.set(credentialRef('DEEPSEEK_API_KEY'), 'xiaojing-model-upgrade-fixture-key')
+}
+
+afterEach(async () => {
+  try {
+    await scaffold?.close()
+  } finally {
+    scaffold = undefined
+    vi.unstubAllEnvs()
+    if (home !== undefined) await rm(home, { recursive: true, force: true })
+    home = undefined
+  }
+})
+
+it.skipIf(webClientProfile() !== 'xiaojing').each([
+  'deepseek-v4-flash',
+  'deepseek-v4-flash-vision-exp',
+])('upgrades the saved %s selection on shipped Xiaojing boot', async (legacyModel) => {
+  vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', 'xiaojing')
+  home = await mkdtemp(join(tmpdir(), 'xiaojing-model-upgrade-'))
+  await writeFile(join(home, 'settings.yaml'), [
+    'agent-default-model:',
+    '  provider: deepseek-official',
+    `  model: ${legacyModel}`,
+    'llm-deepseek:',
+    '  models:',
+    '    - id: deepseek-v4-flash',
+    '      name: DeepSeek-V4-Flash',
+    '      contextWindow: 1000000',
+    '    - id: deepseek-v4-pro',
+    '      name: DeepSeek-V4-Pro',
+    '      contextWindow: 1000000',
+    '    - id: deepseek-v4-flash-vision-exp',
+    '      name: DeepSeek-V4-Flash-Vision-Exp',
+    '      contextWindow: 1000000',
+    '      inputModalities:',
+    '        - text',
+    '        - image',
+    'custom-upgrade-marker:',
+    '  keep: preserved',
+    'ui-theme:',
+    '  fontSize: 16',
+    '',
+  ].join('\n'))
+
+  scaffold = await launchWebScaffold({ harnessHome: home, deepSeekMissingCredential: true })
+  const patchPath = join(home, 'profiles', 'scaffold', 'cordis.patch.yml')
+  await expect.poll(async () => readFile(patchPath, 'utf8'), { timeout: 15_000 }).toContain('fontSize: 16')
+  const assembled = await scaffold.ctx.systemPrompt.assemble()
+  expect(assembled.sections.some(section => section.name === 'xiaojing:business-facing-responses')).toBe(true)
+  await expect.poll(() => scaffold?.ctx.agentDefaultModel.currentSelection().model).toBe('deepseek-flash')
+  await expect(scaffold.ctx.llm.resolveModelInfo('deepseek-official', 'deepseek-flash')).resolves.toMatchObject({
+    inputModalities: ['text', 'image'],
+  })
+  await expect(scaffold.ctx.llm.resolveModelInfo('deepseek-official', 'deepseek-v4-flash-vision-exp')).resolves.toMatchObject({
+    inputModalities: ['text', 'image'],
+    systemPromptUpdate: 'in-history',
+  })
+  await authorizeDiscovery(scaffold)
+  await expect.poll(async () => (await scaffold!.ctx.llm.listModels('deepseek-official')).map(model => model.id))
+    .toEqual(['deepseek-flash', 'deepseek-v4-pro'])
+  await expect.poll(async () => readFile(patchPath, 'utf8')).not.toContain('deepseek-v4-flash')
+  const saved = await readFile(patchPath, 'utf8')
+  expect(await readFile(join(home, 'settings.yaml.imported'), 'utf8')).toContain('keep: preserved')
+  expect(saved).not.toContain('deepseek-v4-flash-vision-exp')
+  await scaffold.close()
+  scaffold = await launchWebScaffold({ harnessHome: home, deepSeekMissingCredential: true })
+  expect(scaffold.ctx.agentDefaultModel.currentSelection().model).toBe('deepseek-flash')
+  expect((await scaffold.ctx.llm.listModels('deepseek-official')).map(model => model.id)).toEqual(['deepseek-flash', 'deepseek-v4-pro'])
+})
+
+it.skipIf(webClientProfile() !== 'xiaojing')('keeps customized DeepSeek entries while adding native Flash', async () => {
+  vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', 'xiaojing')
+  home = await mkdtemp(join(tmpdir(), 'xiaojing-model-upgrade-'))
+  await writeFile(join(home, 'settings.yaml'), [
+    'agent-default-model:',
+    '  provider: deepseek-official',
+    '  model: deepseek-v4-flash-vision-exp',
+    'llm-deepseek:',
+    '  models:',
+    '    - id: deepseek-v4-flash-vision-exp',
+    '      name: My Legacy Vision',
+    '      inputModalities:',
+    '        - text',
+    '        - image',
+    '    - id: private-preview',
+    '      name: Private Preview',
+    'ui-theme:',
+    '  fontSize: 16',
+    '',
+  ].join('\n'))
+
+  scaffold = await launchWebScaffold({ harnessHome: home, deepSeekMissingCredential: true })
+  const patchPath = join(home, 'profiles', 'scaffold', 'cordis.patch.yml')
+  await expect.poll(async () => readFile(patchPath, 'utf8'), { timeout: 15_000 }).toContain('fontSize: 16')
+  await expect.poll(() => scaffold?.ctx.agentDefaultModel.currentSelection().model).toBe('deepseek-flash')
+  await expect(scaffold.ctx.llm.resolveModelInfo('deepseek-official', 'deepseek-flash')).resolves.toMatchObject({
+    inputModalities: ['text', 'image'],
+  })
+  await expect.poll(async () => readFile(patchPath, 'utf8')).toContain('id: deepseek-flash')
+  const saved = await readFile(patchPath, 'utf8')
+  expect(saved).toContain('name: My Legacy Vision')
+  expect(saved).toContain('name: Private Preview')
+  await authorizeDiscovery(scaffold)
+  expect((await scaffold.ctx.llm.listModels('deepseek-official')).map(model => model.id))
+    .toEqual(['deepseek-flash', 'deepseek-v4-pro', 'deepseek-v4-flash-vision-exp', 'private-preview'])
+  await scaffold.close()
+  scaffold = await launchWebScaffold({ harnessHome: home, deepSeekMissingCredential: true })
+  expect(scaffold.ctx.agentDefaultModel.currentSelection().model).toBe('deepseek-flash')
+  expect((await scaffold.ctx.llm.listModels('deepseek-official')).map(model => model.id))
+    .toEqual(['deepseek-flash', 'deepseek-v4-pro', 'deepseek-v4-flash-vision-exp', 'private-preview'])
+})

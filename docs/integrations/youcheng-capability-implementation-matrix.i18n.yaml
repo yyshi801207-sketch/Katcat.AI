@@ -1,0 +1,19 @@
+# Bilingual-pair consistency record for youcheng-capability-implementation-matrix.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/integrations/youcheng-capability-implementation-matrix.md
+/youcheng-capability-scope-and-api-qualification-matrix:
+  en: f462b07f79559931
+  zh: 6bfe8db4e34be5d4
+/youcheng-capability-scope-and-api-qualification-matrix/sources-and-use:
+  en: b67581cd0a7a7a47
+  zh: e4fc92c442624fd8
+/youcheng-capability-scope-and-api-qualification-matrix/business-coverage-and-delivery-order:
+  en: 1eeb3a9193b879f6
+  zh: dbe7d29c56201611
+/youcheng-capability-scope-and-api-qualification-matrix/api-semantics-requiring-correction:
+  en: 1668da1ce4b68105
+  zh: 961b34f53aa1f232
+/youcheng-capability-scope-and-api-qualification-matrix/first-batch-qualification-records:
+  en: 6d2ec5509bab063c
+  zh: 5a1aae258bcaf612

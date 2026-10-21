@@ -1,0 +1,37 @@
+.avatar {
+  display: block;
+  flex: none;
+  overflow: hidden;
+}
+
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding-right: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.wordmark {
+  display: block;
+  min-width: 0;
+  width: auto;
+  max-width: 122px;
+  height: 22px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.tagline {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--sudo-brand);
+  color: var(--dsw-alias-label-primary-foreground);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 14px;
+  white-space: nowrap;
+}

@@ -1,0 +1,29 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    { "path": "../../../vendor/cosmokit" },
+    { "path": "../../../vendor/schemastery" },
+    { "path": "../../../vendor/cordis" },
+    { "path": "../../core/agent" },
+    { "path": "../../core/session" },
+    { "path": "../../core/system-prompt" },
+    { "path": "../../core/tools" },
+    { "path": "../../interaction/user-approval" },
+    { "path": "../../preset/agent-preset-registry" },
+    { "path": "../../session/session-projection" },
+    { "path": "../../typert/protocol" },
+    { "path": "../../util/atomic-write" },
+    { "path": "../../util/brand" },
+    { "path": "../../credentials/credentials" },
+    { "path": "../../util/home-paths" },
+    { "path": "../../util/values" },
+    { "path": "../../workspace/workspace" }
+  ]
+}

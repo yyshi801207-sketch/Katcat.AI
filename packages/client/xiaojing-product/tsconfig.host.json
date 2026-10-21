@@ -1,0 +1,44 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types",
+    "tsBuildInfoFile": "lib/tsconfig.host.tsbuildinfo"
+  },
+  "files": [
+    "src/deletion-guard.ts",
+    "src/office-approval.ts",
+    "src/index.ts"
+  ],
+  "references": [
+    { "path": "../../session/working-directory" },
+    { "path": "../../core/session" },
+    { "path": "../../session/session-projection" },
+    { "path": "../../interaction/permission-presets" },
+    { "path": "../../preset/agent-preset-registry" },
+    {
+      "path": "../../../vendor/cordis"
+    },
+    {
+      "path": "../../core/agent-default-model"
+    },
+    {
+      "path": "../../settings/settings"
+    },
+    {
+      "path": "../../core/tools"
+    },
+    {
+      "path": "../../interaction/user-approval"
+    },
+    {
+      "path": "../../core/system-prompt"
+    },
+    {
+      "path": "../../xiaojing/xiaojing-browser-control"
+    },
+    {
+      "path": "../../xiaojing/xiaojing-computer-control"
+    }
+  ]
+}

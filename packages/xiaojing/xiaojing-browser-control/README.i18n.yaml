@@ -1,0 +1,79 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-browser-control/README.md
+/:
+  en: 05c97b70950e05f7
+  zh: 05c97b70950e05f7
+/deepseek-ai-dsh-xiaojing-browser-control:
+  en: 0b80cab286b70028
+  zh: 6ff9ab33f3a95bdd
+/deepseek-ai-dsh-xiaojing-browser-control/summary:
+  en: f06768122c72b2f6
+  zh: 7d8c0edab4470ff7
+/deepseek-ai-dsh-xiaojing-browser-control/table-of-contents:
+  en: f1d967a7e5342ebc
+  zh: 86774d5ea1aab22d
+/deepseek-ai-dsh-xiaojing-browser-control/capabilities:
+  en: b9528c52bde43425
+  zh: 328ed5e3dd7e417e
+/deepseek-ai-dsh-xiaojing-browser-control/native-browser-connections:
+  en: 65fd838f4571e711
+  zh: 64f24f496bba8989
+/deepseek-ai-dsh-xiaojing-browser-control/native-browser-connections/connecting-already-open-tabs:
+  en: bcc80547741202b4
+  zh: 2ee138612774eed2
+/deepseek-ai-dsh-xiaojing-browser-control/native-browser-connections/native-configuration-and-approvals:
+  en: 0214b129dfa48161
+  zh: 11ec750d3fd5aa81
+/deepseek-ai-dsh-xiaojing-browser-control/legacy-edge-entry:
+  en: 2e19c81428fd3cc2
+  zh: 32b6f1695b57d2bd
+/deepseek-ai-dsh-xiaojing-browser-control/edge-routes:
+  en: 8c3e21b63bd95c83
+  zh: 17159efdaa9a08a2
+/deepseek-ai-dsh-xiaojing-browser-control/semantic-execution:
+  en: 6594e3f3899a131f
+  zh: 3820a1397603368c
+/deepseek-ai-dsh-xiaojing-browser-control/approval-and-network-policy:
+  en: 726d693a3ba24ebb
+  zh: 6f6a68d5a3f5dd64
+/deepseek-ai-dsh-xiaojing-browser-control/personal-edge-bridge-security:
+  en: 8d08486b0ef00e13
+  zh: 6429fe0980816824
+/deepseek-ai-dsh-xiaojing-browser-control/configuration:
+  en: ba5780bc3174623e
+  zh: d41d71568b2b20ad
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/native-browser-tool-discovery:
+  en: 57ab2d3a089bc153
+  zh: 4b9f116738d6d50a
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/native-browser-tool-discovery/what-the-model-sees:
+  en: 1b2cb9404ea0cf77
+  zh: 8987ff9c695b8888
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/native-browser-tool-discovery/token-effect:
+  en: 184a05eff5bb60df
+  zh: 68731562e89cedb9
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/native-browser-tool-discovery/kv-cache-effect:
+  en: 8ec5cd944568d539
+  zh: 269a262efa72ab78
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/browser-control-schema:
+  en: ce2cf6e7908468b6
+  zh: de09002971b19186
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/browser-control-schema/what-the-model-sees:
+  en: 834c37cea57359da
+  zh: 97a8be3969c26371
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/browser-control-schema/token-effect:
+  en: 6a39ebf9fcc00efa
+  zh: 53fd830a72eb1613
+/deepseek-ai-dsh-xiaojing-browser-control/model-experience/browser-control-schema/kv-cache-effect:
+  en: f0e93f3f39639ac0
+  zh: 0447e1c96334447c
+/deepseek-ai-dsh-xiaojing-browser-control/known-limitations-and-deferred-work:
+  en: 5c7c7af416083fe0
+  zh: 0dd93d84697f68bf
+/deepseek-ai-dsh-xiaojing-browser-control/known-limitations-and-deferred-work/dev-note:
+  en: 6c98eefd36da35e8
+  zh: 97b281ca4fb06ce2

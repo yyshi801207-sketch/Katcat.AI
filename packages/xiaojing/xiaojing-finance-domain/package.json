@@ -1,0 +1,184 @@
+{
+  "name": "@deepseek-ai/dsh-xiaojing-finance-domain",
+  "description": "Local finance client records and immutable per-session client context for Xiaojing",
+  "version": "0.2.1-rc.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepseek-ai/deepseek-harness.git",
+    "directory": "packages/xiaojing/xiaojing-finance-domain"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./context": {
+      "types": "./lib/types/context.d.ts",
+      "default": "./lib/context.js"
+    },
+    "./capabilities": {
+      "types": "./lib/types/capabilities.d.ts",
+      "default": "./lib/capabilities.js"
+    },
+    "./files-tool": {
+      "types": "./lib/types/files-tool.d.ts",
+      "default": "./lib/files-tool.js"
+    },
+    "./references-tool": {
+      "types": "./lib/types/references-tool.d.ts",
+      "default": "./lib/references-tool.js"
+    },
+    "./voucher-preparation-tool": {
+      "types": "./lib/types/voucher-preparation-tool.d.ts",
+      "default": "./lib/voucher-preparation-tool.js"
+    },
+    "./voucher-deletion-tool": {
+      "types": "./lib/types/voucher-deletion-tool.d.ts",
+      "default": "./lib/voucher-deletion-tool.js"
+    },
+    "./open-item-preparation-tool": {
+      "types": "./lib/types/open-item-preparation-tool.d.ts",
+      "default": "./lib/open-item-preparation-tool.js"
+    },
+    "./open-item-deletion-tool": {
+      "types": "./lib/types/open-item-deletion-tool.d.ts",
+      "default": "./lib/open-item-deletion-tool.js"
+    },
+    "./open-item-write-off-tool": {
+      "types": "./lib/types/open-item-write-off-tool.d.ts",
+      "default": "./lib/open-item-write-off-tool.js"
+    },
+    "./journal-deletion-tool": {
+      "types": "./lib/types/journal-deletion-tool.d.ts",
+      "default": "./lib/journal-deletion-tool.js"
+    },
+    "./journal-preparation-tool": {
+      "types": "./lib/types/journal-preparation-tool.d.ts",
+      "default": "./lib/journal-preparation-tool.js"
+    },
+    "./master-data-preparation-tool": {
+      "types": "./lib/types/master-data-preparation-tool.d.ts",
+      "default": "./lib/master-data-preparation-tool.js"
+    },
+    "./journals-tool": {
+      "types": "./lib/types/journals-tool.d.ts",
+      "default": "./lib/journals-tool.js"
+    },
+    "./open-items-tool": {
+      "types": "./lib/types/open-items-tool.d.ts",
+      "default": "./lib/open-items-tool.js"
+    },
+    "./open-item-analysis-tool": {
+      "types": "./lib/types/open-item-analysis-tool.d.ts",
+      "default": "./lib/open-item-analysis-tool.js"
+    },
+    "./balances-tool": {
+      "types": "./lib/types/balances-tool.d.ts",
+      "default": "./lib/balances-tool.js"
+    },
+    "./vouchers-tool": {
+      "types": "./lib/types/vouchers-tool.d.ts",
+      "default": "./lib/vouchers-tool.js"
+    },
+    "./types": {
+      "types": "./lib/types/types.d.ts",
+      "default": "./lib/types/types.js"
+    },
+    "./store": {
+      "types": "./lib/types/store.d.ts",
+      "default": "./lib/types/store.js"
+    },
+    "./workspace": {
+      "types": "./lib/types/workspace.d.ts",
+      "default": "./lib/types/workspace.js"
+    },
+    "./typert": {
+      "types": "./lib/typert.host.d.ts",
+      "default": "./lib/typert.host.js"
+    },
+    "./remote": {
+      "types": "./lib/typert.remote-client.d.ts",
+      "default": "./lib/typert.remote-client.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/context.js",
+    "lib/capabilities.js",
+    "lib/files-tool.js",
+    "lib/references-tool.js",
+    "lib/voucher-preparation-tool.js",
+    "lib/voucher-deletion-tool.js",
+    "lib/open-item-preparation-tool.js",
+    "lib/open-item-deletion-tool.js",
+    "lib/open-item-write-off-tool.js",
+    "lib/journal-deletion-tool.js",
+    "lib/journal-preparation-tool.js",
+    "lib/master-data-preparation-tool.js",
+    "lib/journals-tool.js",
+    "lib/vouchers-tool.js",
+    "lib/open-items-tool.js",
+    "lib/open-item-analysis-tool.js",
+    "lib/balances-tool.js",
+    "lib/session-files.js",
+    "lib/types.js",
+    "lib/finance-card-*.js",
+    "lib/types/**/*.js",
+    "lib/types/**/*.d.ts",
+    "lib/typert.host.js",
+    "lib/typert.host.d.ts",
+    "lib/typert.remote-client.js",
+    "lib/typert.remote-client.d.ts"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@deepseek-ai/schemastery": "workspace:~",
+    "ali-oss": "^6.23.0",
+    "write-excel-file": "4.1.1",
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "workspace:~",
+    "@deepseek-ai/dsh-agent": "workspace:*",
+    "@deepseek-ai/dsh-agent-preset-registry": "workspace:*",
+    "@deepseek-ai/dsh-atomic-write": "workspace:*",
+    "@deepseek-ai/dsh-brand": "workspace:*",
+    "@deepseek-ai/dsh-credentials": "workspace:*",
+    "@deepseek-ai/dsh-home-paths": "workspace:*",
+    "@deepseek-ai/dsh-session": "workspace:*",
+    "@deepseek-ai/dsh-session-projection": "workspace:*",
+    "@deepseek-ai/dsh-system-prompt": "workspace:*",
+    "@deepseek-ai/dsh-tools": "workspace:*",
+    "@deepseek-ai/dsh-typert-protocol": "workspace:*",
+    "@deepseek-ai/dsh-util-values": "workspace:*",
+    "@deepseek-ai/dsh-user-approval": "workspace:*",
+    "@deepseek-ai/dsh-workspace": "workspace:*"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "workspace:~",
+    "@deepseek-ai/dsh-agent": "workspace:*",
+    "@deepseek-ai/dsh-agent-preset-registry": "workspace:*",
+    "@deepseek-ai/dsh-atomic-write": "workspace:*",
+    "@deepseek-ai/dsh-brand": "workspace:*",
+    "@deepseek-ai/dsh-credentials": "workspace:*",
+    "@deepseek-ai/dsh-home-paths": "workspace:*",
+    "@deepseek-ai/dsh-session": "workspace:*",
+    "@deepseek-ai/dsh-session-projection": "workspace:*",
+    "@deepseek-ai/dsh-system-prompt": "workspace:*",
+    "@deepseek-ai/dsh-tools": "workspace:*",
+    "@deepseek-ai/dsh-typert-protocol": "workspace:*",
+    "@deepseek-ai/dsh-util-values": "workspace:*",
+    "@deepseek-ai/dsh-user-approval": "workspace:*",
+    "@deepseek-ai/dsh-workspace": "workspace:*",
+    "@types/ali-oss": "^6.23.3",
+    "read-excel-file": "9.3.10"
+  }
+}

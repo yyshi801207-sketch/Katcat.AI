@@ -1,0 +1,19 @@
+# Bilingual-pair consistency record for approval.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/subsystems/approval.md
+/user-approval:
+  en: 490b0cce7f1ceed5
+  zh: 1126f2d7261b490a
+/user-approval/identity-and-outcome:
+  en: e92a1b1d9032b455
+  zh: 0eb4c5769062b806
+/user-approval/per-session-policy:
+  en: 938611cc83fa2272
+  zh: 58b5535421a2daaa
+/user-approval/approval-request:
+  en: 044ddfc382eb745c
+  zh: c0010b23c94ab3af
+/user-approval/dispatch-and-audit:
+  en: 63f6e5b87e6e9962
+  zh: 6530541ec001f1db

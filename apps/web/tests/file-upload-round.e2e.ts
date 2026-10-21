@@ -1,0 +1,513 @@
+// Web e2e scenario: generic file upload round trip. A real chromium picks a
+// file through the composer paperclip input; the upload RPC stores the exact
+// bytes below the scaffold's isolated DSH_HOME, the prompt cites the staged
+// reference, request assembly projects the file block to handle text, and the
+// model (replayed or live) reads the saved copy with the REAL read tool. The
+// replay override reads the actual saved-file handle from the model request.
+// Xiaojing owns its product-context fixture; only its expected attachment
+// paths are realized below a spec-owned temporary home before replay. The
+// complete persisted log remains compared through the shared scaffold.
+import { createHash } from 'node:crypto'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import type { Browser, Page } from 'playwright'
+import { chromium } from 'playwright'
+import { afterAll, beforeAll, describe, expect, it, onTestFailed, vi } from 'vitest'
+import type { SessionEvent } from '@deepseek-ai/dsh-session'
+import {
+  acknowledgeReloadConnectionLoss, assertFixtureInventory, captureStableAria, compareOrRefreshGolden, fixtureUserPrompts,
+  launchWebScaffold, recordFixture, watchConsole, webClientProfile, webSnapshotMode, type WebScaffold,
+} from './scaffold.ts'
+import { connectFreshWorkspace, newEnglishPage, saveFailureShot } from './support.ts'
+
+const SNAPSHOT_DIR = fileURLToPath(new URL('../../../snapshots/web/file-upload-round', import.meta.url))
+const LEGACY_XIAOJING_SNAPSHOT_DIR = fileURLToPath(new URL('../../../snapshots/web/xiaojing-file-upload-round', import.meta.url))
+const XIAOJING_SNAPSHOT_DIR = fileURLToPath(new URL('./expected/file-upload-round-xiaojing-033', import.meta.url))
+const XIAOJING = webClientProfile() === 'xiaojing'
+const FIXTURE = XIAOJING ? join(XIAOJING_SNAPSHOT_DIR, 'session.v4.jsonl') : join(SNAPSHOT_DIR, 'session.v3.jsonl')
+const UI_EXPECTED = XIAOJING
+  ? fileURLToPath(new URL('./expected/file-upload-round/ui.xiaojing.expected.md', import.meta.url))
+  : join(SNAPSHOT_DIR, 'ui.expected.md')
+const TRAJECTORY_EXPECTED = fileURLToPath(new URL('../../../snapshots/web/file-upload-round/trajectory.expected.md', import.meta.url))
+const TRAJECTORY_STATUS_EXPECTED = fileURLToPath(new URL('../../../snapshots/web/file-upload-round/trajectory-status.expected.md', import.meta.url))
+const OVERRIDE = join(XIAOJING ? XIAOJING_SNAPSHOT_DIR : SNAPSHOT_DIR, 'replay.override.json')
+const DRAFT_EXPECTED = fileURLToPath(new URL('./expected/file-upload-round/draft.expected.md', import.meta.url))
+const HISTORY_EXPECTED = fileURLToPath(new URL('./expected/file-upload-round/history.expected.md', import.meta.url))
+const IMAGE_FIXTURE = fileURLToPath(new URL('../../../snapshots/session/read-image/workspace/red.png', import.meta.url))
+const MODE = webSnapshotMode()
+
+/** The uploaded fixture file: constant bytes so record and replay share one content digest. */
+const FILE_NAME = 'poem.txt'
+const FILE_TEXT = 'UPLOAD_ROUND_OK\n'
+const PROMPT = 'Read the attached file with the read tool, reply with exactly the single word it contains, and stop.'
+const IMAGE_NAMES = Array.from({ length: 10 }, (_unused, index) => `reference-${String(index + 1)}.png`)
+
+/** Realize only this fixture's attachment paths before replay; actual events remain untouched. */
+async function materializeUploadExpectation(root: string, harnessHome: string): Promise<string> {
+  const digest = createHash('sha256').update(FILE_TEXT).digest('hex')
+  const parts = ['attachments', 'v1', 'files', digest.slice(0, 2), digest, FILE_NAME]
+  const recordedPath = `{{harnessHome}}/${parts.join('/')}`
+  const nativePath = join(harnessHome, ...parts)
+  const quotedArguments = JSON.stringify(`{"file_path": ${JSON.stringify(recordedPath)}}`)
+  const source = await readFile(FIXTURE, 'utf8')
+  // The three argument copies are the assistant block, stream block, and durable call.
+  expect(source.split(quotedArguments)).toHaveLength(4)
+  const argumentsRealized = source.replaceAll(quotedArguments, JSON.stringify(`{"file_path": ${JSON.stringify(nativePath)}}`))
+  // The read tool records its result path and metadata as JSON strings in native spelling.
+  expect(argumentsRealized.split(recordedPath)).toHaveLength(3)
+  const expected = argumentsRealized.replaceAll(recordedPath, JSON.stringify(nativePath).slice(1, -1))
+  expect(expected).not.toContain('{{harnessHome}}')
+  const directory = join(root, 'expected')
+  await mkdir(directory)
+  const fixture = join(directory, 'session.v4.jsonl')
+  await writeFile(fixture, expected)
+  await writeFile(join(directory, 'snapshot.yml'), await readFile(join(XIAOJING_SNAPSHOT_DIR, 'snapshot.yml')))
+  return fixture
+}
+
+/** Browser-measured relations for the mixed composer attachment rail. */
+interface DraftRailGeometry {
+  readonly fileIconBox: string
+  readonly fileIconColor: string
+  readonly fileIconUsesSolidFill: boolean
+  readonly order: readonly string[]
+  readonly oneGroup: boolean
+  readonly oneRow: boolean
+  readonly equalHeight: boolean
+  readonly fileWider: boolean
+  readonly horizontalOverflow: boolean
+  readonly noWrap: boolean
+}
+
+/** Render stable relations instead of platform-dependent absolute coordinates. */
+function renderDraftRailGeometry(geometry: DraftRailGeometry): string {
+  return [
+    '# Mixed composer attachment rail',
+    '',
+    `- selection order: ${geometry.order.join(' > ')}`,
+    `- one attachment group: ${String(geometry.oneGroup)}`,
+    `- file icon dimensions: ${geometry.fileIconBox}`,
+    `- file icon color: ${geometry.fileIconColor}`,
+    `- file icon uses a solid fill: ${String(geometry.fileIconUsesSolidFill)}`,
+    `- all cards share one row: ${String(geometry.oneRow)}`,
+    `- every card is 64px high: ${String(geometry.equalHeight)}`,
+    `- the file card is wider than an image: ${String(geometry.fileWider)}`,
+    `- overflowing cards scroll horizontally: ${String(geometry.horizontalOverflow)}`,
+    `- the rail does not wrap: ${String(geometry.noWrap)}`,
+  ].join('\n')
+}
+
+/** Browser-measured relations for one durable mixed-attachment message. */
+interface HistoryAttachmentGeometry {
+  readonly fileIconBox: string
+  readonly fileIconColor: string
+  readonly fileIconUsesSolidFill: boolean
+  readonly order: readonly string[]
+  readonly oneGroup: boolean
+  readonly oneRow: boolean
+  readonly equalHeight: boolean
+  readonly imageIsTile: boolean
+  readonly fileWider: boolean
+  readonly wrapsWhenNeeded: boolean
+  readonly rightAligned: boolean
+}
+
+/** Render stable history-layout relations instead of absolute coordinates. */
+function renderHistoryAttachmentGeometry(geometry: HistoryAttachmentGeometry): string {
+  return [
+    '# Mixed history attachment flow',
+    '',
+    `- source order: ${geometry.order.join(' > ')}`,
+    `- one attachment group: ${String(geometry.oneGroup)}`,
+    `- file icon dimensions: ${geometry.fileIconBox}`,
+    `- file icon color: ${geometry.fileIconColor}`,
+    `- file icon uses a solid fill: ${String(geometry.fileIconUsesSolidFill)}`,
+    `- file and image share one row: ${String(geometry.oneRow)}`,
+    `- both cards are 64px high: ${String(geometry.equalHeight)}`,
+    `- the image is a 64px tile: ${String(geometry.imageIsTile)}`,
+    `- the file card is wider than the image: ${String(geometry.fileWider)}`,
+    `- the group wraps when needed: ${String(geometry.wrapsWhenNeeded)}`,
+    `- the group is right-aligned: ${String(geometry.rightAligned)}`,
+  ].join('\n')
+}
+
+describe('web e2e: generic file upload through the real assembly', () => {
+  let scaffold: WebScaffold
+  let browser: Browser
+  let page: Page
+  let tripwire: ReturnType<typeof watchConsole>
+  const sessionEvents: SessionEvent[] = []
+  let liveTrajectory: string | undefined
+  let expectationRoot: string | undefined
+
+  /** Inspect one durable mixed message through the real image slot and all message tabs. */
+  async function inspectTrajectoryAttachments(): Promise<string> {
+    const userMessage = sessionEvents.find(event => event.type === 'user/message' && event.data.source.kind === 'user')
+    if (userMessage?.type !== 'user/message') throw new Error('the replayed turn recorded no user message')
+    const content = userMessage.data.content
+    const imageName = IMAGE_NAMES[0]!
+    await page.getByRole('tab', { name: 'Chat', exact: true }).click()
+    const chatImage = page.getByRole('img', { name: imageName, exact: true })
+    await expect.poll(() => chatImage.getAttribute('src'), { timeout: 10_000 }).toMatch(/^blob:/)
+    const chatImageUrl = await chatImage.getAttribute('src')
+
+    await page.getByRole('tab', { name: 'Trajectory', exact: true }).click()
+    await page.getByLabel('Trajectory timeline').waitFor({ timeout: 30_000 })
+    const row = page.getByRole('row', { name: `USER, Images ×1 · Files ×1 · ${PROMPT}`, exact: true })
+    await row.waitFor({ timeout: 10_000 })
+    const ledger = await captureStableAria(page, '[data-trajectory-row-key][aria-label*="Files ×1"]', scaffold.workspaceCwd)
+    await row.click()
+
+    const panel = page.getByRole('tabpanel')
+    const list = panel.getByRole('list', { name: 'Attachments', exact: true })
+    let summaryAttachments: string | undefined
+    let preview: string | undefined
+    for (const tab of ['Summary', 'Preview']) {
+      await page.getByRole('tab', { name: tab, exact: true }).click()
+      await list.waitFor()
+      expect(await panel.getByText(PROMPT, { exact: true }).count()).toBe(1)
+      const rows = list.getByRole('listitem')
+      expect(await rows.count()).toBe(2)
+      expect(await rows.nth(0).getByTitle(FILE_NAME, { exact: true }).count()).toBe(1)
+      expect(await rows.nth(1).getByTitle(imageName, { exact: true }).count()).toBe(1)
+      expect(await rows.nth(0).textContent()).toContain('TXT · 16B')
+      expect(await rows.nth(1).textContent()).toContain('image/png · 69B · 1 × 1')
+      const thumbnail = list.getByRole('img', { name: imageName, exact: true })
+      await expect.poll(() => thumbnail.getAttribute('src'), { timeout: 10_000 }).toBe(chatImageUrl)
+      expect(await thumbnail.evaluate(element => getComputedStyle(element).objectFit)).toBe('contain')
+
+      const attachments = await captureStableAria(page, '[role="tabpanel"] [aria-label="Attachments"]', scaffold.workspaceCwd)
+      if (tab === 'Summary') summaryAttachments = attachments
+      else {
+        expect(attachments).toBe(summaryAttachments)
+        preview = await captureStableAria(page, '[role="tabpanel"]', scaffold.workspaceCwd)
+      }
+      const opener = list.getByRole('button', { name: `${imageName}, click to view original`, exact: true })
+      await opener.focus()
+      await opener.press('Enter')
+      const dialog = page.getByRole('dialog', { name: 'Original image preview', exact: true })
+      await dialog.waitFor()
+      expect(await dialog.getByRole('img', { name: imageName }).getAttribute('src')).toBe(chatImageUrl)
+      await page.keyboard.press('Escape')
+      await dialog.waitFor({ state: 'hidden' })
+      expect(await opener.evaluate(element => element === document.activeElement)).toBe(true)
+    }
+
+    await page.getByRole('tab', { name: 'Raw', exact: true }).click()
+    const disclosures = panel.locator('details')
+    expect(await disclosures.count()).toBe(2)
+    expect(await panel.getByRole('img').count()).toBe(0)
+    for (const disclosure of await disclosures.all()) {
+      expect(await disclosure.getAttribute('open')).toBeNull()
+      expect(await disclosure.locator('pre').isVisible()).toBe(false)
+    }
+    const rawCollapsed = await captureStableAria(page, '[role="tabpanel"]', scaffold.workspaceCwd)
+    const blocks = panel.locator('details, section')
+    expect(await blocks.count()).toBe(content.length)
+    for (const [index, block] of content.entries()) {
+      const renderedBlock = blocks.nth(index)
+      if (block.type === 'text') {
+        expect(await renderedBlock.locator('pre').textContent()).toBe(block.text)
+      } else {
+        expect(['image', 'file']).toContain(block.type)
+        await renderedBlock.locator('summary').click()
+        expect(await renderedBlock.locator('pre').isVisible()).toBe(true)
+        const raw: unknown = JSON.parse((await renderedBlock.locator('pre').textContent())!)
+        expect(raw).toEqual(block)
+      }
+    }
+    const rawExpanded = await captureStableAria(page, '[role="tabpanel"]', scaffold.workspaceCwd)
+    return [
+      '# Ledger', ledger,
+      '# Summary attachments', summaryAttachments,
+      '# Preview', preview,
+      '# Raw (collapsed)', rawCollapsed,
+      '# Raw (expanded)', rawExpanded,
+    ].join('\n\n')
+  }
+
+  beforeAll(async () => {
+    let replayFixture = FIXTURE
+    let harnessHome: string | undefined
+    if (XIAOJING && MODE !== 'record') {
+      expectationRoot = await mkdtemp(join(tmpdir(), 'dsh-web-upload-expectation-'))
+      harnessHome = join(expectationRoot, 'home')
+      replayFixture = await materializeUploadExpectation(expectationRoot, harnessHome)
+    }
+    scaffold = await launchWebScaffold({
+      compareReplaySession: XIAOJING && MODE === 'refresh' ? 'read-only' : true,
+      ...(harnessHome === undefined ? {} : { harnessHome }),
+      ...(XIAOJING ? {
+        replayProviders: [{
+          id: 'deepseek-official', name: 'DeepSeek',
+          models: [{ id: 'deepseek-flash', name: 'DeepSeek-V41-Flash', contextWindow: 128_000, inputModalities: ['text', 'image'] }],
+        }],
+      } : {}),
+      // The override rescripts the recorded read arguments with a
+      // `{{fromRequest:…}}` placeholder: the saved-copy path differs per run,
+      // and the live handle line in the request carries the current one.
+      ...(MODE === 'record' ? {} : { replayFixture, replayOverride: OVERRIDE, paceMs: 15 }),
+    })
+    scaffold.ctx.on('session/event', (_session, event: SessionEvent) => { sessionEvents.push(event) })
+    browser = await chromium.launch()
+    page = await newEnglishPage(browser)
+    await page.setViewportSize({ width: 900, height: 900 })
+    tripwire = watchConsole(page)
+    await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
+    await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
+    if (XIAOJING) await page.getByText('Xiaojing Accounting, Your AI Workmate', { exact: true }).waitFor()
+    await connectFreshWorkspace(page, scaffold.workspaceCwd)
+  }, 120_000)
+
+  afterAll(async () => {
+    const failures: unknown[] = []
+    await browser?.close().catch((error: unknown) => failures.push(error))
+    await scaffold?.close().catch((error: unknown) => failures.push(error))
+    if (expectationRoot !== undefined) {
+      await rm(expectationRoot, { recursive: true, force: true }).catch((error: unknown) => failures.push(error))
+    }
+    if (failures.length === 1) throw failures[0]
+    if (failures.length > 1) throw new AggregateError(failures, 'file-upload-round teardown failed')
+  })
+
+  it('uploads on pick, gates send on the staged receipt, and settles the turn (all modes)', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-file-upload-drive'))
+    if (MODE !== 'record') {
+      // Drift guard: the committed fixture must carry exactly the drive prompt.
+      expect(fixtureUserPrompts(await readFile(FIXTURE, 'utf8'))).toEqual([PROMPT])
+    }
+    const input = page.locator('[data-composer-input]').first()
+    await input.waitFor({ timeout: 10_000 })
+    const modelTrigger = page.getByRole('button', { name: /^Select model, current/ })
+    await modelTrigger.click()
+    await page.getByRole('menuitem', { name: /^Model\b/ }).click()
+    const modelName = XIAOJING ? 'DeepSeek-V41-Flash' : 'DeepSeek-V4-Flash-Vision-Exp'
+    await page.getByRole('menuitemradio', { name: modelName }).click()
+    await expect.poll(() => modelTrigger.getAttribute('aria-label'), { timeout: 10_000 })
+      .toContain(modelName)
+    const imageBytes = await readFile(IMAGE_FIXTURE)
+    // Pick through the composer's hidden file input: the upload RPC runs
+    // immediately and the pending card appears before any prompt is typed.
+    await page.locator('input[type="file"]').setInputFiles([
+      { name: FILE_NAME, mimeType: 'text/plain', buffer: Buffer.from(FILE_TEXT) },
+      ...IMAGE_NAMES.map(name => ({ name, mimeType: 'image/png', buffer: imageBytes })),
+    ])
+    await page.getByTitle(FILE_NAME).waitFor({ timeout: 10_000 })
+    const rail = page.getByRole('group', { name: 'Pending attachments' })
+    await expect.poll(() => rail.locator(':scope > *').count(), { timeout: 10_000 })
+      .toBe(IMAGE_NAMES.length + 1)
+    await rail.locator('svg[viewBox="0 0 28 28"]').waitFor({ timeout: 15_000 })
+    const geometry = await rail.evaluate((element): DraftRailGeometry => {
+      const cards = [...element.children] as HTMLElement[]
+      const boxes = cards.map(card => card.getBoundingClientRect())
+      const imageWidth = boxes[cards.findIndex(card => card.querySelector('img') !== null)]?.width ?? 0
+      const fileCard = cards.find(card => card.querySelector('[title="poem.txt"]') !== null)!
+      const fileWidth = fileCard.getBoundingClientRect().width
+      const fileIcon = fileCard.querySelector('svg[viewBox="0 0 28 28"]')!
+      return {
+        fileIconBox: `${fileIcon.getBoundingClientRect().width} × ${fileIcon.getBoundingClientRect().height}`,
+        fileIconColor: getComputedStyle(fileIcon).color,
+        fileIconUsesSolidFill: fileIcon.querySelector('path')?.getAttribute('fill') === 'currentColor',
+        order: cards.map(card => card.querySelector('img')?.getAttribute('alt')
+          ?? card.querySelector<HTMLElement>('[title]')?.title ?? ''),
+        oneGroup: document.querySelectorAll('[role="group"][aria-label="Pending attachments"]').length === 1,
+        oneRow: boxes.every(box => Math.abs(box.top - (boxes[0]?.top ?? box.top)) < 0.5),
+        equalHeight: boxes.every(box => Math.abs(box.height - 64) < 0.5),
+        fileWider: fileWidth > imageWidth,
+        horizontalOverflow: element.scrollWidth > element.clientWidth,
+        noWrap: getComputedStyle(element).flexWrap === 'nowrap',
+      }
+    })
+    await compareOrRefreshGolden(DRAFT_EXPECTED, renderDraftRailGeometry(geometry), MODE)
+    for (const name of IMAGE_NAMES.slice(1)) {
+      await page.getByRole('button', { name: `Remove image ${name}` }).click({ force: true })
+    }
+    await expect.poll(() => rail.locator(':scope > *').count(), { timeout: 10_000 }).toBe(2)
+    await input.fill(PROMPT)
+    // Send unlocks only after the upload receipt lands (the staged file gate).
+    const send = page.getByRole('button', { name: 'Send message' })
+    await send.waitFor({ state: 'visible', timeout: 15_000 })
+    await expect.poll(() => send.isEnabled(), { timeout: 15_000 }).toBe(true)
+    const settled = scaffold.whenTurnSettled()
+    await send.click()
+    const restoreDeadline = Date.now() + 10_000
+    let retainedCards = 0
+    while (retainedCards === 0
+      && !sessionEvents.some(event => event.type === 'turn/start')
+      && Date.now() < restoreDeadline) {
+      await page.waitForTimeout(100)
+      retainedCards = await rail.locator(':scope > *').count()
+    }
+    if (retainedCards !== 0) {
+      const feedback = await page.locator('[role="alert"], [role="status"]').allTextContents()
+      throw new Error(`submission retained ${String(retainedCards)} draft cards; feedback=${JSON.stringify(feedback)}; events=${sessionEvents.map(event => event.type).join(',')}`)
+    }
+    const sessionId = await settled
+    // The temporary comparison fixture stays read-only; refresh records this app owner's attachment paths.
+    if (MODE === 'record' || XIAOJING && MODE === 'refresh') {
+      await recordFixture(scaffold, sessionId, FIXTURE)
+      if (XIAOJING) {
+        const digest = createHash('sha256').update(FILE_TEXT).digest('hex')
+        const parts = ['attachments', 'v1', 'files', digest.slice(0, 2), digest, FILE_NAME]
+        const nativePath = join(scaffold.harnessHome, ...parts)
+        const recordedPath = `{{harnessHome}}/${parts.join('/')}`
+        const quotedArguments = JSON.stringify(`{"file_path": ${JSON.stringify(nativePath)}}`)
+        const source = await readFile(FIXTURE, 'utf8')
+        expect(source.split(quotedArguments)).toHaveLength(4)
+        const argumentsRecorded = source.replaceAll(quotedArguments, JSON.stringify(`{"file_path": ${JSON.stringify(recordedPath)}}`))
+        const resultPath = JSON.stringify(nativePath).slice(1, -1)
+        expect(argumentsRecorded.split(resultPath)).toHaveLength(3)
+        const expected = argumentsRecorded.replaceAll(resultPath, recordedPath)
+        expect(expected).not.toContain(scaffold.harnessHome)
+        expect(expected).not.toContain(scaffold.harnessHome.replaceAll('\\', '/'))
+        expect(expected).not.toContain(JSON.stringify(scaffold.harnessHome).slice(1, -1))
+        await writeFile(FIXTURE, expected)
+      }
+    }
+  }, 200_000)
+
+  it.skipIf(MODE === 'record')('persists the file block and reads the stored copy with the real read tool', () => {
+    const userMessage = sessionEvents.find(
+      (event): event is Extract<SessionEvent, { type: 'user/message' }> =>
+        event.type === 'user/message' && event.data.source.kind === 'user',
+    )
+    if (userMessage === undefined) throw new Error('the replayed turn recorded no user message')
+    const fileBlock = userMessage.data.content.find(block => block.type === 'file')
+    if (fileBlock?.type !== 'file') throw new Error('the user message carries no file block')
+    expect(fileBlock.attachment.name).toBe(FILE_NAME)
+    expect(fileBlock.attachment.bytes).toBe(Buffer.byteLength(FILE_TEXT))
+    expect(String(fileBlock.attachment.attachmentId)).toMatch(/^sha256:[0-9a-f]{64}$/)
+
+    const readCall = sessionEvents.find(
+      (event): event is Extract<SessionEvent, { type: 'tool/call' }> =>
+        event.type === 'tool/call' && event.data.name === 'read',
+    )
+    if (readCall === undefined) throw new Error('the replayed turn did not call the read tool')
+    expect(readCall.data.arguments).toContain(FILE_NAME)
+    const readResult = sessionEvents.find(
+      (event): event is Extract<SessionEvent, { type: 'tool/result' }> =>
+        event.type === 'tool/result' && event.data.message.source.callId === readCall.data.callId,
+    )
+    if (readResult === undefined) throw new Error('the read call produced no durable result')
+    const message = readResult.data.message
+    expect(message.isError).toBe(false)
+    expect(message.content.filter(block => block.type === 'text').map(block => block.text).join(''))
+      .toContain('UPLOAD_ROUND_OK')
+
+    const turnEnds = sessionEvents.filter(event => event.type === 'turn/end')
+    expect(turnEnds.length).toBe(1)
+    expect((turnEnds[0] as SessionEvent & { data: { reason: { kind: string } } }).data.reason.kind).toBe('completed')
+  })
+
+  it.skipIf(MODE === 'record')('renders the durable file card beside the settled answer', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-file-upload-aria'))
+    await expect.poll(() => page.getByText('UPLOAD_ROUND_OK', { exact: false }).count(), { timeout: 15_000 })
+      .toBeGreaterThanOrEqual(1)
+    await page.getByTitle(FILE_NAME).first().waitFor({ timeout: 10_000 })
+    const snapshot = await captureStableAria(page, '[class*="centerCol"]', scaffold.workspaceCwd)
+    await compareOrRefreshGolden(UI_EXPECTED, snapshot, MODE)
+  })
+
+  it.skipIf(MODE === 'record')('keeps a mixed durable message in one ordered wrapping attachment flow', async () => {
+    const groups = page.locator('[data-message-attachments]')
+    await expect.poll(() => groups.count(), { timeout: 10_000 }).toBe(1)
+    const geometry = await groups.first().evaluate((element): HistoryAttachmentGeometry => {
+      const cards = [...element.children] as HTMLElement[]
+      const renderedCards = cards.map((card) => {
+        const box = card.getBoundingClientRect()
+        return box.width === 0 && box.height === 0 && card.firstElementChild instanceof HTMLElement
+          ? card.firstElementChild
+          : card
+      })
+      const boxes = renderedCards.map(card => card.getBoundingClientRect())
+      const imageIndex = cards.findIndex(card => card.querySelector('img') !== null)
+      const fileIndex = cards.findIndex(card => card.getAttribute('title') === 'poem.txt')
+      const imageBox = boxes[imageIndex]
+      const fileBox = boxes[fileIndex]
+      const fileIcon = cards[fileIndex]!.querySelector('svg')!
+      return {
+        fileIconBox: `${fileIcon.getBoundingClientRect().width} × ${fileIcon.getBoundingClientRect().height}`,
+        fileIconColor: getComputedStyle(fileIcon).color,
+        fileIconUsesSolidFill: fileIcon.querySelector('path')?.getAttribute('fill') === 'currentColor',
+        order: cards.map(card => card.getAttribute('title') ?? card.querySelector('img')?.getAttribute('alt') ?? ''),
+        oneGroup: document.querySelectorAll('[data-message-attachments]').length === 1,
+        oneRow: boxes.every(box => Math.abs(box.top - (boxes[0]?.top ?? box.top)) < 0.5),
+        equalHeight: boxes.every(box => Math.abs(box.height - 64) < 0.5),
+        imageIsTile: imageBox !== undefined && Math.abs(imageBox.width - 64) < 0.5,
+        fileWider: fileBox !== undefined && imageBox !== undefined && fileBox.width > imageBox.width,
+        wrapsWhenNeeded: getComputedStyle(element).flexWrap === 'wrap',
+        rightAligned: getComputedStyle(element).justifyContent === 'flex-end',
+      }
+    })
+    await compareOrRefreshGolden(HISTORY_EXPECTED, renderHistoryAttachmentGeometry(geometry), MODE)
+  })
+
+  it.skipIf(MODE === 'record')('shows both attachment kinds throughout the Trajectory inspector', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-file-upload-trajectory'))
+    liveTrajectory = await inspectTrajectoryAttachments()
+    await compareOrRefreshGolden(TRAJECTORY_EXPECTED, liveTrajectory, MODE)
+  })
+
+  it.skipIf(MODE === 'record')('restores the same Trajectory attachments from persisted history after reload', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-file-upload-trajectory-reload'))
+    expect(liveTrajectory).toBeDefined()
+    const warningStart = tripwire.warnings.length
+    await page.reload({ waitUntil: 'load' })
+    acknowledgeReloadConnectionLoss(tripwire, warningStart)
+    expect(await inspectTrajectoryAttachments()).toBe(liveTrajectory)
+  })
+
+  it.skipIf(MODE === 'record')('keeps thumbnail loading and retry feedback inside the attachment row', async () => {
+    onTestFailed(() => saveFailureShot(page, 'web-e2e-thumbnail-status'))
+    const releaseRead = Promise.withResolvers<undefined>()
+    const read = vi.spyOn(scaffold.ctx.attachments, 'readImage').mockImplementationOnce(async () => {
+      await releaseRead.promise
+      throw new Error('fixture image read failed')
+    })
+    try {
+      // Reload clears the browser image cache so the real image slot observes the delayed read.
+      const warningStart = tripwire.warnings.length
+      await page.reload({ waitUntil: 'load' })
+      acknowledgeReloadConnectionLoss(tripwire, warningStart)
+      await page.getByRole('tab', { name: 'Trajectory', exact: true }).click()
+      await page.getByRole('row', { name: `USER, Images ×1 · Files ×1 · ${PROMPT}`, exact: true }).click()
+      await page.getByRole('tab', { name: 'Preview', exact: true }).click()
+      const panel = page.getByRole('tabpanel')
+      const thumbnail = panel.locator('[data-variant="thumbnail"]')
+      await thumbnail.waitFor()
+      await expect.poll(() => read.mock.calls.length).toBe(1)
+      const feedbackFits = () => thumbnail.evaluate(element => element.scrollHeight <= element.clientHeight
+        && element.scrollWidth <= element.clientWidth)
+      expect(await feedbackFits()).toBe(true)
+      const loading = await captureStableAria(page, '[role="tabpanel"] [aria-label="Attachments"]', scaffold.workspaceCwd)
+
+      releaseRead.resolve(undefined)
+      const retry = panel.getByRole('button', { name: 'Image failed to load; click to retry', exact: true })
+      await retry.waitFor()
+      expect(await feedbackFits()).toBe(true)
+      const failed = await captureStableAria(page, '[role="tabpanel"] [aria-label="Attachments"]', scaffold.workspaceCwd)
+      await retry.focus()
+      await retry.press('Enter')
+      await panel.getByRole('img', { name: IMAGE_NAMES[0]!, exact: true }).waitFor()
+      expect(read).toHaveBeenCalledTimes(2)
+      await compareOrRefreshGolden(TRAJECTORY_STATUS_EXPECTED, [
+        '# Loading', loading, '# Failed', failed,
+      ].join('\n\n'), MODE)
+    } finally {
+      releaseRead.resolve(undefined)
+      read.mockRestore()
+    }
+  })
+
+  it.skipIf(MODE === 'record')('stayed clean and kept the exact fixture inventory', async () => {
+    expect(tripwire.pageErrors).toEqual([])
+    expect(tripwire.warnings).toEqual([])
+    await assertFixtureInventory(SNAPSHOT_DIR, [
+      'session.v3.jsonl', 'replay.override.json', 'ui.expected.md', 'trajectory.expected.md', 'trajectory-status.expected.md',
+    ])
+    if (XIAOJING) await assertFixtureInventory(XIAOJING_SNAPSHOT_DIR, ['session.v4.jsonl', 'replay.override.json'])
+    if (XIAOJING) await assertFixtureInventory(LEGACY_XIAOJING_SNAPSHOT_DIR, ['session.v4.jsonl', 'replay.override.json'])
+  })
+})

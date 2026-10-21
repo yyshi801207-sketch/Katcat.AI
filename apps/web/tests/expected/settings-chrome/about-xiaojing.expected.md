@@ -1,0 +1,26 @@
+- img "小兢会计"
+- heading "小兢会计" [level=2]
+- paragraph: 您的AI办公搭子与财务助手
+- text: 当前版本 v0.3.3
+- region "版本更新":
+  - heading "版本更新" [level=3]
+  - heading "v0.3.3" [level=4]
+  - text: 当前版本
+  - paragraph: 新内核、新模型与联网搜索，增强任务协作和日常使用体验
+  - button "查看详情：v0.3.3": 查看详情
+  - heading "v0.3.2" [level=4]
+  - paragraph: 双浏览器原生控制与会话内批量审批
+  - button "查看详情：v0.3.2": 查看详情
+  - heading "v0.3.1" [level=4]
+  - paragraph: 全新工作面板，扩展文档处理与插件能力
+  - button "查看详情：v0.3.1": 查看详情
+  - heading "v0.2.4" [level=4]
+  - paragraph: 接入有成财务，支持账务查询与受控维护
+  - button "查看详情：v0.2.4": 查看详情
+  - heading "v0.2.3" [level=4]
+  - paragraph: 专业财务模式，建立可复核的财税工作流程
+  - button "查看详情：v0.2.3": 查看详情
+  - heading "v0.2.2" [level=4]
+  - paragraph: 桌面小兢与托盘常驻，随时查看任务状态
+  - button "查看详情：v0.2.2": 查看详情
+- paragraph: 数豆科技

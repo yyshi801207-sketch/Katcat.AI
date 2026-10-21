@@ -1,0 +1,48 @@
+.logo {
+  display: block;
+  flex: none;
+}
+
+.title {
+  grid-column: 2;
+  color: var(--dsw-alias-label-primary);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 42px;
+  text-align: center;
+}
+
+.titleGroup {
+  display: grid;
+  flex-basis: 100%;
+  grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr);
+  container-type: inline-size;
+  align-items: center;
+  gap: 4px 7px;
+  min-width: 0;
+}
+
+.badge {
+  grid-column: 3;
+  justify-self: start;
+  align-self: start;
+  margin-top: 2px;
+  padding: 1px 7px 0;
+  border: 1px solid var(--sudo-brand);
+  border-radius: 3px;
+  background: var(--sudo-brand);
+  color: var(--dsw-alias-label-primary-foreground);
+  font-family: var(--ds-font-family-code);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+@container (max-width: 680px) {
+  .title,
+  .badge {
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+}
