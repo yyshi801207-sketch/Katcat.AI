@@ -33,6 +33,8 @@ kind: "package-reference"
 <a id="reference-previews"></a>
 ## 引用预览
 
+产品主题可通过 `--dsw-specific-bubble-radius`、`--dsw-specific-bubble-padding` 和 `--dsw-specific-bubble-border` 调整用户气泡圆角、内边距和内描边；未覆盖时保留标准气泡尺寸且无可见边框。
+
 已发送的普通文件附件保留草稿中的[文件卡片圆角](../../../docs/ui-radius.zh.md#radius-scale)。
 
 `ChatView` 通过节点列表外围既有的 `MarkdownDelegateProvider` 提供文件及 HTTP(S) 导航，直接传入 `requestOpenFile`、`openExternalLink` 和 `fileImages`。文件打开动作保留 Chat 的失败反馈与重试处理。Assistant Markdown 文件链接在消息落定后可于右侧栏打开，包括未修改文件的引用。相对路径基于当前查看的 Session 工作区解析；绝对路径仍使用同一 Session 的文件系统访问。`#L24` 和 `#L24-L30` 定位到指定起始行，并复用现有文件标签。文件缺失时显示预览错误状态。

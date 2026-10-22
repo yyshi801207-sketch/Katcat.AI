@@ -6,6 +6,8 @@ kind: "package-reference"
 
 English | [中文](README.zh.md)
 
+`defaultWorkspacePath` selects a fully qualified directory for first-use Workspace creation without appending subdirectories. An existing default registration retains its path; the override does not relocate files or Sessions. Without this option, the system Documents lookup and its standard subdirectories still apply.
+
 ## Summary
 
 `@deepseek-ai/dsh-api-workspace-controller` owns the Host `ctx.workspaceController` service and the generated Client `ctx.remote.workspace` namespace. Its Remote methods create, rename, remove, and reorder Workspaces, reorder Sessions within a Workspace, archive and unarchive Sessions from Workspace navigation, and follow the complete Workspace projection. Use it through API Gateway when a Client must change or follow Workspace navigation. The package also owns `ctx.directoryPickerController` and the generated `ctx.remote.directoryPicker` namespace, because the directory-picking seam it carries is abstract and never a Loader entry of its own.

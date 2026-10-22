@@ -1,68 +1,165 @@
 .dialog {
   width: min(600px, 100%);
+  max-height: 100%;
   padding: 0;
+  gap: 0;
+  background: var(--katcat-onboarding-paper);
+  color: var(--katcat-onboarding-ink);
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 48px);
-  padding: 28px;
-  box-sizing: border-box;
+  min-height: 0;
   overflow-y: auto;
 }
 
+.welcome {
+  position: relative;
+  height: 112px;
+  overflow: hidden;
+  background: var(--katcat-onboarding-paper-raised);
+  border-bottom: 1px solid var(--katcat-onboarding-line);
+}
+
+.brand { position: relative; z-index: 1; padding: 24px; }
+.wordmark { display: block; width: 190px; height: 39px; }
+.tagline {
+  margin: 8px 0 0;
+  color: var(--katcat-onboarding-muted);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.paperLayers {
+  position: absolute;
+  top: 18px;
+  right: -28px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--katcat-onboarding-coral);
+  box-shadow: 0 0 0 12px var(--katcat-onboarding-coral-mid), 0 0 0 24px var(--katcat-onboarding-coral-light);
+}
+
+.artwork {
+  position: absolute;
+  right: 12px;
+  bottom: -10px;
+  width: 210px;
+  height: 140px;
+  object-fit: contain;
+}
+
+.body { padding: 20px 24px; }
+
 .title {
   margin: 0;
-  color: var(--dsw-alias-label-primary);
+  color: var(--katcat-onboarding-ink);
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
   outline: none;
 }
 
-.body {
-  margin-top: 20px;
+.steps {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: setup;
 }
 
-.copy {
-  color: var(--dsw-alias-label-secondary);
+.step {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  counter-increment: setup;
+}
+
+.step::before {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--katcat-onboarding-line);
+  border-radius: 50%;
+  background: var(--katcat-onboarding-paper-raised);
+  color: var(--katcat-onboarding-accent);
+  font-size: 12px;
+  font-weight: 500;
+  content: counter(setup);
+}
+
+.stepTitle {
+  margin: 0;
+  color: var(--katcat-onboarding-ink);
   font-size: 14px;
+  font-weight: 500;
   line-height: 24px;
 }
 
-.copy p {
+.copy, .manage, .security, .later {
   margin: 0;
+  color: var(--katcat-onboarding-muted);
+  font-size: 13px;
+  line-height: 21px;
 }
 
-.copy p + p {
-  margin-top: 12px;
-}
+.manage { margin-top: 2px; }
 
-.copy a {
-  color: var(--dsw-alias-state-business-primary);
+.platform {
+  display: inline-block;
+  margin-top: 4px;
+  border-radius: var(--dsw-radius-xs);
+  color: var(--katcat-onboarding-link);
+  font-size: 13px;
   font-weight: 500;
-  text-underline-offset: 2px;
+  line-height: 21px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-.error {
-  margin: 16px 0 0;
-  color: var(--dsw-alias-state-error-primary);
-  font-size: 14px;
-  line-height: 22px;
+.platform:hover { color: var(--katcat-onboarding-link-hover); }
+.platform:focus-visible { outline: 2px solid var(--katcat-onboarding-link); outline-offset: 4px; }
+
+.security {
+  font-size: 12px;
+  line-height: 20px;
 }
 
-.actions {
+.footer {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
 }
 
+.later { max-width: 330px; font-size: 12px; line-height: 20px; }
+.actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.error { margin: 0; color: var(--dsw-alias-state-error-primary); font-size: 13px; line-height: 22px; }
 .primary {
-  min-width: 120px;
+  --dsw-alias-button-primary-fill: var(--katcat-onboarding-ink);
+  --dsw-alias-button-primary-hover: var(--katcat-onboarding-muted);
+  --dsw-alias-label-primary-foreground: var(--katcat-onboarding-paper-raised);
+  min-width: 116px;
+  height: 36px;
 }
 
 @media (max-width: 560px) {
-  .content { padding: 24px; }
+  .wordmark { width: 170px; height: 35px; }
+  .tagline { max-width: 150px; }
+  .paperLayers { right: -50px; width: 180px; height: 180px; }
+  .artwork { right: -12px; width: 190px; height: 127px; }
+  .body { padding: 20px; }
+  .footer { flex-direction: column; align-items: stretch; gap: 12px; }
+  .later { max-width: none; }
+  .actions { align-items: stretch; }
   .primary { width: 100%; }
+}
+
+@media (max-width: 400px) {
+  .wordmark { width: 152px; height: 31px; }
+  .tagline { max-width: 110px; }
+  .artwork { right: -16px; width: 160px; height: 107px; }
 }

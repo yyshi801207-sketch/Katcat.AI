@@ -9,7 +9,7 @@ const ILINK_APP_ID = 'bot'
 const ILINK_CLIENT_VERSION = '131072'
 const BASE_INFO = Object.freeze({
   channel_version: '0.2.0',
-  bot_agent: 'XiaojingAccounting/0.2.0',
+  bot_agent: 'Katcat.AI/1.0.0',
 })
 
 const pairingSchema = z.object({

@@ -67,7 +67,7 @@ function declare(slots: SlotRegistry): () => void {
 }
 
 describe('ui-settings-models apply', () => {
-  it.each(['official', 'xiaojing'])('uses the product welcome in Xiaojing Desktop and native onboarding in official Desktop (%s)', async (profile) => {
+  it.each(['official', 'xiaojing'])('offers the welcome and API-key steps in Katcat Desktop while official Desktop keeps native onboarding (%s)', async (profile) => {
     vi.stubGlobal('dshDesktop', {})
     vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', profile)
     const { ctx, slots } = await bench()
@@ -78,8 +78,23 @@ describe('ui-settings-models apply', () => {
         profile === 'xiaojing' ? ['welcome-notice', 'deepseek-official'] : ['deepseek-official'],
       )
       const onboarding = slots.entries('settings.onboarding').find(entry => entry.options.id === 'deepseek-official')!
-      expect((onboarding.inject as () => { automatic: boolean })().automatic).toBe(false)
+      expect((onboarding.inject as () => { automatic: boolean })().automatic).toBe(profile === 'xiaojing')
       expect(slots.entries('settings.section').map(entry => entry.options.id)).toEqual(['models'])
+    } finally {
+      await ctx.fiber.dispose()
+    }
+  })
+
+  it('honors disabled automatic credential onboarding in Katcat Desktop', async () => {
+    vi.stubGlobal('dshDesktop', {})
+    vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', 'xiaojing')
+    vi.stubGlobal(ONBOARDING_CONFIG_GLOBAL, { credentialOnboarding: false })
+    const { ctx, slots } = await bench()
+    declare(slots)
+    try {
+      await ctx.plugin({ inject: [...inject], apply }).await()
+      const onboarding = slots.entries('settings.onboarding').find(entry => entry.options.id === 'deepseek-official')!
+      expect((onboarding.inject as () => { automatic: boolean })().automatic).toBe(false)
     } finally {
       await ctx.fiber.dispose()
     }
@@ -115,10 +130,28 @@ describe('ui-settings-models apply', () => {
   it('defaults to browser onboarding and rejects malformed bootstrap options', async () => {
     expect(hostPlugin.Config({})).toEqual({ credentialOnboarding: true })
     expect(hostPlugin.Config['~standard'].validate({ credentialOnboarding: 'false' })).toHaveProperty('issues')
+    expect(hostPlugin.Config({ installationId: 'current-install' })).toEqual({ credentialOnboarding: true, installationId: 'current-install' })
+    expect(hostPlugin.Config['~standard'].validate({ installationId: '' })).toHaveProperty('issues')
+    expect(hostPlugin.Config['~standard'].validate({ installationId: 1 })).toHaveProperty('issues')
     const { ctx } = await bench()
     try {
       vi.stubGlobal(ONBOARDING_CONFIG_GLOBAL, { credentialOnboarding: 'false' })
       expect(() => { apply(ctx) }).toThrow()
+    } finally {
+      await ctx.fiber.dispose()
+    }
+  })
+
+  it('publishes the public installation identifier to the page bootstrap', async () => {
+    const { ctx } = await bench()
+    try {
+      await ctx.plugin(hostPlugin, { installationId: 'current-install' }).await()
+      const rows: IndexInjection[] = []
+      ctx.emit('webserver/index-inject', rows)
+      expect(rows).toEqual([{
+        kind: 'global', name: ONBOARDING_CONFIG_GLOBAL,
+        value: { credentialOnboarding: true, installationId: 'current-install' },
+      }])
     } finally {
       await ctx.fiber.dispose()
     }

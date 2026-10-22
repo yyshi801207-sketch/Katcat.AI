@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing semantic Windows computer control through the built-in UI Automation API"
+description: "Katcat semantic Windows computer control through the built-in UI Automation API"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Semantic Windows computer control for Xiaojing. One Cordis plugin provides `ctx.xiaojingComputerControl`, registers the `computer_control` consumer, and maintains a bounded newline-delimited helper process over Windows PowerShell 5.1, the Windows Start application catalog, and the operating system's `System.Windows.Automation` API.
+Semantic Windows computer control for Katcat. One Cordis plugin provides `ctx.xiaojingComputerControl`, registers the `computer_control` consumer, and maintains a bounded newline-delimited helper process over Windows PowerShell 5.1, the Windows Start application catalog, and the operating system's `System.Windows.Automation` API.
 
 
 ## Table of Contents

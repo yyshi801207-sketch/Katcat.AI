@@ -1,13 +1,16 @@
 .avatar {
-  display: block;
+  display: none;
   flex: none;
   overflow: hidden;
+}
+
+:global([data-sidebar-collapsed='true']) .avatar {
+  display: block;
 }
 
 .name {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   min-width: 0;
   padding-right: 4px;
   box-sizing: border-box;
@@ -17,21 +20,12 @@
 .wordmark {
   display: block;
   min-width: 0;
-  width: auto;
-  max-width: 122px;
-  height: 22px;
-  object-fit: contain;
-  object-position: left center;
+  width: 132px;
+  max-width: 100%;
+  height: 24px;
 }
 
-.tagline {
-  flex: none;
-  padding: 1px 5px;
-  border-radius: 3px;
-  background: var(--sudo-brand);
-  color: var(--dsw-alias-label-primary-foreground);
-  font-size: 9px;
-  font-weight: 600;
-  line-height: 14px;
-  white-space: nowrap;
+.suffix {
+  overflow: hidden;
+  filter: var(--katcat-wordmark-suffix-filter);
 }

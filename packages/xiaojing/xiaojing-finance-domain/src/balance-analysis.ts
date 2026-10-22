@@ -83,7 +83,7 @@ export function withBalanceReconciliation(source: BalanceResult, maxBytes: numbe
   const counts: ReconciliationCounts = { matched: 0, mismatch: 0, 'total-unavailable': 0, 'unsupported-level': 0 }
   for (const column of Object.values(columns)) counts[column.status]++
   const result: BalanceResult = { ...source, reconciliation: { columns, counts, verificationOwner: 'xiaojing',
-    notice: '有成提供原始金额，小兢会计本地计算核对状态和计数，不是有成官方核验结论。本次核对仅包含八个借贷列，不含四个 Balance 来源字段。总结直接使用 counts，纠正冲突的历史计数；一致不证明空值为零或科目完整。不得把未参与核对的来源字段加入无法核对列数。' } }
+    notice: '有成提供原始金额，Katcat本地计算核对状态和计数，不是有成官方核验结论。本次核对仅包含八个借贷列，不含四个 Balance 来源字段。总结直接使用 counts，纠正冲突的历史计数；一致不证明空值为零或科目完整。不得把未参与核对的来源字段加入无法核对列数。' } }
   if (Buffer.byteLength(JSON.stringify(result), 'utf8') > maxBytes) throw new Error('余额核对结果超过完整输出上限。')
   return result
 }
@@ -158,9 +158,9 @@ export async function analyzeBalances(input: BalanceAnalysisQuery,
     reconciliation: { current: currentReconciliation, ...baselineReconciliation === undefined ? {} : { baseline: baselineReconciliation } },
     reconciliationCounts: { current: count(currentReconciliation),
       ...baselineReconciliation === undefined ? {} : { baseline: count(baselineReconciliation) } },
-    reconciliationNotice: '小兢会计仅核对一级科目已提供金额之和与唯一的本期合计。matched 表示该列金额一致，不证明空值为零、科目无遗漏或全账套完整；其他状态不视为通过。保留空值数，不合计父子级或小计行。总结列数直接使用本次 reconciliationCounts，每个期间共八个借贷列，四个 Balance 来源字段不参与核对。不要沿用历史回答中的计数；若历史回答与本次计数冲突，明确纠正。正文、括号说明及结论都必须与本次计数一致，不再重新数列。',
+    reconciliationNotice: 'Katcat仅核对一级科目已提供金额之和与唯一的本期合计。matched 表示该列金额一致，不证明空值为零、科目无遗漏或全账套完整；其他状态不视为通过。保留空值数，不合计父子级或小计行。总结列数直接使用本次 reconciliationCounts，每个期间共八个借贷列，四个 Balance 来源字段不参与核对。不要沿用历史回答中的计数；若历史回答与本次计数冲突，明确纠正。正文、括号说明及结论都必须与本次计数一致，不再重新数列。',
     ...differences === undefined ? {} : { differences },
-    notice: '小兢会计按同一账套本位币、同一单层级计算。差额方向为当前月减基准月，逐列比较，不表示现金收支或正常异常；本年累计列仍为各月接口的年累计值。仅一边出现的科目或缺失金额均不可计算，不补零。returnedRowSums 仅为返回科目行的同列加总，任一金额未提供则该列合计未知；不包含接口汇总，不跨父子层级重复累计。全范围完整性尚未核验，不是全账套合计或试算平衡结论。两次读取不保证原子快照。',
+    notice: 'Katcat按同一账套本位币、同一单层级计算。差额方向为当前月减基准月，逐列比较，不表示现金收支或正常异常；本年累计列仍为各月接口的年累计值。仅一边出现的科目或缺失金额均不可计算，不补零。returnedRowSums 仅为返回科目行的同列加总，任一金额未提供则该列合计未知；不包含接口汇总，不跨父子层级重复累计。全范围完整性尚未核验，不是全账套合计或试算平衡结论。两次读取不保证原子快照。',
   }
   if (Buffer.byteLength(JSON.stringify(result), 'utf8') > limits.maxBytes) throw new Error('余额分析结果超过完整输出上限。')
   return result

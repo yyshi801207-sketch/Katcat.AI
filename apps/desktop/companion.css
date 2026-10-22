@@ -48,7 +48,8 @@ body {
   transform-origin: 50% 92%;
 }
 
-#character {
+#character,
+#idleMotion {
   position: absolute;
   z-index: 2;
   right: 0;
@@ -58,9 +59,16 @@ body {
   object-fit: contain;
   object-position: 50% 100%;
   pointer-events: none;
-  filter: drop-shadow(0 12px 12px rgba(5, 63, 57, 0.18));
   transform-origin: 50% 92%;
 }
+
+#idleMotion {
+  display: none;
+  overflow: hidden;
+}
+
+.state-idle #character { visibility: hidden; }
+.state-idle #idleMotion { display: block; }
 
 .bubble {
   position: absolute;
@@ -69,13 +77,13 @@ body {
   bottom: calc(var(--companion-bubble-bottom) + 4px);
   max-width: 230px;
   padding: 11px 16px;
-  border: 1px solid rgba(13, 151, 129, 0.25);
+  border: 1px solid rgba(32, 33, 36, 0.12);
   border-radius: 16px 16px 16px 5px;
-  color: #153831;
-  background: rgba(249, 255, 253, 0.94);
-  box-shadow: 0 10px 26px rgba(18, 105, 93, 0.15);
+  color: #202124;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.10);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.35;
   opacity: 0;
   transform: translateY(5px) scale(0.98);
@@ -89,9 +97,9 @@ body {
   width: 15px;
   height: 15px;
   content: "";
-  border-right: 1px solid rgba(13, 151, 129, 0.25);
-  border-bottom: 1px solid rgba(13, 151, 129, 0.25);
-  background: rgba(249, 255, 253, 0.94);
+  border-right: 1px solid rgba(32, 33, 36, 0.12);
+  border-bottom: 1px solid rgba(32, 33, 36, 0.12);
+  background: rgba(255, 255, 255, 0.96);
   transform: rotate(45deg);
 }
 
@@ -121,8 +129,8 @@ body {
 }
 
 .progressRing {
-  border: var(--companion-ring-border) solid rgba(18, 164, 137, 0.16);
-  border-top-color: #12a489;
+  border: var(--companion-ring-border) solid rgba(6, 106, 201, 0.14);
+  border-top-color: #066ac9;
 }
 
 .state-executing .progressRing { opacity: 1; animation: spin 1.4s linear infinite; }
@@ -140,7 +148,7 @@ body {
   inset: var(--companion-stars-top) var(--companion-stars-side) auto;
   display: flex;
   justify-content: space-between;
-  color: #12a489;
+  color: #066ac9;
   font-size: var(--companion-stars-size);
   opacity: 0;
   pointer-events: none;

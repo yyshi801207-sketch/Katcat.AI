@@ -20,7 +20,7 @@ export interface FinanceCapabilityDescriptor {
 
 /** High-level product positioning used for an ordinary Finance capability introduction. */
 export const FINANCE_POSITIONING = {
-  identity: '小兢会计，您的AI财务助手',
+  identity: 'Katcat，您的AI财务助手',
   summary: '围绕日常财务工作，帮助用户理解资料、理清数据、核对事项、分析问题并完成可执行的任务，交付可检查、可继续使用的结果。',
   areas: [
     ['财务资料处理', '读取、整理财务资料与票据，提取关键信息并发现需要核对的问题。'],
@@ -156,7 +156,7 @@ export const FINANCE_CAPABILITIES: readonly FinanceCapabilityDescriptor[] = [
     title: '六类原生账簿与报表',
     status: 'unsupported',
     description: '通过当前有成财务 AppKey 接入直接读取总账、明细账、辅助账、资产负债表、利润表和现金流量表。',
-    limitation: '有成未提供可用的服务端接口；这不限制小兢会计基于用户提供的可靠资料进行分析或生成成果，但不得把推算结果冒充有成原生报表。',
+    limitation: '有成未提供可用的服务端接口；这不限制Katcat基于用户提供的可靠资料进行分析或生成成果，但不得把推算结果冒充有成原生报表。',
     scope: 'youcheng',
     requiresClient: true,
     toolNames: [],
@@ -189,7 +189,7 @@ const STATUS_LABELS: Readonly<Record<FinanceCapabilityStatus, string>> = {
 }
 
 const SCOPE_LABELS: Readonly<Record<FinanceCapabilityScope, string>> = {
-  general: '小兢会计通用能力',
+  general: 'Katcat通用能力',
   workspace: '当前财务工作区',
   youcheng: '当前有成财务接入',
 }
@@ -222,7 +222,7 @@ export function renderFinanceCapabilityContext(state: { readonly clientBound: bo
     '能力回答规则：',
     '- 用户一般问“你能做什么”“介绍一下财务能力”时，只依据“对外定位概述”用自然、简洁的语言回答。不得主动罗列详细支持状态、接口限制、内部工具或六类原生报表等具体缺口；用户明确要求完整清单或询问限制时再展开。',
     '- 用户问某项能力时，明确区分“已支持”“有限支持”“暂不支持”，并只说明与该问题有关的限制。不得从 persona、skill 名称、工具名称或历史对话推导未登记能力。',
-    '- 详细条目的支持状态只适用于条目标明的范围。尤其是“当前有成财务接入”暂不支持，不等于小兢会计不能提供通用咨询、处理用户材料、基于可靠数据分析或通过未来其他接入完成；回答时必须带上这个范围。',
+    '- 详细条目的支持状态只适用于条目标明的范围。尤其是“当前有成财务接入”暂不支持，不等于Katcat不能提供通用咨询、处理用户材料、基于可靠数据分析或通过未来其他接入完成；回答时必须带上这个范围。',
     '- 一般能力介绍不需要调用业务工具。用户问“现在能否执行”或要求实际操作时，才通过对应工具核验连接、权限、账套、期间和数据范围；历史成功、客户绑定、绿点或工具存在都不等于本次可执行。',
     '- 暂不支持的能力直接说明缺口，不得改走浏览器、shell、本地汇总或近似计算后声称已实现。当前 Finance 模块不提供报销操作。',
   ].join('\n')

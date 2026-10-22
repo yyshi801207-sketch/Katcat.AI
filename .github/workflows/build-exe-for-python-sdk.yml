@@ -62,7 +62,7 @@ jobs:
   # construct the matrix before the dependent jobs.
   plan:
     name: plan targets
-    if: inputs.ci || inputs.release || github.event_name == 'workflow_dispatch'
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' && (inputs.ci || inputs.release || github.event_name == 'workflow_dispatch') }}
     runs-on: >-
       ${{ inputs.ci && !inputs.release && vars.DSH_CI_FAILOVER_LINUX == 'blacksmith'
           && 'blacksmith-4vcpu-ubuntu-2404' || 'ubuntu-latest' }}
@@ -123,6 +123,7 @@ jobs:
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
   sdk-wheel:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     needs: plan
     name: deepseek_harness_sdk-${{ needs.plan.outputs.version }}-py3-none-any.whl
     runs-on: >-
@@ -156,6 +157,7 @@ jobs:
   # Release macOS builds use larger GitHub runners; ordinary CI and direct
   # builder dispatches retain the standard native target matrix.
   build:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     needs: [plan, sdk-wheel]
     name: ${{ matrix.target }}
     runs-on: >-

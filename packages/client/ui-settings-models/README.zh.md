@@ -37,7 +37,7 @@ kind: "package-reference"
 
 应用设置并关闭编辑器后，当前提供商、settings 与凭据快照就绪时才显示保存状态。打开任一行的编辑器、添加提供商和打开移除确认都会等待该刷新。新打开的 Models 区域或页面加载失败后的重试会等到 ready 快照后才挂载编辑器。后台刷新期间，只要编辑器仍挂载，已打开的草稿就会保留用户的修改；页面加载失败或提供商被移除可能关闭编辑器。
 
-Host 配置 `credentialOnboarding` 默认为 `true`。Electron preload 标记会抑制自动凭证引导；官方桌面端也会抑制 Web 欢迎须知，小兢桌面端则保留产品自己的 API Key 使用说明。模型设置页与显式 API Key 编辑仍然可用。[账号插件](../ui-settings-account/README.zh.md#desktop-onboarding)负责官方 Desktop 引导。其他原生壳可以通过 `credentialOnboarding: false` 仅禁用凭证步骤。Host 通过 `webserver/index-inject` 发布这个公开的布尔值，Client 在注册弹窗前校验它。它是页面初始化数据，不是持久化的完成标记。
+Host 配置 `credentialOnboarding` 默认为 `true`。Katcat 桌面端使用产品欢迎说明和按需出现的 API Key 配置。官方桌面端由[账号插件](../ui-settings-account/README.zh.md#desktop-onboarding)负责引导，因此抑制这两个 Web 步骤。模型设置页与显式 API Key 编辑仍然可用。原生壳可以通过 `credentialOnboarding: false` 仅禁用凭证步骤，Katcat 也遵循该配置。Host 通过 `webserver/index-inject` 发布此布尔值和可选的非空 `installationId`；Client 在注册弹窗前校验这些公开、非机密的初始化值。只有 Katcat 桌面端使用 `installationId`；这两个值都不是持久化的完成标记。
 
 ### API 密钥
 
@@ -67,7 +67,7 @@ API 密钥输入框初始为空，并通过 `autocomplete="new-password"` 请求
 
 ### 首次运行弹窗
 
-版本化声明步骤完成后，DeepSeek 步骤从同一份合并快照投影首次运行就绪状态。用户已经能够到达的**任何**提供商都会直接结束该步骤、不做渲染；只有没有任何提供商的用户才会被询问官方 DeepSeek 密钥。「稍后配置」只完成这次协调器遍历；适配器缺失、路由不活动、合并失败、只读部署或能力不可用时，该步骤不渲染即完成——Models 仍是诊断界面。
+DeepSeek 步骤从共享 Models 快照推导首次运行就绪状态。任何可用提供商都会跳过凭据弹窗；只有没有可用提供商的用户才会被询问官方 DeepSeek 密钥。「稍后配置」只完成本次协调器遍历，因此后续启动仍无可用提供商时会再次显示密钥弹窗。适配器缺失、路由不活动、合并失败、只读部署或能力不可用时，该步骤不渲染即完成；Models 仍是诊断界面。Katcat 桌面端也使用此就绪结果，在已有可用提供商时跳过欢迎说明，包括重装后。
 
 ### 扩展 slot
 
@@ -95,9 +95,10 @@ Models 页面包含 **DeepSeek 账号**（`deepseek-account`，英文为 **DeepS
 
 并发的 `ModelsSettingsStore.load()` 调用会在当前刷新发布 ready 或 error 快照后 resolve，包括读取已被后续刷新取代的调用。旧响应不能发布快照或完成等待中的调用；快照订阅者同步发起的刷新负责等待中的调用。预期的 Remote 失败仍作为快照诊断展示，当前读取的意外拒绝则会拒绝所有等待中的调用。
 
+<a id="onboarding-coordinator"></a>
 ### 引导协调器
 
-预览版说明在 `src/client/locales.ts` 中持有精确文案，并在 `src/onboarding-copy.ts` 中持有确认版本。认证浏览器通过共享配置表单比较并写入 `ui-settings-general.welcomeNoticeVersion`；只有显式点击「继续」才会记录当前版本；命名空间不可用或写入被拒时，声明保持未确认状态。已确认旧版的用户会再次看到当前说明。DeepSeek 步骤面向 `llm-deepseek` 中的 `deepseek-official`，在共享引导模态框内以仅凭据模式渲染既有 `ProviderEditor`；`credentials.set` 仍是唯一的机密写入，且不改变任何提供商设置。
+说明步骤在 `src/client/locales.ts` 中持有共享文案，并在 `src/onboarding-copy.ts` 中持有确认版本。认证浏览器通过共享配置表单比较并写入 `ui-settings-general.welcomeNoticeVersion`；只有显式点击「继续」才会记录当前版本；命名空间不可用或写入被拒时，说明保持未确认状态。已确认旧版的用户会再次看到当前说明。存在 [Desktop 安装标识](../../../apps/desktop/README.zh.md#permanent-user-data-paths)时，Katcat 桌面端要求确认值为 `<notice-version>:<installationId>`。因此，没有可用提供商时，新安装会显示产品欢迎说明，即使以前已经确认；点击“开始使用”保存当前确认值后进入 API Key 步骤。同一次安装在重启后保留该确认状态。普通浏览器和官方桌面端的说明行为保持不变。DeepSeek 步骤面向 `llm-deepseek` 中的 `deepseek-official`，在共享引导模态框内以仅凭据模式渲染既有 `ProviderEditor`；`credentials.set` 仍是唯一的机密写入，且不改变任何提供商设置。
 
 </details>
 

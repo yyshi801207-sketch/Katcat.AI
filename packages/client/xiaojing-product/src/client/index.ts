@@ -8,7 +8,6 @@ import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings-models/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
-import type {} from '@deepseek-ai/dsh-client-ui-agent-preset/client'
 import { AboutSection } from './AboutSection.tsx'
 import type { AboutSectionInjected } from './AboutSection.tsx'
 import { HeroBrandContent, HeroBrandMark } from './HeroBrand.tsx'
@@ -22,7 +21,7 @@ import './theme.module.css'
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
-    /** Xiaojing Accounting product copy. */
+    /** Xiaojing Office product copy. */
     'xiaojing.product': XiaojingProductKey
   }
 }
@@ -39,8 +38,8 @@ function HiddenSystemPromptNode(): null {
   return null
 }
 
-/** Product UI requires generic slots, locale, and the preset-copy registry. */
-export const inject = ['slots', 'locale', 'agentPresetDisplay']
+/** Product UI requires generic slots and locale. */
+export const inject = ['slots', 'locale']
 
 /** Register Xiaojing brand, hero, onboarding, About settings, and theme as one unloadable product layer. */
 export function apply(ctx: ClientContext): void {
@@ -58,13 +57,6 @@ export function apply(ctx: ClientContext): void {
   }, 'xiaojing-product: build profile witness')
   ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'xiaojing-product: dictionaries')
   const t = ctx.locale.bind(NS)
-  ctx.effect(() => ctx.agentPresetDisplay.register('finance', preset => preset.name !== undefined && preset.name !== 'Finance模式' ? ({
-    name: preset.name ?? preset.id,
-    ...preset.description === undefined ? {} : { description: preset.description },
-  }) : ({
-    name: t('financePresetName'),
-    description: t('financePresetDescription'),
-  })), 'xiaojing-product: Finance preset copy')
   ctx.effect(() => {
     document.body.dataset.xiaojingProduct = ''
     syncThemeColor()

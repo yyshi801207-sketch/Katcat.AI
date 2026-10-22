@@ -1,8 +1,8 @@
 /** Application-owned profiles share the named profile launch lifecycle. */
-import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { lstatSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
-import { isAbsolute, join } from 'node:path'
+import { join } from 'node:path'
 import { Context } from '@deepseek-ai/cordis'
 import { createLaunchEnvironmentSnapshot } from '@deepseek-ai/dsh-launch-environment'
 import {
@@ -11,7 +11,7 @@ import {
 } from '@deepseek-ai/dsh-app-boot'
 import { installProxyFromEnvironment } from '@deepseek-ai/dsh-http-proxy'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { runProfile, xiaojingPresetPatches } from '../src/profile-boot.ts'
+import { runProfile } from '../src/profile-boot.ts'
 
 vi.mock('@deepseek-ai/dsh-app-boot', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@deepseek-ai/dsh-app-boot')>()
@@ -26,19 +26,6 @@ vi.mock('@deepseek-ai/dsh-http-proxy', () => ({ installProxyFromEnvironment: vi.
 
 const homes: string[] = []
 
-it('loads shipped Finance skills from the installation rather than the user profile', () => {
-  expect(xiaojingPresetPatches('official')).toEqual([])
-  const preset = xiaojingPresetPatches('xiaojing').flatMap(patch => patch.insert ?? [])
-    .find(entry => entry.id === 'preset-finance')
-  const definition = preset?.config as { plugins: { id: string; config?: { customSkillDirs?: string[] } }[] } | undefined
-  const roots = definition?.plugins.find(entry => entry.id === 'skill-filesystem')?.config?.customSkillDirs
-  expect(roots).toHaveLength(1)
-  const root = roots?.[0]
-  if (root === undefined) throw new Error('Missing Finance skill root')
-  expect(isAbsolute(root)).toBe(true)
-  expect(existsSync(join(root, 'finance-voucher-draft/SKILL.md'))).toBe(true)
-  expect(readdirSync(root).filter(name => existsSync(join(root, name, 'SKILL.md'))).length).toBeGreaterThanOrEqual(5)
-})
 afterEach(() => {
   vi.restoreAllMocks()
   vi.unstubAllEnvs()
@@ -172,15 +159,14 @@ describe('runProfile with an application-owned profile', () => {
       expect(ready).toHaveBeenCalledOnce()
       const patches = vi.mocked(boot).mock.calls[0]![2]!
       const rows = composeEntries([patches])
-      const userStart = clientProfile === 'xiaojing' ? 2 : 1
-      expect(patches.slice(userStart, userStart + 3)).toEqual([
+      expect(patches.slice(1, 4)).toEqual([
         { id: 'target', config: { profile: true, priority: 'profile' } },
         { id: 'target', config: { home: true, priority: 'home' } },
         { id: 'target', config: { overlay: true, priority: 'overlay' } },
       ])
       expect(rows.find(row => row.id === 'target')?.config).toEqual({ overlay: true, priority: 'overlay' })
       expect(rows.find(row => row.id === 'session-telemetry-otel')?.disabled).toBe(true)
-      expect(rows.some(row => row.id === 'preset-finance')).toBe(clientProfile === 'xiaojing')
+      expect(rows.some(row => row.id === 'preset-finance')).toBe(false)
       expect(readProfilePatches('dsh', ctx.profileContext, profile)).toEqual(patches)
       expect(ctx.profileContext).toMatchObject({ dir: home, patchPath: profilePatch, installAnchor: runtime.installAnchor })
       await shutdown.shutdown(0)

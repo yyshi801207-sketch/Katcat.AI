@@ -3,17 +3,17 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/integrations/youcheng-finance-f3-closeout.md
 /youcheng-finance-f3-closeout:
-  en: ed4f0e709623c2c2
-  zh: cf8d81c750c53fa4
+  en: db432abb78986cb4
+  zh: 6fd5b98a485db416
 /youcheng-finance-f3-closeout/disposition:
-  en: e85aabf88de24ded
-  zh: 652f4899bec7a5f3
+  en: 780aee97adc2e6d0
+  zh: 135432afbb4589c4
 /youcheng-finance-f3-closeout/capability-checklist:
-  en: 25d090bbea7cf916
-  zh: e57cac74216cfd15
+  en: 47caca2704554257
+  zh: 953ac45a2466f5b3
 /youcheng-finance-f3-closeout/current-acceptance-and-recovery:
-  en: ddce74a6bfb11ba9
-  zh: 68173379e5c7f00b
+  en: dd956c5978114246
+  zh: 11e099069e40f60e
 /youcheng-finance-f3-closeout/deferred-and-unsupported-scope:
   en: 8d8e78e6d176c85f
   zh: d7d582dcf4d1facc

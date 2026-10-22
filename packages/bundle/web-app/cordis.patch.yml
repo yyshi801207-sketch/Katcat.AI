@@ -82,19 +82,15 @@
 
     - id: xiaojing-finance-domain
       name: '@deepseek-ai/dsh-xiaojing-finance-domain'
-      disabled: !!js process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'
-      config:
-        workspaceRoot: !!js process.env.XIAOJING_FINANCE_WORKSPACE_ROOT ?? process.getBuiltinModule('node:path').join(process.cwd(), 'Finance工作区')
-        ordinaryWorkspaceRoots: !!js >-
-          process.env.XIAOJING_OFFICE_WORKSPACE_ROOT === undefined ? [] : [process.env.XIAOJING_OFFICE_WORKSPACE_ROOT]
+      disabled: true
 
     - id: xiaojing-finance-calculations
       name: '@deepseek-ai/dsh-xiaojing-finance-calculations'
-      disabled: !!js process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'
+      disabled: true
 
     - id: xiaojing-finance-evidence
       name: '@deepseek-ai/dsh-xiaojing-finance-evidence'
-      disabled: !!js process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'
+      disabled: true
 
     - id: xiaojing-finance-documents
       name: '@deepseek-ai/dsh-xiaojing-finance-documents'
@@ -239,12 +235,11 @@
     # Workspace commands and reconnect-safe projection over Typert Remote.
     - id: workspace-controller
       name: '@deepseek-ai/dsh-api-workspace-controller'
-      inject: [webStartup]
       config:
+        defaultWorkspacePath: !!js >-
+          process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing' ? undefined : (process.env.XIAOJING_OFFICE_WORKSPACE_ROOT ?? process.getBuiltinModule('node:path').join(process.getBuiltinModule('node:os').homedir(), 'Documents', 'Katcat_Home'))
         directoryPickerInitialPath: !!js >-
-          process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing' ? undefined : (process.env.XIAOJING_OFFICE_WORKSPACE_ROOT ?? process.getBuiltinModule('node:path').join(process.getBuiltinModule('node:os').homedir(), 'Documents', '小兢会计工作区', '办公工作区'))
-        protectedRoots: !!js >-
-          ctx.webStartup.financeWorkspaceRoot === undefined ? [] : [ctx.webStartup.financeWorkspaceRoot]
+          process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing' ? undefined : (process.env.XIAOJING_OFFICE_WORKSPACE_ROOT ?? process.getBuiltinModule('node:path').join(process.getBuiltinModule('node:os').homedir(), 'Documents', 'Katcat_Home'))
 
     - id: cordis-host-runner
       name: '@deepseek-ai/dsh-cordis-host-runner'
@@ -345,6 +340,9 @@
 
     - id: ui-theme
       name: '@deepseek-ai/dsh-client-ui-theme'
+      config:
+        preference: !!js >-
+          process.env.DSH_CLIENT_BUILD_PROFILE === 'xiaojing' ? 'light' : 'system'
 
     - id: xiaojing-product
       name: '@deepseek-ai/dsh-client-xiaojing-product'
@@ -407,6 +405,9 @@
 
     - id: ui-settings-models
       name: '@deepseek-ai/dsh-client-ui-settings-models'
+      config:
+        installationId: !!js >-
+          process.env.DSH_CLIENT_BUILD_PROFILE === 'xiaojing' ? process.env.KATCAT_DESKTOP_INSTALLATION_ID : undefined
 
     # Plugin management: the sidebar Plugins page installs, enables, disables,
     # and removes the profile's bundles through the `pluginManager` Remote.
@@ -534,7 +535,7 @@
 
     - id: ui-xiaojing-finance-clients
       name: '@deepseek-ai/dsh-client-ui-xiaojing-finance-clients'
-      disabled: !!js process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'
+      disabled: true
     - id: ui-settings-session-log
       name: '@deepseek-ai/dsh-client-ui-settings-session-log'
       disabled: !!js process.env.DSH_CLIENT_BUILD_PROFILE === 'xiaojing'

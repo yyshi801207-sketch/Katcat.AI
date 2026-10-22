@@ -25,7 +25,7 @@ describe('desktop companion renderer isolation', () => {
     expect(main).toContain('await companion.install()')
     expect(companion).toContain('if (this.preferences.visible) await this.wake(true)')
     expect(companion).toContain("startupGreeting ? { query: { startupGreeting: '1' } } : undefined")
-    expect(renderer).toContain("const STARTUP_GREETING = '你好，我是小兢会计，\\n您的AI办公搭子！'")
+    expect(renderer).toContain("const STARTUP_GREETING = '我是 Katcat，\\n您的超级个人助理！'")
     expect(readFileSync(new URL('../companion.css', import.meta.url), 'utf8')).toContain('#bubbleText { white-space: pre-line; }')
     expect(renderer).toContain('const STARTUP_GREETING_DELAY_MS = 3_000')
     expect(renderer).toContain('const STARTUP_GREETING_MS = 5_000')
@@ -35,18 +35,6 @@ describe('desktop companion renderer isolation', () => {
     expect(renderer).toContain('}, STARTUP_GREETING_DELAY_MS)')
     expect(renderer).toContain("startupGreetingActive && state === 'idle'")
     expect(renderer).toContain('startupGreetingPending = false')
-  })
-
-  it('rotates idle-only poses without changing the task state', () => {
-    const renderer = readFileSync(new URL('../companion.js', import.meta.url), 'utf8')
-    expect(renderer).toContain('const IDLE_POSE_INTERVAL_MS = 3 * 60_000')
-    expect(renderer).toContain('const IDLE_POSE_ROUNDS = 2')
-    expect(renderer).toContain('const IDLE_POSE_ROUND_MS = 3_000')
-    expect(renderer).toContain("const IDLE_POSES = ['thinking', 'approval', 'executing']")
-    expect(renderer).toContain('if (idlePoseRound >= IDLE_POSE_ROUNDS)')
-    expect(renderer).toContain("if (state !== 'idle') cancelIdlePose()")
-    expect(renderer).toContain('reducedMotion.matches')
-    expect(renderer).toContain('scheduleIdlePose()')
   })
 
   it('honors the installer shutdown request without restoring the tray window', () => {

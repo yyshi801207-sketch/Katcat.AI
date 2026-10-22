@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing isolated visualization cards with the original dsh-visualize palette."
+description: "Katcat isolated visualization cards with the original dsh-visualize palette."
 kind: "package-bundle"
 ---
 
@@ -24,7 +24,7 @@ Rendering status, error fallback, and streaming-preview titles use typed Chinese
 
 The Host face registers the `visualize` tool and its bundled authoring skill. The Client face registers the settled tool view and streaming preview. Xiaojing's Web composition loads both faces only when `DSH_CLIENT_BUILD_PROFILE=xiaojing`; the official Harness profile is unchanged.
 
-The card uses the original plugin's fixed light whale-blue palette. It deliberately does not inherit the Harness theme, the Xiaojing pale-green product theme, or the operating-system appearance. Disable or remove the single `xiaojing-visualize` row from the Web composition and rebuild to remove this feature. Complete source removal also deletes the package dependency from the `web-app` resolver manifest; no other Xiaojing feature or durable data owner depends on either declaration.
+The card uses the original plugin's fixed light whale-blue palette. It deliberately does not inherit the Harness theme, the Katcat pale-green product theme, or the operating-system appearance. Disable or remove the single `xiaojing-visualize` row from the Web composition and rebuild to remove this feature. Complete source removal also deletes the package dependency from the `web-app` resolver manifest; no other Katcat feature or durable data owner depends on either declaration.
 
 ## Configuration
 

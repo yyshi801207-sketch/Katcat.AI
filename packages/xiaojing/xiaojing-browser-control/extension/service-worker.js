@@ -139,7 +139,7 @@ async function handleMessage(candidate, raw, markRecognized) {
       publish({ state: 'connected' })
     } else {
       publish({ state: 'pairing-required', error: message.error === 'pairing-expired'
-        ? '配对码已过期，请在小兢会计中重新生成。'
+        ? '配对码已过期，请在Katcat中重新生成。'
         : '配对码不正确。' })
     }
     return
@@ -754,7 +754,7 @@ chrome.runtime.onMessage.addListener((message, _sender, respond) => {
   }
   if (message?.type === 'pair' && typeof message.code === 'string') {
     if (state.state !== 'pairing-required') {
-      respond({ state: 'error', error: '请先等待扩展连接到正在运行的小兢会计。' })
+      respond({ state: 'error', error: '请先等待扩展连接到正在运行的Katcat。' })
       return false
     }
     try {

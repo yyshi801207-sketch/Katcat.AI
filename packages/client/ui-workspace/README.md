@@ -7,6 +7,8 @@ kind: "package-reference"
 
 English | [中文](README.zh.md)
 
+`DSH_CLIENT_WORKSPACE_LABEL` optionally supplies the ordinary sidebar section label at build time. Without it, the localized Workspaces label remains unchanged.
+
 Desktop product events use the optional [product analytics service](../product-analytics/README.md); ordinary Web interactions are excluded.
 
 ## Summary

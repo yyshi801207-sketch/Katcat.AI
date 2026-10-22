@@ -5,6 +5,7 @@
 
 import { createSnapshotStore, type SnapshotStore } from '@deepseek-ai/dsh-client-store'
 import type { ConfigForm } from '@deepseek-ai/dsh-client-ui-settings/client'
+import { onboardingReadiness, type ModelsSettingsStore } from './store.ts'
 import {
   WELCOME_NOTICE_ACK_FIELD, WELCOME_NOTICE_VERSION,
 } from '../onboarding-copy.ts'
@@ -46,8 +47,22 @@ export class WelcomeNoticeStore {
 
   private saving = false
   private following: (() => void) | undefined
+  private followingModels: (() => void) | undefined
+  private readonly acknowledgementVersion: string
 
-  constructor(private readonly scope: ConfigForm<WelcomeSection>) {}
+  /**
+   * @param scope - durable welcome acknowledgement settings.
+   * @param installationId - installed product identity; omitted to retain the shared notice version.
+   * @param models - shared Models join when a usable provider bypasses the product guide.
+   */
+  constructor(
+    private readonly scope: ConfigForm<WelcomeSection>,
+    installationId?: string,
+    private readonly models?: Pick<ModelsSettingsStore, 'store' | 'load'>,
+  ) {
+    this.acknowledgementVersion = installationId === undefined
+      ? WELCOME_NOTICE_VERSION : `${WELCOME_NOTICE_VERSION}:${installationId}`
+  }
 
   /**
    * Begin following the bound scope (idempotent) and publish its current answer.
@@ -55,6 +70,10 @@ export class WelcomeNoticeStore {
    */
   load(): Promise<void> {
     this.following ??= this.scope.subscribe(() => { this.derive() })
+    if (this.models !== undefined) {
+      this.followingModels ??= this.models.store.subscribe(() => { this.derive() })
+      if (this.models.store.getSnapshot().status === 'idle') return this.models.load()
+    }
     this.derive()
     return Promise.resolve()
   }
@@ -69,7 +88,7 @@ export class WelcomeNoticeStore {
     this.saving = true
     this.store.update((state) => { state.status = 'saving'; state.error = null })
     try {
-      await this.scope.set(WELCOME_NOTICE_ACK_FIELD, WELCOME_NOTICE_VERSION)
+      await this.scope.set(WELCOME_NOTICE_ACK_FIELD, this.acknowledgementVersion)
     } finally {
       this.saving = false
     }
@@ -88,10 +107,23 @@ export class WelcomeNoticeStore {
   dispose(): void {
     this.following?.()
     this.following = undefined
+    this.followingModels?.()
+    this.followingModels = undefined
   }
 
   private derive(): void {
     if (this.saving) return
+    const models = this.models?.store.getSnapshot()
+    if (models !== undefined) {
+      if (models.status === 'idle' || models.status === 'loading') {
+        this.store.update((state) => { state.status = 'loading'; state.acknowledged = false; state.error = null })
+        return
+      }
+      if (onboardingReadiness(models).kind === 'provider-ready') {
+        this.store.update((state) => { state.status = 'ready'; state.acknowledged = true; state.error = null })
+        return
+      }
+    }
     const scope = this.scope.getSnapshot()
     switch (scope.status) {
       case 'loading':
@@ -105,7 +137,7 @@ export class WelcomeNoticeStore {
         })
         return
       case 'ready': {
-        const acknowledged = scope.value?.[WELCOME_NOTICE_ACK_FIELD] === WELCOME_NOTICE_VERSION
+        const acknowledged = scope.value?.[WELCOME_NOTICE_ACK_FIELD] === this.acknowledgementVersion
         this.store.update((state) => {
           state.status = 'ready'
           state.acknowledged = acknowledged

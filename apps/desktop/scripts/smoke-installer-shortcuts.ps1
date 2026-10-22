@@ -36,7 +36,7 @@ function Run-Installer([string]$Path, [int]$Expected = 0) {
 }
 
 try {
-  $target = Join-Path $scratch 'custom path/xiaojing-agent-desktop'
+  $target = Join-Path $scratch 'custom path/Katcat-desktop'
   $desktop = Join-Path $scratch 'Desktop'
   $startMenu = Join-Path $scratch 'Start Menu'
   $oldResources = Join-Path $scratch 'old-icons'
@@ -65,7 +65,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Shortcut smoke compilation failed' }
     Run-Installer $installer
     $digest = (Get-FileHash -LiteralPath (Join-Path $entry.Resources 'installer-runtime-icon.ico') -Algorithm SHA256).Hash.ToLowerInvariant()
-    $icon = Join-Path $target "resources/xiaojing-character-$digest.ico"
+    $icon = Join-Path $target "resources/katcat-icon-$digest.ico"
     if (-not (Test-Path -LiteralPath $icon)) { throw 'Content-addressed icon was not installed' }
     if ((Get-FileHash -LiteralPath $icon).Hash.ToLowerInvariant() -ne $digest) { throw 'Installed icon contents differ' }
     Assert-Link $desktopLink $exe $icon

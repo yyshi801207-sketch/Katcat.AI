@@ -1,11 +1,13 @@
 ---
-description: "Xiaojing native Edge and Chrome browser control and the optional legacy Edge adapter"
+description: "Katcat native Edge and Chrome browser control and the optional legacy Edge adapter"
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-xiaojing-browser-control
 
 English | [中文](README.zh.md)
+
+User-visible application names and messages use Katcat. Existing installation identifiers and durable data paths retain their compatibility values.
 
 ## Summary
 
@@ -36,7 +38,7 @@ Enable the requested browser in Xiaojing's Browser Control settings. Manage show
 
 Profile discovery reads only Windows `UserDataDir` and `RemoteDebuggingAllowed` policy metadata. An explicit absolute directory takes precedence over policy, then the stable LocalAppData directory. Prohibited debugging and failed or invalid policy queries refuse acquisition. The application does not read Preferences or credentials, change policy, automatically enable debugging, or bypass browser approval. Variable-based policy directories require an explicit absolute override.
 
-Explicit deployments can configure an enabled `existingEndpoint` or select `existingConnection: "extension"` and install the [official Playwright browser extension](https://github.com/microsoft/playwright-mcp#browser-extension). Its connection requires approval and tab selection. The old Xiaojing Edge extension and its pairing code cannot establish this connection.
+Explicit deployments can configure an enabled `existingEndpoint` or select `existingConnection: "extension"` and install the [official Playwright browser extension](https://github.com/microsoft/playwright-mcp#browser-extension). Its connection requires approval and tab selection. The old Katcat Edge extension and its pairing code cannot establish this connection.
 
 Connection failure revokes the Session's selection. It never selects another browser, opens a replacement window, or replays completed actions. Diagnostics identify the selected browser; a native HTTP 403 reports connection rejection without claiming its cause. Explicitly reconnect before using browser tools. Managed connections belong to one live Agent; existing-browser connections have one owner until release. Calls queue per connection and re-check their selected route before execution. Disposal waits for in-flight work, closes owned managed browsers, and disconnects existing browsers without closing their tabs.
 
@@ -50,7 +52,7 @@ The package publishes three independent Host bundles: `lib/index.js`, `lib/nativ
 
 `NativeBrowser` identifies `edge` or `chrome`. The Host-only `NativeBrowserSettingsRuntime` registration supplies installation inspection, observed connection state, and revocation callbacks to the settings service; its disposer removes only that runtime's registration. These declarations are owned by `src/native-settings-types.ts` rather than the generic subsystems type catalog.
 
-`edge` and `chrome` accept optional `executablePath`, `existingEndpoint`, `existingConnection`, absolute `userDataDir`, and secret `extensionToken`. An omitted `existingConnection` preserves the explicit extension deployment; Xiaojing sets `auto-connect`. Its `requireUserSettings` refuses existing access when the permission service is unavailable or the browser is disabled. `./native-settings` persists its live `edge` and `chrome` booleans in the profile, initially false. Its `openSettingsTimeoutMs` defaults to 30000 milliseconds and bounds fixed settings-page navigation; overlapping open requests are refused, and disposal cancels and joins the pending operation. Status includes the required `canOpenSettings` boolean, true only on Windows; ship the matching Host and Client together. The authenticated `open-settings` RPC accepts only a browser brand and does not establish a native connection or grant permission. Settings reports installation and setup readiness separately from a successful native connection; reading status does not acquire browser resources. Failed installation inspection reports an unknown installation state without blocking the other browser or revocation. Disabling saves the permission before releasing connections; repeating an already-disabled request does not release again. Enabling saves intent without launching a browser or enabling debugging.
+`edge` and `chrome` accept optional `executablePath`, `existingEndpoint`, `existingConnection`, absolute `userDataDir`, and secret `extensionToken`. An omitted `existingConnection` preserves the explicit extension deployment; Katcat sets `auto-connect`. Its `requireUserSettings` refuses existing access when the permission service is unavailable or the browser is disabled. `./native-settings` persists its live `edge` and `chrome` booleans in the profile, initially false. Its `openSettingsTimeoutMs` defaults to 30000 milliseconds and bounds fixed settings-page navigation; overlapping open requests are refused, and disposal cancels and joins the pending operation. Status includes the required `canOpenSettings` boolean, true only on Windows; ship the matching Host and Client together. The authenticated `open-settings` RPC accepts only a browser brand and does not establish a native connection or grant permission. Settings reports installation and setup readiness separately from a successful native connection; reading status does not acquire browser resources. Failed installation inspection reports an unknown installation state without blocking the other browser or revocation. Disabling saves the permission before releasing connections; repeating an already-disabled request does not release again. Enabling saves intent without launching a browser or enabling debugging.
 
 `connectTimeoutMs` defaults to 600000 milliseconds for the connection probe, including browser approval; `toolCallTimeoutMs` defaults to 60000 milliseconds for subsequent native calls. The product composition accepts `XIAOJING_NATIVE_EDGE_EXECUTABLE`, `XIAOJING_CHROME_EXECUTABLE`, `XIAOJING_EDGE_CDP_ENDPOINT`, `XIAOJING_CHROME_CDP_ENDPOINT`, and the corresponding `XIAOJING_EDGE_PLAYWRIGHT_EXTENSION_TOKEN` / `XIAOJING_CHROME_PLAYWRIGHT_EXTENSION_TOKEN`. `allowPrivateHosts` remains false in production.
 
@@ -68,7 +70,7 @@ The personal Edge settings RPC registers a Web route through Connection, so the 
 
 The dedicated route is the default and works without setup. It starts installed Microsoft Edge visibly with a persistent profile at the configured `profileDir`. Users may sign in, minimize the window, and let Playwright continue ordinary DOM operations without moving the physical mouse or typing through the physical keyboard. Only `disposition: "new_window"` creates another top-level window.
 
-The optional personal route controls ordinary HTTP(S) tabs that a user opened in their everyday Edge. Its Manifest V3 extension is shipped in [`extension/`](extension/) as an unpacked directory. The user enables Edge developer mode, loads that directory once, and pairs it with an eight-character code from Xiaojing settings. The extension attaches `chrome.debugger` only to the leased target tab and detaches on turn end, failure, cancellation, or plugin shutdown. Edge's extension-debugging banner is expected. InPrivate, `edge://`, extension, file, and other protected pages are rejected.
+The optional personal route controls ordinary HTTP(S) tabs that a user opened in their everyday Edge. Its Manifest V3 extension is shipped in [`extension/`](extension/) as an unpacked directory. The user enables Edge developer mode, loads that directory once, and pairs it with an eight-character code from Katcat settings. The extension attaches `chrome.debugger` only to the leased target tab and detaches on turn end, failure, cancellation, or plugin shutdown. Edge's extension-debugging banner is expected. InPrivate, `edge://`, extension, file, and other protected pages are rejected.
 
 `open` applies one routing order across both adapters:
 
@@ -108,7 +110,7 @@ The Host validates the fixed extension ID and protocol version, then both sides 
 ## Configuration
 
 - `profileDir` is required and identifies the dedicated Edge profile.
-- `executablePath` points at an optional Edge-compatible executable for tests or controlled deployment. The Xiaojing Windows application leaves it unset.
+- `executablePath` points at an optional Edge-compatible executable for tests or controlled deployment. The Katcat Windows application leaves it unset.
 - `headless`, action and navigation timeouts, observation lifetime, result limits, and maximum batch length are deployment tunables.
 - `allowPrivateHosts` exists only for deterministic local tests and must remain false in the product composition.
 

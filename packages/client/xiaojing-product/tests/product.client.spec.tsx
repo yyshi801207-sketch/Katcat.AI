@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { Context } from '@deepseek-ai/cordis'
 import { allowAllAccess } from '@deepseek-ai/dsh-client-test-runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
 import { SlotRegistry } from '@deepseek-ai/dsh-client-ui-renderer/client'
 import { AgentPresetDisplayRegistry } from '@deepseek-ai/dsh-client-ui-agent-preset/client'
@@ -79,10 +79,10 @@ describe('Xiaojing product UI', () => {
     const acknowledge = vi.fn(async () => {})
     const view = render(<OnboardingContent {...kit} acknowledge={acknowledge} saving={false} failed={false} t={t} />)
     const dialog = screen.getByRole('dialog', { name: '初次使用说明' })
-    expect(dialog.querySelectorAll('p')).toHaveLength(4)
+    expect(dialog.querySelectorAll('li')).toHaveLength(2)
     expect(dialog.textContent).not.toContain('Harness')
-    for (const paragraph of zh.onboardingBody.split('\n\n')) {
-      expect(screen.getByText(paragraph, { exact: true })).toBeTruthy()
+    for (const key of ['onboardingGetKeyBody', 'onboardingConnectBody', 'onboardingManageKey', 'onboardingSecurity', 'onboardingLaterHint'] as const) {
+      expect(screen.getByText(zh[key], { exact: true })).toBeTruthy()
     }
     expect(screen.getByRole('link', { name: zh.platform }).getAttribute('href')).toBe('https://platform.deepseek.com/')
     expect(document.activeElement).toBe(screen.getByRole('heading', { name: zh.onboardingTitle }))
@@ -112,127 +112,78 @@ describe('Xiaojing product UI', () => {
     render(<OnboardingContent {...kit} acknowledge={async () => {}} saving={false} failed={false} t={key => en[key]} />)
     expect(screen.getByRole('dialog', { name: en.onboardingTitle })).toBeTruthy()
     expect(screen.getByRole('button', { name: en.start })).toBeTruthy()
-    for (const paragraph of en.onboardingBody.split('\n\n')) expect(screen.getByText(paragraph, { exact: true })).toBeTruthy()
+    for (const key of ['onboardingGetKeyBody', 'onboardingConnectBody', 'onboardingManageKey', 'onboardingSecurity', 'onboardingLaterHint'] as const) {
+      expect(screen.getByText(en[key], { exact: true })).toBeTruthy()
+    }
   })
 
   it('renders the product hero copy and beta badge', () => {
     render(<HeroBrandMark {...kit} useSessions={sessionHook()} size={34} className="hero-mark" t={t} />)
-    expect(screen.getByRole('img', { name: '小兢会计' }).querySelector('image')?.getAttribute('href')).toBe('./xiaojing-office-robot-logo.png')
-    expect(screen.getByRole('img', { name: '小兢会计' }).style.width.replaceAll(' ', ''))
-      .toBe('calc(min(220px,35vh,55vw)*1254/970)')
+    expect(screen.getByRole('img', { name: 'Katcat' }).querySelector('image')?.getAttribute('href')).toBe('./katcat-hero.png')
+    expect(screen.getByRole('img', { name: 'Katcat' }).style.width.replaceAll(' ', ''))
+      .toBe('calc(min(220px,35vh,55vw)*1536/1024)')
     render(<HeroBrandContent {...kit} useSessions={sessionHook('standard')} t={t} />)
-    expect(screen.getByText('小兢会计，您的AI办公搭子')).toBeTruthy()
-    expect(screen.getByText(`${XIAOJING_PRODUCT_VERSION}内测版`)).toBeTruthy()
+    expect(screen.getByText('Katcat, 您的超级个人助理')).toBeTruthy()
+    expect(screen.getByText(`V${XIAOJING_PRODUCT_VERSION}`)).toBeTruthy()
     cleanup()
     render(<HeroBrandContent {...kit} sessionId={'current' as never} useSessions={sessionHook('finance')} t={t} />)
-    expect(screen.getByText('小兢会计，您的AI财务助手')).toBeTruthy()
+    expect(screen.getByText('Katcat, 您的超级个人助理')).toBeTruthy()
+    expect(screen.queryByText('小兢办公，您的AI财务助手')).toBeNull()
   })
 
-  it('uses the same paired artwork in office and finance sessions at the same hero size', () => {
+  it('keeps office artwork when an older session has Finance metadata', () => {
     const props = { ...kit, sessionId: 'current' as never, size: 34, t }
     const view = render(<HeroBrandMark {...props} useSessions={sessionHook('standard')} />)
-    const artwork = () => screen.getByRole('img', { name: '小兢会计' }).querySelector('image')?.getAttribute('href')
-    expect(artwork()).toBe('./xiaojing-office-robot-logo.png')
+    const artwork = () => screen.getByRole('img', { name: 'Katcat' }).querySelector('image')?.getAttribute('href')
+    expect(artwork()).toBe('./katcat-hero.png')
     view.rerender(<HeroBrandMark {...props} useSessions={sessionHook('finance')} />)
-    expect(artwork()).toBe('./xiaojing-finance-robot-logo.png')
-    expect(screen.getByRole('img', { name: '小兢会计' }).getAttribute('viewBox')).toBe('0 105 1254 970')
-    expect(screen.getByRole('img', { name: '小兢会计' }).style.width.replaceAll(' ', ''))
-      .toBe('calc(min(220px,35vh,55vw)*1254/970)')
+    expect(artwork()).toBe('./katcat-hero.png')
+    expect(screen.getByRole('img', { name: 'Katcat' }).getAttribute('viewBox')).toBe('0 0 1536 1024')
+    expect(screen.getByRole('img', { name: 'Katcat' }).style.width.replaceAll(' ', ''))
+      .toBe('calc(min(220px,35vh,55vw)*1536/1024)')
     expect(readFileSync('apps/web/public/xiaojing-office-robot-logo.png')
       .equals(readFileSync('apps/web/public/xiaojing-finance-robot-logo.png'))).toBe(true)
     view.rerender(<HeroBrandMark {...props} useSessions={sessionHook('standard')} />)
-    expect(artwork()).toBe('./xiaojing-office-robot-logo.png')
-    expect(screen.getByRole('img', { name: '小兢会计' }).getAttribute('viewBox')).toBe('0 105 1254 970')
+    expect(artwork()).toBe('./katcat-hero.png')
+    expect(screen.getByRole('img', { name: 'Katcat' }).getAttribute('viewBox')).toBe('0 0 1536 1024')
   })
 
   it('renders independent sidebar mark and name occupants', () => {
     const view = render(<SidebarBrandMark {...kit} size={24} />)
-    expect(view.container.querySelector('image[href="./xiaojing-character-logo.png"]')).toBeTruthy()
+    expect(view.container.querySelector('image[href="./katcat-wordmark.png"]')).toBeTruthy()
     expect(view.container.querySelector('svg')?.getAttribute('width')).toBe('24')
     expect(view.container.querySelector('svg')?.getAttribute('height')).toBe('24')
-    expect(view.container.querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 1254 1254')
+    expect(view.container.querySelector('svg')?.getAttribute('viewBox')).toBe('45 135 425 425')
     render(<SidebarBrandName {...kit} t={t} />)
-    expect(screen.getByRole('img', { name: '数豆科技' }).getAttribute('src')).toBe('./sudo-logo-gray.png')
-    expect(screen.getByText('用AI重新定义财务')).toBeTruthy()
+    expect(screen.getByRole('img', { name: 'Katcat.AI' }).querySelector('image')?.getAttribute('href')).toBe('./katcat-wordmark.png')
+    expect(screen.queryByText('您的AI办公搭子')).toBeNull()
     const css = readFileSync('packages/client/xiaojing-product/src/client/SidebarBrand.module.css', 'utf8')
     expect(css).toContain('padding-right: 4px')
   })
 
-  it('keeps About compact with version summaries and details actions', () => {
+  it.each([['zh', zh], ['en', en]] as const)('shows only product and base versions in About (%s)', (_language, dictionary) => {
+    vi.stubEnv('DSH_CLIENT_VERSION', '0.2.1-rc.2')
+    const view = render(<AboutSection {...kit} close={vi.fn()} t={key => dictionary[key]} />)
+    expect(screen.getByRole('heading', { name: 'Katcat.AI' })).toBeTruthy()
+    expect(screen.getByText(dictionary.version + ' v' + XIAOJING_PRODUCT_VERSION)).toBeTruthy()
+    expect(screen.getByText(dictionary.kernelVersion + ' 0.2.1-rc.2')).toBeTruthy()
+    expect(screen.queryByText(dictionary.aboutDescription)).toBeNull()
+    expect(screen.queryByText(dictionary.historyTitle)).toBeNull()
+    expect(screen.queryAllByRole('button')).toHaveLength(0)
+    expect(view.container.querySelectorAll('header > *')).toHaveLength(4)
+  })
+
+  it('does not invent a DSH version when build metadata is absent', () => {
+    vi.stubEnv('DSH_CLIENT_VERSION', undefined)
     render(<AboutSection {...kit} close={vi.fn()} t={t} />)
-    expect(screen.getByRole('heading', { name: '小兢会计' })).toBeTruthy()
-    expect(screen.getByText(`当前版本 v${XIAOJING_PRODUCT_VERSION}`)).toBeTruthy()
-    expect(screen.getByRole('heading', { name: '版本更新' })).toBeTruthy()
-    expect(screen.getAllByRole('button', { name: /查看详情/u })).toHaveLength(6)
-    expect(screen.getByText(zh.summary032)).toBeTruthy()
-    expect(screen.getByText(zh.summary031)).toBeTruthy()
-    expect(screen.queryAllByRole('listitem')).toHaveLength(0)
-    expect(screen.queryByText(zh.featureNativeBrowser)).toBeNull()
-    expect(screen.queryByRole('dialog')).toBeNull()
-  })
-
-  it('describes the new kernel without attributing earlier Xiaojing features to this release', () => {
-    render(<AboutSection {...kit} close={vi.fn()} t={t} />)
-    fireEvent.click(screen.getByRole('button', { name: '查看详情：v0.3.3' }))
-    const details = screen.getByRole('dialog', { name: 'v0.3.3 更新说明' })
-    for (const key of ['note033', 'feature033Model', 'feature033Search', 'feature033Plugins',
-      'feature033Automation', 'feature033Collaboration', 'feature033Xiaojing'] as const) {
-      expect(within(details).getByText(zh[key])).toBeTruthy()
-    }
-    expect(within(details).queryByText(zh.featureNativeBrowser)).toBeNull()
-    expect(within(details).queryByText(zh.note032)).toBeNull()
-  })
-
-  it('opens only the selected release and dismisses details without closing Settings', () => {
-    const closeSettings = vi.fn()
-    render(<AboutSection {...kit} close={closeSettings} t={t} />)
-    fireEvent.click(screen.getByRole('button', { name: '查看详情：v0.3.2' }))
-    const current = screen.getByRole('dialog', { name: 'v0.3.2 更新说明' })
-    expect(within(current).getByText(zh.featureNativeBrowser)).toBeTruthy()
-    expect(within(current).getByText(zh.featureSessionApproval)).toBeTruthy()
-    expect(within(current).getByText(zh.featureLiveJobs)).toBeTruthy()
-    expect(within(current).getByText(zh.featureTablePreview)).toBeTruthy()
-    const capabilities = within(current).getByRole('heading', { name: zh.releaseAvailable }).parentElement!
-    expect(within(capabilities).getAllByRole('listitem')).toHaveLength(8)
-    for (const key of ['featureAgentTeam', 'featureAutoReview', 'featureScheduledTasks', 'featureVoiceInput',
-      'featureTerminalSettings', 'featureAgentLoop', 'featureSubagentSettings', 'featureWebSearch'] as const) {
-      expect(within(capabilities).getByText(zh[key])).toBeTruthy()
-    }
-    expect(within(current).getByText(zh.note032)).toBeTruthy()
-    expect(within(current).queryByText(zh.featurePluginManagement)).toBeNull()
-    fireEvent.keyDown(document, { key: 'Escape' })
-    expect(screen.queryByRole('dialog')).toBeNull()
-    expect(closeSettings).not.toHaveBeenCalled()
-
-    fireEvent.click(screen.getByRole('button', { name: '查看详情：v0.3.1' }))
-    const prior = screen.getByRole('dialog', { name: 'v0.3.1 更新说明' })
-    expect(within(prior).getByText(zh.featurePluginManagement)).toBeTruthy()
-    expect(within(prior).getByText(zh.featureWorkspaceTerminal)).toBeTruthy()
-    expect(within(prior).getByText(zh.featureFlash41)).toBeTruthy()
-    expect(within(prior).queryByText(zh.featureLiveJobs)).toBeNull()
-    expect(within(prior).queryByText(zh.featureSessionApproval)).toBeNull()
-    expect(within(prior).queryByRole('heading', { name: zh.releaseAvailable })).toBeNull()
-    fireEvent.click(within(prior).getAllByRole('button', { name: '关闭' }).at(-1)!)
-    expect(screen.queryByRole('dialog')).toBeNull()
-    expect(closeSettings).not.toHaveBeenCalled()
-  })
-
-  it('shows fully localized version summaries and details in English', () => {
-    render(<AboutSection {...kit} close={vi.fn()} t={key => en[key]} />)
-    expect(screen.getByRole('heading', { name: en.historyTitle })).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'View details: v0.3.3' }))
-    const details = screen.getByRole('dialog', { name: 'v0.3.3 release notes' })
-    expect(within(details).getByRole('heading', { name: en.releaseAdded })).toBeTruthy()
-    expect(within(details).getByText(en.feature033Model)).toBeTruthy()
-    expect(within(details).getByText(en.feature033Xiaojing)).toBeTruthy()
-    expect(details.textContent).not.toMatch(/[\u4e00-\u9fff]/u)
+    expect(screen.queryByText(/DSH 底座版本/u)).toBeNull()
   })
 
   it('keeps the current version first and preserves distinct historical versions', () => {
     const versions = XIAOJING_RELEASE_HISTORY.map(release => release.version)
     expect(versions[0]).toBe(XIAOJING_PRODUCT_VERSION)
     expect(new Set(versions).size).toBe(versions.length)
-    expect(versions).toEqual(['0.3.3', '0.3.2', '0.3.1', '0.2.4', '0.2.3', '0.2.2'])
+    expect(versions).toEqual(['1.0.0', '0.3.3', '0.3.2', '0.3.1', '0.2.4', '0.2.3', '0.2.2'])
   })
 
   it('hides system prompts in Xiaojing transcripts without removing the generic renderer', async () => {
@@ -258,7 +209,7 @@ describe('Xiaojing product UI', () => {
   })
 
   it('activates every product occupant and theme only for the Xiaojing build profile', async () => {
-    expect(inject).toEqual(['slots', 'locale', 'agentPresetDisplay'])
+    expect(inject).toEqual(['slots', 'locale'])
     vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', 'official')
     const official = await bench()
     await official.ctx.plugin({ inject: [...inject], apply }).await()
@@ -281,7 +232,7 @@ describe('Xiaojing product UI', () => {
     expect(document.documentElement.dataset.dshClientBuildProfile).toBe('xiaojing')
     expect(themeColor.content).toBe('rgb(251, 253, 253)')
     expect(product.ctx.agentPresetDisplay.resolve({ id: 'finance' }, key => key))
-      .toEqual({ name: 'Finance模式', description: en.financePresetDescription })
+      .toEqual({ name: 'finance' })
     document.body.style.backgroundColor = 'rgb(255, 255, 255)'
     await fiber.dispose()
     for (const hole of HOLES) expect(product.slots.entries(hole)).toHaveLength(0)

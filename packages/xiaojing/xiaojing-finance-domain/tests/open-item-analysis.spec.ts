@@ -39,7 +39,7 @@ it('reads each page before exact currency-separated sums and omits vendor totals
     { currencyCode: 'USD', dimensionId: '', dimensionName: '', recordIds: ['3'], amount: '3.00', balance: '3.00' },
   ])
   expect(result.coverage).toBe('vendor-count-reconciled')
-  expect(result.notice).toContain('小兢会计根据有成接口返回的业务行在本地计算分组与差额')
+  expect(result.notice).toContain('Katcat根据有成接口返回的业务行在本地计算分组与差额')
   expect(result.notice).not.toContain('待验收')
 })
 

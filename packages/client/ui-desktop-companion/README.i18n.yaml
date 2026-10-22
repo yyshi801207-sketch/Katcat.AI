@@ -3,20 +3,20 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/client/ui-desktop-companion/README.md
 /:
-  en: 0c0361f4f9aaff12
-  zh: 0c0361f4f9aaff12
+  en: cfa17cc809b2d008
+  zh: cfa17cc809b2d008
 /deepseek-ai-dsh-client-ui-desktop-companion:
-  en: ef3e724f47c1c7b7
-  zh: 478a274501006619
+  en: f38acb389118e5f6
+  zh: 594fc9bb20e5f786
 /deepseek-ai-dsh-client-ui-desktop-companion/summary:
-  en: 8f614cdca01f42ef
-  zh: 701ba86052143ae3
+  en: 3ed7a203dc80d3e8
+  zh: 73d051f9c865849a
 /deepseek-ai-dsh-client-ui-desktop-companion/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-client-ui-desktop-companion/composition-and-presentation:
-  en: 4260f0dc225f36a8
-  zh: 341b2e3e7fb45453
+  en: 37bfb75a40822549
+  zh: 5a2e45b04493505c
 /deepseek-ai-dsh-client-ui-desktop-companion/electron-bridge:
   en: 74ab894a16b04412
   zh: 75fd766c3dc127b2
@@ -27,8 +27,8 @@
   en: e6dfd570db90531d
   zh: 786b040e44704e38
 /deepseek-ai-dsh-client-ui-desktop-companion/known-limitations-and-deferred-work:
-  en: e83b2b3425a559a9
-  zh: 535ea8020d1b3add
+  en: 7af84231ab171d98
+  zh: 0e6dcbfe583ff5f6
 /deepseek-ai-dsh-client-ui-desktop-companion/known-limitations-and-deferred-work/dev-note:
   en: 6c98eefd36da35e8
   zh: 97b281ca4fb06ce2

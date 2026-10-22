@@ -2,6 +2,18 @@
 # section, a hash of its English and Chinese blocks outside code blocks and generated regions.
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write CONTRIBUTING.md
-/contributing:
-  en: 08d2f421ff3617f4
-  zh: 9d060d70ad186dc5
+/contributing-to-katcat-ai:
+  en: ce779a0f9aa5f24c
+  zh: 5530b7054fce588e
+/contributing-to-katcat-ai/set-up-a-checkout:
+  en: 0c7d9c4b8f3036e9
+  zh: 91336ffd38609641
+/contributing-to-katcat-ai/make-a-focused-change:
+  en: ce641d1ea85a5ab2
+  zh: b62ca088e1b4dc6a
+/contributing-to-katcat-ai/validate-your-work:
+  en: aba5e93984d829de
+  zh: 8977f7fe03980c42
+/contributing-to-katcat-ai/review-and-releases:
+  en: 84d7521659e1955c
+  zh: 87113b45aea557f8

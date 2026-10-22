@@ -1,6 +1,6 @@
 /** Xiaojing shared deterministic document normalization service. */
 
-import { basename, extname } from 'node:path'
+import { basename, extname, isAbsolute, join, resolve } from 'node:path'
 import { Service, type Context } from '@deepseek-ai/cordis'
 import s from '@deepseek-ai/schemastery'
 import type { Agent } from '@deepseek-ai/dsh-agent'
@@ -45,6 +45,8 @@ export { financeDocumentKindFromName, normalizeFinanceDocument } from './parser.
 export interface Config {
   /** Explicit Harness home; omission follows `DSH_HOME`, then `~/.dsh`. */
   dshHome?: string
+  /** Absolute human-upload directory; omission uses `DSH_UPLOAD_DIR`, then `<dshHome>/uploads`. */
+  uploadRoot?: string
   /** Maximum accepted source bytes. */
   maxFileBytes?: number
   /** Parser worker wall deadline in milliseconds. */
@@ -88,6 +90,7 @@ export interface Config {
 /** Runtime configuration schema. */
 export const Config: s<Config> = s.object({
   dshHome: s.string(),
+  uploadRoot: s.string(),
   maxFileBytes: s.number().default(100 * 1024 * 1024),
   parseTimeoutMs: s.number().default(120_000),
   workerMemoryMb: s.number().default(256),
@@ -109,7 +112,7 @@ export const Config: s<Config> = s.object({
   maxVisualBytesPerRead: s.number().default(40_000_000),
 })
 
-type ResolvedConfig = Required<Omit<Config, 'dshHome'>> & Pick<Config, 'dshHome'>
+type ResolvedConfig = Required<Omit<Config, 'dshHome' | 'uploadRoot'>> & Pick<Config, 'dshHome' | 'uploadRoot'>
 
 function positiveInteger(name: string, value: number): number {
   if (!Number.isSafeInteger(value) || value <= 0) {
@@ -201,9 +204,9 @@ declare module '@deepseek-ai/cordis' {
   }
 }
 
-/** Host service exposed only through the Finance preset's document tool. */
+/** Shared parser for ordinary uploads and explicitly mounted Finance consumers. */
 export class XiaojingFinanceDocuments extends Service {
-  static inject = ['xiaojingFinanceDomain', 'attachments']
+  static inject = ['attachments']
   static Config = Config
 
   private readonly controller = new AbortController()
@@ -213,11 +216,16 @@ export class XiaojingFinanceDocuments extends Service {
   private readonly maxToolChars: number
   private readonly maxVisualsPerRead: number
   private readonly maxVisualBytesPerRead: number
+  private readonly uploadRoot: string
 
   /** @param ctx - Finance Host context. @param config - Parser, storage, and output limits. */
   constructor(ctx: Context, config: Config = {}) {
     super(ctx, 'xiaojingFinanceDocuments')
     const resolved = config as ResolvedConfig
+    const dshHome = resolveDshHome(resolved.dshHome)
+    const uploadRoot = resolved.uploadRoot ?? (process.env.DSH_UPLOAD_DIR?.trim() || join(dshHome, 'uploads'))
+    if (!isAbsolute(uploadRoot)) throw new Error('xiaojing-finance-documents: uploadRoot must be absolute')
+    this.uploadRoot = resolve(uploadRoot)
     const pdfRenderWidthPx = positiveInteger('pdfRenderWidthPx', resolved.pdfRenderWidthPx)
     if (pdfRenderWidthPx > MAX_PDF_RENDER_DIMENSION) {
       throw new Error(`xiaojing-finance-documents: pdfRenderWidthPx cannot exceed ${MAX_PDF_RENDER_DIMENSION}`)
@@ -244,7 +252,7 @@ export class XiaojingFinanceDocuments extends Service {
     if (limits.maxUnitChars > this.maxToolChars) {
       throw new Error('xiaojing-finance-documents: maxUnitChars cannot exceed maxToolChars')
     }
-    this.store = new FinanceDocumentStore(resolveDshHome(resolved.dshHome))
+    this.store = new FinanceDocumentStore(dshHome)
     this.normalizer = new FinanceDocumentNormalizer(
       this.store,
       limits,
@@ -262,15 +270,15 @@ export class XiaojingFinanceDocuments extends Service {
       await Promise.allSettled([...this.background])
     }
     await this.store.init()
-    this.ctx.on('session/event', (session, event) => {
+    this.ctx.inject(['xiaojingFinanceDomain'], ctx => ctx.on('session/event', (session, event) => {
       if (event.type !== 'finance/file-imported' && event.type !== 'finance/consultation-file-imported') return
-      const source = financeDocumentSourceFromEvent(this.ctx, session, event.data.file)
+      const source = financeDocumentSourceFromEvent(ctx, session, event.data.file)
       if (source === undefined) return
       const pending = this.normalizer.ensure(source).then(() => {}, (error: unknown) => {
         this.ctx.logger.warn('xiaojing-finance-documents: background normalization failed (%s)', errorCode(error))
       }).finally(() => { this.background.delete(pending) })
       this.background.add(pending)
-    }, { global: true })
+    }, { global: true }))
   }
 
   /**
@@ -339,7 +347,7 @@ export class XiaojingFinanceDocuments extends Service {
    */
   async listGeneralDocuments(agent: Agent, signal?: AbortSignal): Promise<XiaojingDocumentListItem[]> {
     const output: XiaojingDocumentListItem[] = []
-    for (const candidate of await generalDocumentCandidates(this.ctx.xiaojingFinanceDomain.localUploadRoot(), agent)) {
+    for (const candidate of await generalDocumentCandidates(this.uploadRoot, agent)) {
       if (candidate.kind === 'failed') {
         output.push(failedItem(candidate.documentId, candidate.name, candidate.code))
         continue
@@ -368,7 +376,7 @@ export class XiaojingFinanceDocuments extends Service {
     signal?: AbortSignal,
   ): Promise<XiaojingDocumentReadResult> {
     if (!Number.isSafeInteger(cursor) || cursor < 0) throw new Error('xiaojing-finance-documents: cursor must be a non-negative safe integer')
-    const candidates = await generalDocumentCandidates(this.ctx.xiaojingFinanceDomain.localUploadRoot(), agent)
+    const candidates = await generalDocumentCandidates(this.uploadRoot, agent)
     const source = candidates.find(candidate => candidate.kind === 'source' && candidate.source.file.id === documentId)
     if (source?.kind !== 'source') throw new Error('xiaojing-finance-documents: document is not an upload in this ordinary session')
     const document = await waitForCaller(this.normalizer.ensure(source.source), signal)
@@ -389,7 +397,7 @@ export class XiaojingFinanceDocuments extends Service {
     cursor: number = 0,
     signal?: AbortSignal,
   ): Promise<XiaojingDocumentVisualReadResult> {
-    const candidates = await generalDocumentCandidates(this.ctx.xiaojingFinanceDomain.localUploadRoot(), agent)
+    const candidates = await generalDocumentCandidates(this.uploadRoot, agent)
     const source = candidates.find(candidate => candidate.kind === 'source' && candidate.source.file.id === documentId)
     if (source?.kind !== 'source') throw new Error('xiaojing-finance-documents: document is not an upload in this ordinary session')
     return await this.readVisualPage(source.source, cursor, signal)

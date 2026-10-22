@@ -28,7 +28,7 @@ export const Config: s<Config> = s.object({
 export function apply(ctx: Context, config: Config): void {
   ctx.tools.register(withFinanceCard(defineTool({
     name: 'finance_prepare_voucher_deletion',
-    description: '准备、修改或只读检查指定财务凭证的删除记录，不发送删除。先理解用户自然语言意图，用 finance_vouchers 定位并澄清歧义；凭证号、摘要不代替唯一 voucherId。prepare/revise 使用当前绑定账套和实时凭证详情，不要求凭证由小兢创建，也不接收 appId、flowId 或账套参数。完整展示目标账套、日期、凭证号、分录、附件数量和风险；不联动删除其他业务。inspect 只读取已有删除记录并回查，结果未知时用原 id 复查，不另建同目标删除尝试。',
+    description: '准备、修改或只读检查指定财务凭证的删除记录，不发送删除。先理解用户自然语言意图，用 finance_vouchers 定位并澄清歧义；凭证号、摘要不代替唯一 voucherId。prepare/revise 使用当前绑定账套和实时凭证详情，不要求凭证由Katcat创建，也不接收 appId、flowId 或账套参数。完整展示目标账套、日期、凭证号、分录、附件数量和风险；不联动删除其他业务。inspect 只读取已有删除记录并回查，结果未知时用原 id 复查，不另建同目标删除尝试。',
     parameters: {
       action: { type: 'string', enum: ['prepare', 'revise', 'inspect'], required: true },
       id: { type: 'string', description: 'revise/inspect 必填：已有本地删除记录 ID。' },

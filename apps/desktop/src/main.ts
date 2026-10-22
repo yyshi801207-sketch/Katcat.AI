@@ -3,7 +3,7 @@ import { WINDOWS_TITLEBAR_HEIGHT } from './windows-layout.ts'
 /** Electron shell: desktop project ownership, custom protocol, windows, and lifecycle. */
 
 import { readFile, writeFile } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   app,
@@ -23,6 +23,7 @@ import {
 } from 'electron'
 import { resolveDesktopPaths } from './paths.ts'
 import { DesktopProjectManager } from './project-manager.ts'
+import { readKatcatInstallationId } from './katcat-installation.ts'
 import { DesktopHostFatalError, DesktopHostProcess, DesktopHostUncleanExitError } from './host-process.ts'
 import { DesktopPlatformView, PLATFORM_IPC, platformBounds } from './platform-view.ts'
 import { installDesktopDirectoryPicker } from './directory-picker.ts'
@@ -86,6 +87,7 @@ let backendReady = false
 const rendererConsole = new RendererConsoleTail()
 
 const xiaojingPaths = initializeXiaojingApplication(app)
+nativeTheme.themeSource = 'light'
 
 // Platform-conventional logs directory (macOS ~/Library/Logs/<name>, otherwise under userData);
 // set before ready so the first fatal report already resolves under it.
@@ -321,7 +323,9 @@ async function main(): Promise<void> {
     ? developmentPrimaryRuntime()
     : join(process.resourcesPath, 'runtime', 'primary-runtime')
   const activeProject = paths.profile
-  const manager = new DesktopProjectManager(paths, resources)
+  const installationId = await readKatcatInstallationId(app.isPackaged ? dirname(app.getPath('exe')) : app.getAppPath())
+  const manager = new DesktopProjectManager(paths, resources, installationId === undefined
+    ? undefined : { id: installationId, userData: xiaojingPaths.userData })
   // Dock and Finder launches inherit only launchd's environment; every Host shares one login-shell read.
   const loginShellRead = new AbortController()
   // The probe runs in its own process group, which outlives Desktop unless the read is aborted.
@@ -443,7 +447,7 @@ async function main(): Promise<void> {
     const hostInspectPort = developmentHostInspectPort(development)
     const host = new DesktopHostProcess(resources.node, resources.dsh, activeProject,
       hostInspectPort, xiaojingHostEnvironment(app, xiaojingPaths, {
-        ...hostEnvironment, DSH_CLIENT_VERSION: desktopClientVersion(),
+        ...hostEnvironment, DSH_CLIENT_VERSION: desktopClientVersion(), KATCAT_DESKTOP_INSTALLATION_ID: installationId,
       }), onFailure,
       primaryRuntime,
       resources, (next) => { platformView.setSession(next) }, xiaojingPaths.officeWorkspace)
@@ -1142,10 +1146,10 @@ async function main(): Promise<void> {
     window.focus()
   }
 
-  if (app.isPackaged || process.env.DSH_DESKTOP_DEV_APP === '1') app.setAsDefaultProtocolClient('dsh')
+  if (app.isPackaged || process.env.DSH_DESKTOP_DEV_APP === '1') app.setAsDefaultProtocolClient('xiaojing-office')
   app.on('open-url', (event, url) => {
     event.preventDefault()
-    if (url === 'dsh://open' || url === 'dsh://open/') focusPrimaryWindow()
+    if (url === 'xiaojing-office://open' || url === 'xiaojing-office://open/') focusPrimaryWindow()
   })
 
   app.on('activate', (_event, hasVisibleWindows) => {

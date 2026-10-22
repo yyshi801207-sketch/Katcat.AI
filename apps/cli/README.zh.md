@@ -34,7 +34,7 @@ dsh --help                          # the launcher's own help
 <a id="profiles"></a>
 ## Profile
 
-Xiaojing Client 构建在组合包层之后加入产品自有的 Finance 预设，并在 profile HMR 时保留该预设。启动器相对于随产品交付的预设文件解析技能目录，因此用户 profile 所在位置及安装目录迁移不会改变加载的 Finance 技能。官方构建不加入产品预设。
+启动器加载已声明的组合包、profile、home 和命令行 patch 层，不额外加入产品预设。小兢个性版不注册 Finance 模式。
 
 profile 目录包含一个 `package.json`，其中记录树外插件依赖，以及 profile manifest（元数据清单）`dsh.profile`、其中按顺序排列的 `bundles` 列表；还包含一个 `cordis.patch.yml`，其中保存用户自己的 patch 层。在 YAML 中启用的 `dsh-hmr` 监视 profile manifest、profile 与 home 级 patch 文件，再通过统一串行重载重新组合所有层。未启用 HMR 时，更改在重启后生效。监听器注册期间发生的编辑与后续编辑使用相同的非致命重载错误报告。[插件管理器](../../packages/boot/plugin-manager/README.zh.md) 与 `dsh plugin` 共享包操作和 profile 写锁；更新依赖会保留已停用的组合包选择。CLI 包操作继承认证环境和终端描述符，支持交互式构建批准；service 调用保留清理后的环境并捕获诊断。
 

@@ -26,7 +26,7 @@
   ${StdUtils.HashFile} $R0 "SHA2-256" "$PLUGINSDIR\xiaojing-shortcut-icon.ico"
   StrLen $R1 $R0
   StrCmp $R1 64 0 xiaojingShortcutIconsFailed
-  StrCpy $R1 "$INSTDIR\resources\xiaojing-character-$R0.ico"
+  StrCpy $R1 "$INSTDIR\resources\katcat-icon-$R0.ico"
   CreateDirectory "$INSTDIR\resources"
   IfErrors xiaojingShortcutIconsFailed
   CopyFiles /SILENT "$PLUGINSDIR\xiaojing-shortcut-icon.ico" "$R1"

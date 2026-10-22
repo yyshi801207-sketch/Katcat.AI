@@ -1,0 +1,64 @@
+name: Katcat CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: katcat-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DSH_TELEMETRY_DISABLED: '1'
+  DSH_GATE_CONCURRENCY: '1'
+  DSH_GATE_FAIL_FAST: '1'
+  DSH_OXLINT_THREADS: '2'
+
+jobs:
+  validate:
+    name: Katcat source checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@v5.0.0
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '24'
+          cache: pnpm
+      - name: Install pinned dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check documentation
+        run: pnpm run test:docs
+      - name: Check documentation and generated references
+        run: pnpm run doc-sync
+      - name: Lint
+        run: pnpm run lint
+      - name: Build Katcat and check TypeScript
+        run: pnpm run build:xiaojing
+      - name: Check package integrity
+        run: pnpm run hygiene
+      - name: Test onboarding, branding, and installation state without API keys
+        run: >-
+          pnpm exec vitest run --no-file-parallelism
+          apps/desktop/tests/katcat-installation.spec.ts
+          apps/desktop/tests/desktop-pet-motion.spec.ts
+          apps/desktop/tests/client-build-profile.spec.ts
+          packages/client/ui-settings-models/tests/welcome-store.client.spec.ts
+          packages/client/ui-settings-models/tests/onboarding-dialog.client.spec.tsx
+          packages/client/xiaojing-product/tests/product.client.spec.tsx
+          packages/client/xiaojing-product/tests/product.host.spec.ts
+          packages/workflow/tool-workflow/tests/tool-workflow.spec.ts
+          scripts/verify-product-use.spec.ts
+          scripts/translation-pairing.spec.ts
+      - name: Check whitespace
+        run: git diff --check

@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-client-xiaojing-product",
-  "description": "Xiaojing Accounting product branding, onboarding, theme, and default persona",
+  "description": "Katcat product branding, onboarding, theme, and default persona",
   "version": "0.2.1-rc.2",
   "publishConfig": {
     "access": "public"
@@ -33,7 +33,6 @@
         "@deepseek-ai/dsh-client-ui-chat",
         "@deepseek-ai/dsh-client-ui-sidebar",
         "@deepseek-ai/dsh-client-ui-conversation",
-        "@deepseek-ai/dsh-client-ui-agent-preset",
         "@deepseek-ai/dsh-client-ui-settings",
         "@deepseek-ai/dsh-client-ui-settings-models"
       ],

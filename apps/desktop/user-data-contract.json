@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "electronUserData": "%APPDATA%\\@sudotech\\xiaojing-accounting-desktop",
+  "electronUserData": "%APPDATA%\\Katcat-desktop",
   "harnessHome": "harness",
-  "documentsWorkspace": "小兢会计工作区",
+  "documentsWorkspace": "Katcat_Home",
   "protectedPaths": [
     "harness/sessions",
     "harness/settings.yaml",

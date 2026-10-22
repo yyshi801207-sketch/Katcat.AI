@@ -3,20 +3,20 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/client/ui-xiaojing-browser-control/README.md
 /:
-  en: 567b247a4cc331f7
-  zh: 567b247a4cc331f7
+  en: b2d719e7cd6149d3
+  zh: b2d719e7cd6149d3
 /deepseek-ai-dsh-client-ui-xiaojing-browser-control:
-  en: 37c8f3b9d3f5cebe
-  zh: 21090ac503f1d36b
+  en: e6150a39e7f7ab35
+  zh: 14e7b244deefe239
 /deepseek-ai-dsh-client-ui-xiaojing-browser-control/summary:
-  en: 40bc1e85606755fd
-  zh: da9b609822928459
+  en: e71db911c6ea4911
+  zh: 6aa13a8fe81204a8
 /deepseek-ai-dsh-client-ui-xiaojing-browser-control/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-client-ui-xiaojing-browser-control/capabilities:
-  en: 1fbd8a3a8a287cb2
-  zh: 4f766fa9b8b8f714
+  en: e276bf0577c363f3
+  zh: d74fa316a643ee16
 /deepseek-ai-dsh-client-ui-xiaojing-browser-control/verification:
   en: b287be433e968c03
   zh: f1bdec169922dc57

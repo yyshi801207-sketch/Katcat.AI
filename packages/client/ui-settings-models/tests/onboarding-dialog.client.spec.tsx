@@ -212,6 +212,22 @@ describe('DeepSeekOnboardingDialog', () => {
     expect(h.set).not.toHaveBeenCalled()
   })
 
+  it('stores the API key and continues without changing provider settings', async () => {
+    const h = harness()
+    render(<DeepSeekOnboardingDialog {...h.props} />)
+    await screen.findByRole('dialog', { name: en.onboardingTitle })
+
+    fireEvent.change(screen.getByLabelText(en.keyInput), { target: { value: 'sk-onboarding-test-only' } })
+    fireEvent.click(screen.getByRole('button', { name: en.onboardingSave }))
+
+    await waitFor(() => { expect(h.complete).toHaveBeenCalledOnce() })
+    expect(h.set).toHaveBeenCalledOnce()
+    expect(h.set).toHaveBeenCalledWith('DEEPSEEK_API_KEY', 'sk-onboarding-test-only')
+    expect(h.mutate).not.toHaveBeenCalled()
+    expect(h.openSection).not.toHaveBeenCalled()
+    expect(screen.queryByRole('dialog')).toBeNull()
+  })
+
   it('keeps the modal open and reports a refused credential write', async () => {
     for (const [options, message] of [
       [{ setFailure: 'credential was rejected' }, 'credential was rejected'],

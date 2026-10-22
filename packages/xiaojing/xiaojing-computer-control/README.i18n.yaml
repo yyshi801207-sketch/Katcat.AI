@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-computer-control/README.md
 /:
-  en: 7f3f2bcff33312b4
-  zh: 7f3f2bcff33312b4
+  en: 424d96eb5700b485
+  zh: 424d96eb5700b485
 /deepseek-ai-dsh-xiaojing-computer-control:
   en: af5e5257ef8c871c
   zh: 3b95a1d7b2b48d18
 /deepseek-ai-dsh-xiaojing-computer-control/summary:
-  en: aba64600fb234315
-  zh: 83ddd79870c1ef2e
+  en: 5a517b62c4dd81af
+  zh: 72dc412ccface5d4
 /deepseek-ai-dsh-xiaojing-computer-control/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d

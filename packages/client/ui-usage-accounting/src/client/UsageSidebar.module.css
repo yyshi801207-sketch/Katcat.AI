@@ -41,7 +41,7 @@
 
 .icon {
   flex: none;
-  color: var(--dsw-alias-state-business-primary);
+  color: var(--dsw-specific-usage-accent, var(--dsw-alias-state-business-primary));
 }
 
 .label {
@@ -52,7 +52,8 @@
 }
 
 .metric {
-  font-weight: 600;
+  color: var(--dsw-specific-usage-accent, inherit);
+  font-weight: 500;
 }
 
 .popover {
@@ -89,9 +90,9 @@
 }
 
 .panelHeading span {
-  color: var(--dsw-alias-state-business-primary);
+  color: var(--dsw-specific-usage-accent, var(--dsw-alias-state-business-primary));
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
@@ -140,7 +141,7 @@
 }
 
 .costValue {
-  color: var(--dsw-alias-state-business-primary);
+  color: var(--dsw-specific-usage-accent, var(--dsw-alias-state-business-primary));
   font-size: 11px;
 }
 

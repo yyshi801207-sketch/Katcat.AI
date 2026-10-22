@@ -15,8 +15,8 @@
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-xiaojing-finance-domain/capabilities:
-  en: 3bf05789f8c0e844
-  zh: 2118c4d53bf7ddf5
+  en: b720ad87101a9ab8
+  zh: 943b3236b864ffe6
 /deepseek-ai-dsh-xiaojing-finance-domain/client-records:
   en: b32a636d35d328a2
   zh: 639971a014ea38f8
@@ -39,8 +39,8 @@
   en: 46cd646825c33bd6
   zh: 005406bdd60577cc
 /deepseek-ai-dsh-xiaojing-finance-domain/session-context:
-  en: 7e8038c126abcdd7
-  zh: 721c9a7b89b85cc6
+  en: 926f3aca991d7019
+  zh: 8d4b8e96dca0d09c
 /deepseek-ai-dsh-xiaojing-finance-domain/remote-and-privacy:
   en: 6154ee37e34ec946
   zh: 1513f156ada255a1
@@ -54,14 +54,14 @@
   en: cfb0b5fcfed60c40
   zh: dc658ffcff4ac5c2
 /deepseek-ai-dsh-xiaojing-finance-domain/journal-reconciliation:
-  en: b18c39d489dff773
-  zh: ca5a0a2d178b39d9
+  en: 74928fdb9e406acd
+  zh: 01571049099d34eb
 /deepseek-ai-dsh-xiaojing-finance-domain/receivable-and-payable-queries:
   en: 21f6d330192b39c2
   zh: 3ff9f57c0a09d4cf
 /deepseek-ai-dsh-xiaojing-finance-domain/open-item-comparison-and-aggregation:
-  en: 54e688d1aa3d2f18
-  zh: ed152cf060de7a4d
+  en: b43b94ec12a5acec
+  zh: 1e919a451bd6f87c
 /deepseek-ai-dsh-xiaojing-finance-domain/open-item-workbook-serialization:
   en: ae4bd00dee45b09d
   zh: 31ca27e8be9987f5
@@ -81,8 +81,8 @@
   en: 9e55534906c2d689
   zh: 27e7159859cf68c9
 /deepseek-ai-dsh-xiaojing-finance-domain/known-limitations-and-deferred-work:
-  en: 610d79cda6e27d5e
-  zh: 89cc57d33a99cad7
+  en: 8468e63f18efcdb0
+  zh: d5d7eef4956434fa
 /deepseek-ai-dsh-xiaojing-finance-domain/known-limitations-and-deferred-work/dev-note:
   en: 0a1253c6f7b5e8b9
   zh: 9f56528562c7c914

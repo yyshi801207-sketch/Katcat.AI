@@ -1,15 +1,14 @@
 {
   "packageName": "@deepseek-ai/dsh-desktop",
-  "productVersion": "0.3.3",
-  "appId": "com.sudotech.xiaojing-accounting",
-  "nsisGuid": "1f6e3c2a-13e7-5ab1-a2d7-10b68c1b911a",
-  "installDirectoryName": "xiaojing-agent-desktop",
-  "executableName": "小兢会计",
-  "productName": "小兢会计-您的AI办公搭子",
+  "productVersion": "1.0.0",
+  "appId": "com.sudotech.xiaojing-office",
+  "nsisGuid": "ddf2b5a9-34d7-4a3b-8f09-71ca62b6f58f",
+  "installDirectoryName": "Katcat-desktop",
+  "executableName": "Katcat.AI",
+  "productName": "Katcat.AI",
   "installScope": "currentUser",
-  "shortcutName": "小兢会计",
+  "shortcutName": "Katcat.AI",
   "userDataSegments": [
-    "@sudotech",
-    "xiaojing-accounting-desktop"
+    "Katcat-desktop"
   ]
 }

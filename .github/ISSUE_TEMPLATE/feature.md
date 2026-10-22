@@ -1,7 +1,6 @@
 ---
-name: Feature
-about: 新增或有意改变可观察行为
-type: Feature
+name: Feature / 功能建议
+about: 描述你希望 Katcat 帮你完成的事情 / Suggest an improvement
 ---
 
 ## Motivation

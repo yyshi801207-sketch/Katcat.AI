@@ -3,26 +3,26 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/integrations/youcheng-finance-f4-acceptance.md
 /youcheng-finance-f4-acceptance:
-  en: 7c1cf983c7eff8d6
-  zh: 4bd33ebb044a35d8
+  en: 16d6b519cdfe7cc4
+  zh: 380b31bfa03ce290
 /youcheng-finance-f4-acceptance/scope-and-completion:
   en: dae908f9af8d9679
   zh: 72e6f6d2aa854c58
 /youcheng-finance-f4-acceptance/autonomous-checkpoints:
-  en: 7378dbf05e304b4e
-  zh: 6003f1d62f487a04
+  en: 119ce3d07d7d71df
+  zh: 6168093ae8bf9008
 /youcheng-finance-f4-acceptance/execution-batches:
   en: 957eb38d292e1a1d
   zh: da00a4d71f1d6e2f
 /youcheng-finance-f4-acceptance/capability-evidence-map:
-  en: 2643a3701bcedd80
-  zh: 1c99ea0d30334fe6
+  en: f78ebac12bf19b0f
+  zh: b716111d8b78a796
 /youcheng-finance-f4-acceptance/deferred-native-reports:
-  en: ebd1a7f9c5f68975
-  zh: a36aa62809e028ba
+  en: 3816b44ccb375084
+  zh: 6b47b8b142dd7f67
 /youcheng-finance-f4-acceptance/test-environment-and-evidence-rules:
   en: ec76ab068b0276c1
   zh: 64fb5c3a818416c0
 /youcheng-finance-f4-acceptance/remaining-completion-conditions:
-  en: 82411bc439949442
-  zh: 7d234943a4174b8b
+  en: 60d045dc49e06851
+  zh: 746090d98ead730d

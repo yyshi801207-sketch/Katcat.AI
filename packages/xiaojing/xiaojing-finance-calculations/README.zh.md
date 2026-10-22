@@ -1,5 +1,5 @@
 ---
-description: "Versioned deterministic trial calculations for Xiaojing Finance mode"
+description: "Versioned deterministic trial calculations for Katcat Finance mode"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,9 @@ kind: "package-reference"
 
 ## 概述
 
-小兢 Finance 的版本化确定性财税试算能力。Host 服务负责纯十进制计算和客户上下文适配，独立的 Finance 预设消费端注册 `finance_calculation`；Standard 等其他预设不会获得该工具，两个入口均不修改 Agent Loop。
+本包作为显式组合的 Finance 配置的可选组件维护，不在 Katcat 个人桌面版的默认组合中挂载。
+
+Katcat Finance 的版本化确定性财税试算能力。Host 服务负责纯十进制计算和客户上下文适配，独立的 Finance 预设消费端注册 `finance_calculation`；Standard 等其他预设不会获得该工具，两个入口均不修改 Agent Loop。
 
 
 ## 目录

@@ -1,5 +1,5 @@
 ---
-description: "Sanitized task-state aggregation for the Xiaojing Windows desktop companion"
+description: "Sanitized task-state aggregation for the Katcat Windows desktop companion"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-小兢会计 Windows 桌面宠物的 Host 侧任务状态聚合插件。这个 Cordis 插件观察 Harness 会话、审批以及脱敏后的微信状态事件，并向 Electron 桌面端发布一份不含任务内容的全局快照。它不修改 Agent Loop、任务执行、模型提示词或用户会话。
+Katcat Windows 桌面宠物的 Host 侧任务状态聚合插件。这个 Cordis 插件观察 Harness 会话、审批以及脱敏后的微信状态事件，并向 Electron 桌面端发布一份不含任务内容的全局快照。它不修改 Agent Loop、任务执行、模型提示词或用户会话。
 
 
 ## 目录
@@ -20,7 +20,7 @@ kind: "package-reference"
 <a id="capabilities"></a>
 ## 组合与状态
 
-该插件仅由小兢会计产品组合加载。它跟踪开放轮次、未完成工具、未解决审批、最近终态和脱敏后的微信在线标记。全局状态优先级依次为等待确认、失败、执行、思考、成功和待机。完成轮次保留成功状态 2.5 秒，失败、阻塞、达到最大 token 和中断轮次保留失败状态 5 秒。多个活动轮次只汇总为数量。工具完成时从工具消息的来源读取调用 id，包括内容为空的结果。
+该插件仅由Katcat产品组合加载。它跟踪开放轮次、未完成工具、未解决审批、最近终态和脱敏后的微信在线标记。全局状态优先级依次为等待确认、失败、执行、思考、成功和待机。完成轮次保留成功状态 2.5 秒，失败、阻塞、达到最大 token 和中断轮次保留失败状态 5 秒。多个活动轮次只汇总为数量。工具完成时从工具消息的来源读取调用 id，包括内容为空的结果。
 
 导出的 `CompanionSnapshot` 只包含 `state`、`activeTaskCount`、`approvalCount`、`weixinOnline` 和 `revision`。它不包含会话标题、用户指令、文件名、工具参数、模型回复、API Key 或微信凭据。跟踪器只按会话保留生命周期计数和时间戳，并在会话被释放时删除对应记录。
 

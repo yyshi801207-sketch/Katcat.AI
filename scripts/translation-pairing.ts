@@ -143,12 +143,14 @@ export const TRANSLATION_SCOPE_GLOB_EXCLUDES = [
   '**/.pytest_cache/**',
   'apps/web/dist/**',
   '.artifacts/**',
+  'output/**',
   'python/sdk-runtime/src/deepseek_harness_runtime/runtime/**',
   'vendor/**',
 ]
 
 /** Whether a repository-relative path belongs to a dependency or generated tree. */
 function isTranslationSourceExcluded(file: string): boolean {
+  if (file.startsWith('output/')) return true
   const segments = file.split('/')
   return segments.some(segment => NON_SOURCE_DIRECTORIES.has(segment)
       || segment.startsWith('.doc-typecheck-')

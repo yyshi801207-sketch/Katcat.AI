@@ -51,6 +51,7 @@ concurrency:
 
 jobs:
   package:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     runs-on: [self-hosted, macOS, ARM64, dsh-mac-package-trial]
     timeout-minutes: 180
     defaults:

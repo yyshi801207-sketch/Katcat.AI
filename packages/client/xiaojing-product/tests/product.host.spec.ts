@@ -178,6 +178,7 @@ describe('Xiaojing product persona', () => {
     const prompt = (await ctx.systemPrompt.assemble()).sections
       .find(section => section.name === PERSONA_PREFIX_SECTION)?.text
     expect(prompt).toBe(XIAOJING_PERSONA)
+    await expect(prompt).toMatchFileSnapshot('./expected/katcat-persona.expected.txt')
     expect(prompt).toContain('based on DeepSeek Harness')
     expect(prompt).toContain('do not claim that SUDO Tech developed the underlying framework')
     await ctx.fiber.dispose()

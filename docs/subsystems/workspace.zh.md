@@ -323,7 +323,7 @@ Host service backing the generated `ctx.remote.workspace` namespace.
 
 /**
  * Initialize or reuse the default Workspace during first-use startup. The
- * directory name is fixed, so the Host never renames or relocates an
+ * directory is deployment-configurable, but the Host never renames or relocates an
  * existing default; its initial title is that same name, which browser
  * consumers label in the reader's language.
  * @param signal - caller lifetime; cancels native directory lookup.

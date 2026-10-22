@@ -1,4 +1,4 @@
-/** Browser-local controller for the restricted Xiaojing desktop bridge. */
+/** Browser-local controller for the restricted Katcat desktop bridge. */
 
 import { createSnapshotStore, type SnapshotStore } from '@deepseek-ai/dsh-client-store'
 import type { CompanionSnapshot, CompanionState } from '@deepseek-ai/dsh-xiaojing-desktop-companion/types'
@@ -110,7 +110,7 @@ export class DesktopCompanionController {
     try {
       const result = await operation()
       if (generation !== this.generation || result === undefined) return
-      if (!isDesktopState(result)) throw new Error('桌面小兢返回了无效状态。')
+      if (!isDesktopState(result)) throw new Error('桌面宠物返回了无效状态。')
       this.store.set({
         available: true, visible: result.visible, scale: result.scale, snapshot: result.snapshot, busy: false, error: null,
       })

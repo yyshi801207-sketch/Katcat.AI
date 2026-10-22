@@ -1,4 +1,4 @@
-/** Xiaojing tray, transparent companion window, and content-free Host state stream. */
+/** Katcat tray, transparent companion window, and content-free Host state stream. */
 
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -46,7 +46,7 @@ export interface XiaojingCompanionOptions {
   readonly quitApplication: () => void
 }
 
-/** Combined local-window and Host state sent to the Xiaojing renderers. */
+/** Combined local-window and Host state sent to the Katcat renderers. */
 export interface XiaojingDesktopState {
   readonly available: true
   readonly visible: boolean
@@ -55,7 +55,7 @@ export interface XiaojingDesktopState {
   readonly snapshot: DesktopCompanionSnapshot
 }
 
-/** Owns the Xiaojing tray and companion for one Electron application lifetime. */
+/** Owns the Katcat tray and companion for one Electron application lifetime. */
 export class XiaojingDesktopCompanion {
   private window: BrowserWindow | undefined
   private tray: Tray | undefined
@@ -132,7 +132,7 @@ export class XiaojingDesktopCompanion {
     this.preferences.trayHintShown = true
     this.persistPreferences()
     this.tray?.displayBalloon({
-      title: '小兢会计仍在运行',
+      title: 'Katcat仍在运行',
       content: '已最小化到系统托盘，后台任务和微信连接不会中断。',
       iconType: 'info',
     })
@@ -200,19 +200,19 @@ export class XiaojingDesktopCompanion {
     if (this.tray === undefined || this.tray.isDestroyed()) return
     const visible = this.window !== undefined && !this.window.isDestroyed()
     this.tray.setContextMenu(Menu.buildFromTemplate([
-      { label: '打开小兢会计', click: this.options.showMainWindow },
-      { label: visible ? '收起桌面小兢' : '唤醒桌面小兢',
+      { label: '打开Katcat', click: this.options.showMainWindow },
+      { label: visible ? '收起桌面宠物' : '唤醒桌面宠物',
         click: () => { if (visible) this.tuck(); else void this.wake() } },
-      { label: '重置桌面小兢位置', click: () => { void this.resetPosition() } },
+      { label: '重置桌面宠物位置', click: () => { void this.resetPosition() } },
       { type: 'separator' },
-      { label: '退出小兢会计', click: () => { void this.requestQuit() } },
+      { label: '退出Katcat', click: () => { void this.requestQuit() } },
     ]))
   }
 
   private companionContextMenu(): Menu {
     return Menu.buildFromTemplate([
-      { label: '打开小兢会计', click: this.options.showMainWindow },
-      { label: '收起桌面小兢', click: () => { this.tuck() } },
+      { label: '打开Katcat', click: this.options.showMainWindow },
+      { label: '收起桌面宠物', click: () => { this.tuck() } },
       { label: '重置桌面位置', click: () => { void this.resetPosition() } },
     ])
   }
@@ -246,7 +246,7 @@ export class XiaojingDesktopCompanion {
       alwaysOnTop: true,
       skipTaskbar: true,
       hasShadow: false,
-      title: '桌面小兢',
+      title: '桌面宠物',
       icon: this.asset('windows-icon.png'),
       backgroundColor: '#00000000',
       webPreferences: {
@@ -450,7 +450,7 @@ export class XiaojingDesktopCompanion {
     const window = this.options.getMainWindow()
     if (window === undefined || window.isDestroyed() || event.sender !== window.webContents
       || event.senderFrame !== window.webContents.mainFrame) {
-      throw new Error('xiaojing desktop: rejected IPC from an unowned renderer')
+      throw new Error('Katcat desktop: rejected IPC from an unowned renderer')
     }
     assertDesktopSender(event, ['app'])
   }

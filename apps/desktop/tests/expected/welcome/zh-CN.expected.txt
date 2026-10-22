@@ -1,6 +1,6 @@
-小兢会计
-小兢会计
-欢迎使用 小兢会计
-您的 AI 办公搭子
+Katcat.AI
+Katcat.AI
+欢迎使用 Katcat.AI
+您的超级个人助理
 登录
 添加 API Key

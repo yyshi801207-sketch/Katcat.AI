@@ -26,18 +26,17 @@ vi.mock('../src/crash-report.ts', async importOriginal => ({
 }))
 vi.mock('../src/xiaojing-product.ts', () => ({
   XIAOJING_IDENTITY: {
-    appId: 'com.sudotech.xiaojing-accounting',
-    productName: '小兢会计-您的AI办公搭子',
-    productVersion: '0.3.3',
-    shortcutName: '小兢会计',
+    appId: 'com.sudotech.xiaojing-office',
+    productName: 'Katcat',
+    productVersion: '1.0.0',
+    shortcutName: 'Katcat',
   },
   assertXiaojingDesktopClientBuild: vi.fn(),
   initializeXiaojingApplication: vi.fn(() => ({
     userData: 'desktop-test-userData',
     dshHome: 'desktop-test-home',
-    workspaceRoot: 'desktop-test-documents/小兢会计工作区',
-    officeWorkspace: join(tmpdir(), 'desktop-test-documents', '小兢会计工作区', '办公工作区'),
-    financeWorkspace: 'desktop-test-documents/小兢会计工作区/Finance工作区',
+    workspaceRoot: 'desktop-test-documents/Katcat_Home',
+    officeWorkspace: join(tmpdir(), 'desktop-test-documents', 'Katcat_Home'),
   })),
   isXiaojingUpdateShutdown: (argv: readonly string[]) => argv.includes('--xiaojing-shutdown-for-update'),
   xiaojingHostEnvironment: (_app: unknown, _paths: unknown, environment = process.env) => ({
@@ -594,7 +593,7 @@ describe('desktop main startup', () => {
         ['update-dialog.html', 'text/html'], ['update-dialog.css', 'text/css'], ['update-dialog.js', 'text/javascript'],
         ['mandatory-update.html', 'text/html'], ['mandatory-update.css', 'text/css'], ['mandatory-update.js', 'text/javascript'],
         ['update-close.svg', 'image/svg+xml'],
-        ['startup.css', 'text/css'], ['assets/startup-logo.png', 'image/png'],
+        ['startup.css', 'text/css'], ['assets/katcat-startup.png', 'image/png'],
       ] as const) {
         const response = await handler(new Request(`dsh-app://shell/${name}`))
         expect(response.status).toBe(200)
@@ -664,8 +663,8 @@ describe('desktop main startup', () => {
     await vi.advanceTimersByTimeAsync(0)
     const zh = locale === 'zh-CN'
     expect(harness.dialog.showMessageBox).toHaveBeenLastCalledWith(expect.objectContaining({
-      type: 'info', title: zh ? '关于小兢会计' : 'About Xiaojing Accounting', message: zh ? '小兢会计' : 'Xiaojing Accounting',
-      detail: `${zh ? '版本' : 'Version'} V${packaged ? '1.0.0' : '0.3.3'}`, buttons: [zh ? '确定' : 'OK'], cancelId: 0,
+      type: 'info', title: zh ? '关于Katcat' : 'About Katcat', message: 'Katcat',
+      detail: `${zh ? '版本' : 'Version'} V1.0.0`, buttons: [zh ? '确定' : 'OK'], cancelId: 0,
     }))
     // A dialog that cannot open is logged, not surfaced as an unhandled rejection.
     harness.dialog.showMessageBox.mockRejectedValueOnce(new Error('overlay unavailable'))
@@ -1083,7 +1082,7 @@ describe('desktop main startup', () => {
     expect(() => handler(event, 'application', NaN, 34)).toThrow('invalid popup request')
     const application = handler(event, 'application', 48, 34)
     expect(harness.menu.buildFromTemplate.mock.lastCall![0].map(item => item.label ?? item.type)).toEqual([
-      '关于小兢会计', 'separator', '检查更新…', '管理 dsh 命令…', 'separator', '退出小兢会计',
+      '关于Katcat', 'separator', '检查更新…', '管理 dsh 命令…', 'separator', '退出Katcat',
     ])
     expect(harness.popup.mock.lastCall![0]).toMatchObject({ window, x: 48, y: 34 })
     expect(harness.popup.mock.lastCall![0].callback).toBeTypeOf('function')
@@ -1217,7 +1216,7 @@ describe('desktop main startup', () => {
     await expect(handler(event)).resolves.toBe('/workspace')
     expect(harness.dialog.showOpenDialog).toHaveBeenCalledExactlyOnceWith(window, {
       properties: ['openDirectory', 'createDirectory'],
-      defaultPath: join(tmpdir(), 'desktop-test-documents', '小兢会计工作区', '办公工作区'),
+      defaultPath: join(tmpdir(), 'desktop-test-documents', 'Katcat_Home'),
     })
     window.webContents.mainFrame.url = 'https://other.example/'
     await expect(handler(event)).rejects.toThrow('unowned renderer')

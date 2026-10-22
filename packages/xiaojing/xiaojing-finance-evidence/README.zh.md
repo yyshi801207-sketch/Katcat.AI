@@ -1,5 +1,5 @@
 ---
-description: "Official-source finance and tax evidence retrieval for Xiaojing Finance mode"
+description: "Official-source finance and tax evidence retrieval for Katcat Finance mode"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,9 @@ kind: "package-reference"
 
 ## 概述
 
-小兢 Finance 用于按日期从中国大陆官方来源研究财税规则的 Host 能力。Host 插件负责来源准入、受限页面抓取、依据解析和结构化本地缓存；独立的 Finance 预设消费端注册 `finance_evidence`，Standard 等其他预设不会获得该工具。两个入口均不修改 Agent Loop。
+本包作为显式组合的 Finance 配置的可选组件维护，不在 Katcat 个人桌面版的默认组合中挂载。
+
+Katcat Finance 用于按日期从中国大陆官方来源研究财税规则的 Host 能力。Host 插件负责来源准入、受限页面抓取、依据解析和结构化本地缓存；独立的 Finance 预设消费端注册 `finance_evidence`，Standard 等其他预设不会获得该工具。两个入口均不修改 Agent Loop。
 
 
 ## 目录

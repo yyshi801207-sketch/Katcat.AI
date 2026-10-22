@@ -3,20 +3,20 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/client/xiaojing-product/README.md
 /:
-  en: abcceddc39735064
-  zh: abcceddc39735064
+  en: e12cb9e055896f59
+  zh: e12cb9e055896f59
 /deepseek-ai-dsh-client-xiaojing-product:
-  en: ff25d3bf0b1c6188
-  zh: 7db83b27e98484d9
+  en: bb22a9adc45bf1b9
+  zh: 9152c7f4d4f353e7
 /deepseek-ai-dsh-client-xiaojing-product/summary:
-  en: b04dbc79515f0858
-  zh: 18ce55f46e243434
+  en: b5650e3236d3f01d
+  zh: ce5c2701607f8d1c
 /deepseek-ai-dsh-client-xiaojing-product/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-client-xiaojing-product/product-contributions:
-  en: b253183394aa9f21
-  zh: 6f8919e8fab3e63a
+  en: 5882158c183f3a1a
+  zh: a094e428630208ad
 /deepseek-ai-dsh-client-xiaojing-product/upstream-upgrade-contract:
   en: a0a5fe94aa5a3e44
   zh: ba3c623ca90155ab
@@ -30,8 +30,8 @@
   en: 30f50a744675c02f
   zh: ee98675e6eac9b81
 /deepseek-ai-dsh-client-xiaojing-product/model-experience/product-wide-business-facing-responses/what-the-model-sees:
-  en: b85689ff17ffcbfb
-  zh: a8aa54e1d49976ef
+  en: a31f46091f746cd4
+  zh: 5f7f243ec59430d4
 /deepseek-ai-dsh-client-xiaojing-product/model-experience/product-wide-business-facing-responses/token-effect:
   en: f716e0ab7789dda1
   zh: 3545999038f68dd5
@@ -54,8 +54,8 @@
   en: 3f146ffc4a69c6ee
   zh: 3f146ffc4a69c6ee
 /deepseek-ai-dsh-client-xiaojing-product/model-experience/default-deployment-persona-system-prompt/what-the-model-sees:
-  en: 3aa87102b5fc649c
-  zh: 1d0132adf6e66119
+  en: 96b5139be0e5dfc8
+  zh: 3aa93e2881c3203d
 /deepseek-ai-dsh-client-xiaojing-product/model-experience/default-deployment-persona-system-prompt/what-the-model-sees/verbatim-default-persona:
   en: e2ecd80abe3c841f
   zh: e2ecd80abe3c841f

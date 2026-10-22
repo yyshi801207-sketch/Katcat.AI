@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing settings page for the local Weixin iLink channel"
+description: "Katcat settings page for the local Weixin iLink channel"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 [English](README.md) | 中文
 
+用户可见的应用名称和提示文案统一使用 Katcat，现有安装标识和持久化数据路径保留兼容值。
+
 ## 概述
 
-小兢会计微信频道的浏览器展示插件。它会在设置中增加“频道”，默认展开微信卡片，并显示绑定、验证、连接、重连、过期和错误状态，但不拥有凭据或传输状态。
+Katcat微信频道的浏览器展示插件。它会在设置中增加“频道”，默认展开微信卡片，并显示绑定、验证、连接、重连、过期和错误状态，但不拥有凭据或传输状态。
 
 
 ## 目录
@@ -26,7 +28,7 @@ Client 插件只在 `xiaojing` 构建 profile 且来源为 loopback 时注册 id
 
 ## 安全
 
-非 loopback 来源或非小兢构建 profile 下，UI 会拒绝注册。所有响应类型均可安全传给浏览器，只包含连接状态、脱敏账号标签、二维码图片数据、过期时间、验证码需求和用户可见错误。凭据与持久化队列操作始终留在 Host。
+非 loopback 来源或非Katcat构建 profile 下，UI 会拒绝注册。所有响应类型均可安全传给浏览器，只包含连接状态、脱敏账号标签、二维码图片数据、过期时间、验证码需求和用户可见错误。凭据与持久化队列操作始终留在 Host。
 
 ## 模型体验
 

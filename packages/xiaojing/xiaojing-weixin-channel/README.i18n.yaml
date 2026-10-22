@@ -3,23 +3,23 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-weixin-channel/README.md
 /:
-  en: 5c60aac7ff0c89b3
-  zh: 5c60aac7ff0c89b3
+  en: a6cc9f75ec96079f
+  zh: a6cc9f75ec96079f
 /deepseek-ai-dsh-xiaojing-weixin-channel:
-  en: ee2b2e60663b724c
-  zh: 00506207f0eba485
+  en: 71f426e46e578e61
+  zh: 67ae164e3c431534
 /deepseek-ai-dsh-xiaojing-weixin-channel/summary:
-  en: a791b4c6011a0c55
-  zh: 7fdbc62d5f0ad8b7
+  en: 915cf0031fd1e6dc
+  zh: b79c38162d2522ef
 /deepseek-ai-dsh-xiaojing-weixin-channel/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-xiaojing-weixin-channel/composition-and-protocol:
-  en: fc62dbbcb81458d9
-  zh: eb22f532404e5ec6
+  en: ecb040f623118e65
+  zh: 19af2e4c49f01a00
 /deepseek-ai-dsh-xiaojing-weixin-channel/session-and-delivery:
-  en: 9ab1442a16be24ce
-  zh: b41d8529a23b1f59
+  en: 9b28782172ed4de9
+  zh: 9751da4efb1f90e3
 /deepseek-ai-dsh-xiaojing-weixin-channel/safety-and-recovery:
   en: 9ea101d0674b4cf2
   zh: 66c6da3639eb08a7
@@ -84,8 +84,8 @@
   en: 12b10b44fb69d409
   zh: 9df9d6e30a692817
 /deepseek-ai-dsh-xiaojing-weixin-channel/known-limitations-and-deferred-work:
-  en: 6ffad966f5674825
-  zh: 53f9b19d3598ac1c
+  en: 87df2ba6e4d7d491
+  zh: f3dccbdbd6b39783
 /deepseek-ai-dsh-xiaojing-weixin-channel/known-limitations-and-deferred-work/dev-note:
   en: 6c98eefd36da35e8
   zh: 97b281ca4fb06ce2

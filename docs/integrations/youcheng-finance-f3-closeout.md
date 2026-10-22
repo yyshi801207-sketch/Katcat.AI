@@ -2,9 +2,11 @@
 
 English | [中文](youcheng-finance-f3-closeout.zh.md)
 
+Historical acceptance artifacts under `critique/` are not distributed with this source tree. Their filenames remain as historical references; this checkout alone cannot verify those artifacts.
+
 ## Disposition
 
-The2026-09-14 closeout is complete for the supported F3A creation and F3B maintenance paths, with the user's deferred vendor gaps retained. Ten supported paths have acceptance evidence; CF09 creation and identity pass but public enable-state remains unverified. Both new CF22/CF23 balance-verification acceptances pass. This document does not certify unrestricted Finance completion, F4 acceptance or production release. The [closeout receipt](../../critique/f3b-lab/receipts/f3-supported-scope-closeout-20260914.json) identifies new versus inherited evidence and file hashes.
+The2026-09-14 closeout is complete for the supported F3A creation and F3B maintenance paths, with the user's deferred vendor gaps retained. Ten supported paths have acceptance evidence; CF09 creation and identity pass but public enable-state remains unverified. Both new CF22/CF23 balance-verification acceptances pass. This document does not certify unrestricted Finance completion, F4 acceptance or production release. The closeout receipt (`critique/f3b-lab/receipts/f3-supported-scope-closeout-20260914.json`) identifies new versus inherited evidence and file hashes.
 
 2026-09-15 amendment: the vendor confirmed that voucher deletion needs only `accountName` and `cerInfoList: [{ cerId }]`. CF12 implementation and assembled keyless tests now use that request without local-creation source identity. A live adapter experiment created dedicated API-origin synthetic voucher244499, sent the minimal deletion once, observed two complete absent inventories and returned exactly to the41-voucher baseline. This resolves issue004's parameter and source identity blocker. Browser-manual-origin remains an unsampled qualification variant, not an unresolved interface requirement. Issues001 and002 remain deferred.
 
@@ -12,17 +14,17 @@ The2026-09-14 closeout is complete for the supported F3A creation and F3B mainte
 
 | ID | Capability | Evidence and limit |
 |---|---|---|
-| CF14 | Create income/expense journals | [F3A audit](../../critique/f3a-lab/receipts/f3a-completion-audit-20260910.json); technical records, not bank movements or automatic vouchers |
-| CF20 | Create receivables | [Main-app acceptance](../../critique/f3a-lab/receipts/open-item-live-host/receivable/audit.json); currently requires verifiable same-ledger account references |
-| CF21 | Create payables | [Independent main-app acceptance](../../critique/f3a-lab/receipts/open-item-live-host/payable/audit.json); not inferred from receivables |
-| CF08 | Create subjects | [Root/branch evidence](../../critique/f3a-lab/receipts/f3a-completion-audit-20260910.json) and [explicit accounting configuration](../../critique/f3b-lab/receipts/f3-remainder-20260914.json); historical leaf promotion, quantity accounting and new currencies are not supported |
-| CF09 | Create auxiliary items | [Creation and identity accepted](../../critique/f3a-lab/receipts/master-data-live-host/auxiliary-item/audit.json); public enable-state is unavailable and `complete=false` remains correct |
-| CF12 | Delete vouchers | Prior [main-app acceptance](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json); the [minimal-request live receipt](../../critique/f3b-lab/receipts/cf12-minimal-voucher-delete-20260915.json) records dedicated voucher244499 accepted, deleted once, absent in two complete inventories and an exact baseline return; browser-manual-origin is not separately sampled |
-| CF15 | Delete journals | [Main-app acceptance](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json); supported ADD records only; known linked and WRITE_OFF records remain blocked |
+| CF14 | Create income/expense journals | F3A audit (`critique/f3a-lab/receipts/f3a-completion-audit-20260910.json`); technical records, not bank movements or automatic vouchers |
+| CF20 | Create receivables | Main-app acceptance (`critique/f3a-lab/receipts/open-item-live-host/receivable/audit.json`); currently requires verifiable same-ledger account references |
+| CF21 | Create payables | Independent main-app acceptance (`critique/f3a-lab/receipts/open-item-live-host/payable/audit.json`); not inferred from receivables |
+| CF08 | Create subjects | Root/branch evidence (`critique/f3a-lab/receipts/f3a-completion-audit-20260910.json`) and explicit accounting configuration (`critique/f3b-lab/receipts/f3-remainder-20260914.json`); historical leaf promotion, quantity accounting and new currencies are not supported |
+| CF09 | Create auxiliary items | Creation and identity accepted (`critique/f3a-lab/receipts/master-data-live-host/auxiliary-item/audit.json`); public enable-state is unavailable and `complete=false` remains correct |
+| CF12 | Delete vouchers | Prior main-app acceptance (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`); the minimal-request live receipt (`critique/f3b-lab/receipts/cf12-minimal-voucher-delete-20260915.json`) records dedicated voucher244499 accepted, deleted once, absent in two complete inventories and an exact baseline return; browser-manual-origin is not separately sampled |
+| CF15 | Delete journals | Main-app acceptance (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`); supported ADD records only; known linked and WRITE_OFF records remain blocked |
 | CF22 | Delete receivables | New test72620 passes creation, exact deletion, original/base balance comparisons, two independent readbacks and new-session inspection |
 | CF23 | Delete payables | New test72621 independently passes creation, exact deletion, original/base balance comparisons, two readbacks and new-session inspection |
-| CF24 | Write off receivables | [Main-app acceptance](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json); full base-currency settlement with independently matched journal |
-| CF25 | Write off payables | [Independent main-app acceptance](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json); no actual bank payment, partial/foreign-currency/reverse write-off |
+| CF24 | Write off receivables | Main-app acceptance (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`); full base-currency settlement with independently matched journal |
+| CF25 | Write off payables | Independent main-app acceptance (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`); no actual bank payment, partial/foreign-currency/reverse write-off |
 
 Historical receipts are not rewritten. Later receipts supersede only the named capability and verified path: the old F3A counterparty-mapping failure is superseded by the CF20/CF21 live-Host audits; subject auxiliary/currency qualification is extended by the F3 remainder receipt. CF09 status is still not verified by public API.
 
@@ -34,7 +36,7 @@ AR72620 changes the captured RMB balance from0.27 to0.26; AP72621 changes it fro
 
 CF23 encountered two connection timeouts during read-only pre-deletion snapshots after creation was accepted, at authentication and ledger verification respectively. Recovery reused the saved creation result; no deletion intent existed at either interruption, and no second creation was sent. The subsequent read, delete and independent verification passed. A network error is not evidence that the account or data is absent.
 
-The balance fix already passed314 focused tests, ten assembled Web scenarios and the Xiaojing build; [the fix receipt](../../critique/f3b-lab/receipts/open-item-deletion-balance-fix-20260914.json) distinguishes these layers. The final closeout reuses that evidence because product source did not change. Eight laboratory command/approval/no-resend guard tests pass again. Missing FX base balances remain unavailable; explicit identical currency codes allow labeled base-balance derivation, not alteration of vendor fields.
+The balance fix already passed314 focused tests, ten assembled Web scenarios and the Xiaojing build; the fix receipt (`critique/f3b-lab/receipts/open-item-deletion-balance-fix-20260914.json`) distinguishes these layers. The final closeout reuses that evidence because product source did not change. Eight laboratory command/approval/no-resend guard tests pass again. Missing FX base balances remain unavailable; explicit identical currency codes allow labeled base-balance derivation, not alteration of vendor fields.
 
 ## Deferred and unsupported scope
 

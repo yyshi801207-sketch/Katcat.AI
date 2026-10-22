@@ -1,5 +1,5 @@
 ---
-description: "Official-source finance and tax evidence retrieval for Xiaojing Finance mode"
+description: "Official-source finance and tax evidence retrieval for Katcat Finance mode"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,9 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Xiaojing Finance Host capability for date-aware research of Chinese mainland finance and tax rules from configured official sources. The Host plugin owns source admission, bounded page retrieval, evidence parsing, and a structured local cache. The separate Finance-preset consumer registers `finance_evidence`; Standard and other presets receive no tool. Neither entry modifies the Agent Loop.
+This package is maintained as an optional component for explicitly composed Finance profiles and is not mounted by the Katcat personal desktop defaults.
+
+Katcat Finance Host capability for date-aware research of Chinese mainland finance and tax rules from configured official sources. The Host plugin owns source admission, bounded page retrieval, evidence parsing, and a structured local cache. The separate Finance-preset consumer registers `finance_evidence`; Standard and other presets receive no tool. Neither entry modifies the Agent Loop.
 
 
 ## Table of Contents

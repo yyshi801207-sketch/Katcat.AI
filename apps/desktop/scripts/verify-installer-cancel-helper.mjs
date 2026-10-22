@@ -34,7 +34,7 @@ async function runHelper(helper, args) {
 const scratch = await mkdtemp(join(tmpdir(), 'xiaojing-installer-cancel-'))
 try {
   const helper = join(scratch, 'cancel-helper.ps1')
-  const installDirectory = join(scratch, 'xiaojing-agent-desktop')
+  const installDirectory = join(scratch, 'Katcat-desktop')
   await copyFile(sourceHelper, helper)
   await mkdir(installDirectory)
   await writeFile(join(installDirectory, 'partial-file.txt'), 'partial')

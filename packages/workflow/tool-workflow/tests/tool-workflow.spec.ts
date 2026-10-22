@@ -639,7 +639,11 @@ describe('dsh-tool-workflow', () => {
       await ctx.plugin(PtcWorkflowEngine, {})
       await ctx.plugin(toolWorkflow, {})
       const session = Session.create(SessionId('caller'))
-      const parent = { id: session.id, options: {}, session, ctx } as unknown as Agent
+      const parent: Agent = {
+        id: session.id, options: {}, session, inbox: unsupportedInbox(), status: 'idle', ctx,
+        send: () => {}, followup: () => {}, steer: () => {}, inject: () => {}, cancel: () => {},
+        runMaintenance: task => task(new AbortController().signal), whenIdle: () => Promise.resolve(),
+      }
       const controller = new AbortController()
       const ready = Promise.withResolvers<undefined>()
       ctx.on('workflow/log', () => { ready.resolve(undefined) })

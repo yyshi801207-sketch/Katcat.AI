@@ -9,7 +9,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$expectedDirectoryName = 'xiaojing-agent-desktop'
+$expectedDirectoryNames = @('Katcat-desktop', 'xiaojing-office-desktop')
 $shutdownArgument = '--xiaojing-shutdown-for-update'
 $maximumLegacyPathLength = 259
 
@@ -55,7 +55,7 @@ function Remove-OverlongLegacyInstallEntries {
 
   foreach ($file in @($entries | Where-Object { -not $_.PSIsContainer -and $_.FullName.Length -gt $maximumLegacyPathLength })) {
     if (-not (Test-PathInsideInstallDirectory -Candidate $file.FullName -Root $Root)) {
-      throw 'Refusing to clean a file outside the fixed Xiaojing installation directory.'
+      throw 'Refusing to clean a file outside the fixed Katcat installation directory.'
     }
     [System.IO.File]::Delete((Convert-ToExtendedPath -Path $file.FullName))
   }
@@ -67,7 +67,7 @@ function Remove-OverlongLegacyInstallEntries {
   )
   foreach ($directory in $directories) {
     if (-not (Test-PathInsideInstallDirectory -Candidate $directory.FullName -Root $Root)) {
-      throw 'Refusing to clean a directory outside the fixed Xiaojing installation directory.'
+      throw 'Refusing to clean a directory outside the fixed Katcat installation directory.'
     }
     [System.IO.Directory]::Delete((Convert-ToExtendedPath -Path $directory.FullName), $true)
   }
@@ -117,13 +117,16 @@ function Wait-ForInstallProcessesToExit {
 
 try {
   $installRoot = Resolve-NormalizedPath -Path $InstallDirectory
-  if ([System.IO.Path]::GetFileName($installRoot) -cne $expectedDirectoryName) {
-    throw 'Refusing to inspect a directory outside the fixed Xiaojing installation identity.'
+  if ($expectedDirectoryNames -cnotcontains [System.IO.Path]::GetFileName($installRoot)) {
+    throw 'Refusing to inspect a directory outside the fixed Katcat installation identity.'
   }
 
   $running = @(Get-XiaojingInstallProcesses -Root $installRoot)
   if ($running.Count -gt 0) {
-    $appExecutable = Join-Path $installRoot '小兢会计.exe'
+    $appExecutable = Join-Path $installRoot 'Katcat.AI.exe'
+    if (-not (Test-Path -LiteralPath $appExecutable -PathType Leaf)) {
+      $appExecutable = Join-Path $installRoot '小兢办公.exe'
+    }
     if (Test-Path -LiteralPath $appExecutable -PathType Leaf) {
       try {
         Start-Process -FilePath $appExecutable -ArgumentList $shutdownArgument -WindowStyle Hidden | Out-Null

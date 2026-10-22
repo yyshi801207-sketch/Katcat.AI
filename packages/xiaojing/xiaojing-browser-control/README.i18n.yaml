@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-browser-control/README.md
 /:
-  en: 05c97b70950e05f7
-  zh: 05c97b70950e05f7
+  en: 8fdab11985dd6e1a
+  zh: 8fdab11985dd6e1a
 /deepseek-ai-dsh-xiaojing-browser-control:
-  en: 0b80cab286b70028
-  zh: 6ff9ab33f3a95bdd
+  en: 94473380207758e2
+  zh: 5b83bc2eaa421c8a
 /deepseek-ai-dsh-xiaojing-browser-control/summary:
   en: f06768122c72b2f6
-  zh: 7d8c0edab4470ff7
+  zh: e2c980dda4c45cee
 /deepseek-ai-dsh-xiaojing-browser-control/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
@@ -21,17 +21,17 @@
   en: 65fd838f4571e711
   zh: 64f24f496bba8989
 /deepseek-ai-dsh-xiaojing-browser-control/native-browser-connections/connecting-already-open-tabs:
-  en: bcc80547741202b4
-  zh: 2ee138612774eed2
+  en: a1685b2e1c709c8a
+  zh: eebb45645c435690
 /deepseek-ai-dsh-xiaojing-browser-control/native-browser-connections/native-configuration-and-approvals:
-  en: 0214b129dfa48161
-  zh: 11ec750d3fd5aa81
+  en: 10be376b99a036da
+  zh: 6d622dbb14fb90a4
 /deepseek-ai-dsh-xiaojing-browser-control/legacy-edge-entry:
   en: 2e19c81428fd3cc2
   zh: 32b6f1695b57d2bd
 /deepseek-ai-dsh-xiaojing-browser-control/edge-routes:
-  en: 8c3e21b63bd95c83
-  zh: 17159efdaa9a08a2
+  en: 45341150bc671b0f
+  zh: be757ecf85de902c
 /deepseek-ai-dsh-xiaojing-browser-control/semantic-execution:
   en: 6594e3f3899a131f
   zh: 3820a1397603368c
@@ -42,8 +42,8 @@
   en: 8d08486b0ef00e13
   zh: 6429fe0980816824
 /deepseek-ai-dsh-xiaojing-browser-control/configuration:
-  en: ba5780bc3174623e
-  zh: d41d71568b2b20ad
+  en: 8289d31deafc4597
+  zh: add3a512678ad30f
 /deepseek-ai-dsh-xiaojing-browser-control/model-experience:
   en: 215e7ba838619b7b
   zh: a311da3843709f90

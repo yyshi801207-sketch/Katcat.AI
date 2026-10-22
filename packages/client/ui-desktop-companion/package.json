@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-client-ui-desktop-companion",
-  "description": "Xiaojing settings page for the Windows desktop companion",
+  "description": "Katcat settings page for the Windows desktop companion",
   "version": "0.2.1-rc.2",
   "publishConfig": {
     "access": "public"

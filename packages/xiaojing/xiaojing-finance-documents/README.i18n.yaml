@@ -3,23 +3,23 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-finance-documents/README.md
 /:
-  en: 39f60fe752d648c1
-  zh: 39f60fe752d648c1
+  en: a9838041f1eb0c33
+  zh: a9838041f1eb0c33
 /deepseek-ai-dsh-xiaojing-finance-documents:
   en: d38cd5648a4d2c08
   zh: e12c494375bca11c
 /deepseek-ai-dsh-xiaojing-finance-documents/summary:
-  en: ec46af9b35400048
-  zh: 4bd12c43c28a03cc
+  en: f46a69ad272dd354
+  zh: 474de173472df630
 /deepseek-ai-dsh-xiaojing-finance-documents/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-xiaojing-finance-documents/source-authorization-and-normalization:
-  en: d9ac99056d5a54fd
-  zh: 4c117c97303390fd
+  en: 6376b5c247191df7
+  zh: 96eec20ce48253ee
 /deepseek-ai-dsh-xiaojing-finance-documents/tools-and-mode-isolation:
-  en: 9928d77d6636df02
-  zh: b4035405e790bb10
+  en: ef3d61b6903352ad
+  zh: 0c94e1ec06b2f114
 /deepseek-ai-dsh-xiaojing-finance-documents/persistence-and-removal:
   en: 6bcca3f808d2ee48
   zh: 36dad05f06ffcb87
@@ -30,8 +30,8 @@
   en: f3ad909f36324fff
   zh: 9ecac282dcabd36b
 /deepseek-ai-dsh-xiaojing-finance-documents/model-experience/shared-deterministic-document-reader/what-the-model-sees:
-  en: 32ac97d4ff9c5ac3
-  zh: fc525572c67ab3d2
+  en: 427c953176fd8bdd
+  zh: ab1ad35884e9b67d
 /deepseek-ai-dsh-xiaojing-finance-documents/model-experience/shared-deterministic-document-reader/token-effect:
   en: 08dc61caf13e7271
   zh: e29e70588debb182

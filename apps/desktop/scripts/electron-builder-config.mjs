@@ -69,7 +69,7 @@ export function createElectronBuilderConfig(
   if (skipNotarization && (unsigned || resolvedPlatform !== 'darwin')) throw new Error('Skipping notarization requires a signed macOS build')
   const packagesMacOS = targetPlatform === 'darwin' || (targetPlatform === undefined && hostPlatform === 'darwin')
   const packagesWindows = resolvedPlatform === 'win32'
-  const policy = packagesMacOS && unsigned ? undefined : resolveDesktopPolicyEnvironment(env)
+  const policy = unsigned ? undefined : resolveDesktopPolicyEnvironment(env)
   if (resolvedPlatform === 'win32') installWindowsDirectoryInstaller()
   const macOSSigning = packagesMacOS && !unsigned ? resolveMacOSSigningEnvironment(env) : undefined
   if (packagesMacOS && !unsigned && !skipNotarization) resolveMacOSNotarizationEnvironment(env)
@@ -111,7 +111,7 @@ export function createElectronBuilderConfig(
   const packaged = resolveDesktopBuildCommit(env)
   return {
     appId,
-    protocols: [{ name: identity.productName, schemes: ['dsh'] }],
+    protocols: [{ name: identity.productName, schemes: ['xiaojing-office'] }],
     extraMetadata: {
       dshDesktopAppId: appId,
       dshDesktopUpdateChannel: update?.channel ?? 'nightly',
@@ -170,10 +170,10 @@ export function createElectronBuilderConfig(
       { from: buildPaths.runtime, to: 'runtime' },
       { from: fileURLToPath(new URL('../build/app-icon.png', import.meta.url)), to: 'icon.png' },
       ...(packagesWindows ? [{ from: fileURLToPath(new URL('../build/installer-runtime-icon.ico', import.meta.url)), to: 'tray.ico' }] : []),
-      { from: fileURLToPath(new URL('../../../packages/xiaojing/xiaojing-browser-control/extension', import.meta.url)), to: 'xiaojing-edge-extension' },
+      { from: fileURLToPath(new URL('../../../packages/xiaojing/xiaojing-browser-control/extension', import.meta.url)), to: 'katcat-edge-extension' },
       { from: fileURLToPath(new URL('../../../LICENSE', import.meta.url)), to: 'legal/DeepSeek-Harness-LICENSE.txt' },
       { from: fileURLToPath(new URL('../../../THIRD_PARTY_NOTICES.md', import.meta.url)), to: 'legal/THIRD_PARTY_NOTICES.md' },
-      { from: fileURLToPath(new URL('../build/internal-use-notice.txt', import.meta.url)), to: 'legal/Xiaojing-Internal-Use-Notice.txt' },
+      { from: fileURLToPath(new URL('../build/internal-use-notice.txt', import.meta.url)), to: 'legal/Katcat-Internal-Use-Notice.txt' },
     ],
     mac: {
       icon: fileURLToPath(new URL('../resources/icon-macos.png', import.meta.url)),
@@ -181,7 +181,7 @@ export function createElectronBuilderConfig(
       // macOS matches the application locale against this bundle, not Electron Framework resources.
       extendInfo: {
         CFBundleLocalizations: ['en', 'zh_CN'],
-        NSMicrophoneUsageDescription: '小兢会计使用麦克风将语音转写为消息草稿。',
+        NSMicrophoneUsageDescription: 'Katcat使用麦克风将语音转写为消息草稿。',
       },
       // Ad-hoc signing keeps the modified Electron executable runnable without a Developer ID.
       identity: unsigned ? '-' : macOSSigning?.signingIdentity,
@@ -259,7 +259,7 @@ export function createElectronBuilderConfig(
     win: {
       icon: fileURLToPath(new URL('../build/app-icon.png', import.meta.url)),
       executableName: identity.executableName,
-      legalTrademarks: '小兢会计是瑞华云数豆科技内部使用品牌',
+      legalTrademarks: 'Katcat是瑞华云数豆科技内部使用品牌',
       forceCodeSigning: !unsigned,
       signtoolOptions: {
         sign: windowsSigner,

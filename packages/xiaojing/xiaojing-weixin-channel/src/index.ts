@@ -1,4 +1,4 @@
-/** Xiaojing Weixin iLink channel: pairing, durable polling, Agent bridging, and approval replies. */
+/** Katcat Weixin iLink channel: pairing, durable polling, Agent bridging, and approval replies. */
 
 import { createHash, randomInt, randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
@@ -209,7 +209,7 @@ function ok<T>(value: T): ConnectionRpcResult<T> {
 
 function browserSafeError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error)
-  if (message.startsWith('另一套小兢会计正在使用此微信连接')
+  if (message.startsWith('另一套Katcat正在使用此微信连接')
     || message.startsWith('微信任务正在处理')
     || message.startsWith('当前没有等待验证的微信连接')) return message
   if (message === 'iLink request timed out' || /^iLink request failed with HTTP \d{3}$/.test(message)) {
@@ -470,7 +470,7 @@ export class XiaojingWeixinChannel {
       this.state = await this.store.load()
       this.leaseOwned = await this.lease.acquire()
       if (!this.leaseOwned) {
-        this.setStatus('instance-busy', false, '另一套小兢会计正在使用此微信连接。')
+        this.setStatus('instance-busy', false, '另一套Katcat正在使用此微信连接。')
         return
       }
       const token = await this.ctx.credentials.resolve(TOKEN_REF)
@@ -625,7 +625,7 @@ export class XiaojingWeixinChannel {
   }
 
   private async startPairing(): Promise<void> {
-    if (!this.leaseOwned) throw new Error('另一套小兢会计正在使用此微信连接。')
+    if (!this.leaseOwned) throw new Error('另一套Katcat正在使用此微信连接。')
     if (this.active !== undefined || this.state.pending.length > 0) {
       throw new Error('微信任务正在处理，请等待任务完成后再重新连接。')
     }

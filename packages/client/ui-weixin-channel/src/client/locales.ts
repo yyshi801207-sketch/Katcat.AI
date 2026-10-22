@@ -3,7 +3,7 @@
 export const zh = {
   nav: '频道',
   title: '频道',
-  description: '连接微信后，可以在手机上向小兢会计发送文字、图片和文档，任务和结果会同步保存在“微信助手”会话中。',
+  description: '连接微信后，可以在手机上向Katcat发送文字、图片和文档，任务和结果会同步保存在“微信助手”会话中。',
   weixin: '微信',
   connected: '已连接',
   disconnected: '未连接',
@@ -13,7 +13,7 @@ export const zh = {
   reconnecting: '重连中',
   expiredState: '已过期',
   unavailable: '不可用',
-  online: '小兢会计打开期间保持在线',
+  online: 'Katcat打开期间保持在线',
   capabilities: '支持微信单聊文字、图片和普通文档；图片识别需要选用支持图片的模型。暂不支持语音、视频和普通微信群。',
   scan: '扫码连接微信',
   scanTitle: '使用手机微信扫码',
@@ -30,9 +30,9 @@ export const zh = {
   retry: '重新生成二维码',
   account: 'Bot 账号',
   loading: '正在读取微信连接状态…',
-  instanceBusy: '另一套小兢会计正在使用此微信连接，请先关闭另一套程序。',
+  instanceBusy: '另一套Katcat正在使用此微信连接，请先关闭另一套程序。',
   tokenExpired: '连接凭据已失效，请重新扫码。',
-  safety: '涉及删除、提交、付款或向微信发送本机文件时，小兢会计会在微信中发送六位确认码，确认后才会继续。',
+  safety: '涉及删除、提交、付款或向微信发送本机文件时，Katcat会在微信中发送六位确认码，确认后才会继续。',
 }
 
 /** English channel settings copy. */
@@ -49,7 +49,7 @@ export const en: typeof zh = {
   reconnecting: 'Reconnecting',
   expiredState: 'Expired',
   unavailable: 'Unavailable',
-  online: 'Online while Xiaojing Accounting is open',
+  online: 'Online while Katcat is open',
   capabilities: 'Direct text, images, and ordinary documents are supported. Image understanding requires a model that supports images. Voice, video, and ordinary groups are not supported.',
   scan: 'Connect Weixin',
   scanTitle: 'Scan with Weixin on your phone',
@@ -66,9 +66,9 @@ export const en: typeof zh = {
   retry: 'Generate a new QR code',
   account: 'Bot account',
   loading: 'Loading Weixin channel status…',
-  instanceBusy: 'Another Xiaojing Accounting process is using this Weixin connection. Close it first.',
+  instanceBusy: 'Another Katcat process is using this Weixin connection. Close it first.',
   tokenExpired: 'The connection credential expired. Scan again.',
-  safety: 'For deletion, submission, payment, or sending a local file to Weixin, Xiaojing sends a six-digit code and continues only after confirmation.',
+  safety: 'For deletion, submission, payment, or sending a local file to Weixin, Katcat sends a six-digit code and continues only after confirmation.',
 }
 
 /** Locale keys used by the Weixin channel page. */

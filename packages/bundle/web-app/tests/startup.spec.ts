@@ -137,7 +137,7 @@ describe('web command-line provider', () => {
     })
   })
 
-  it('prepares the Xiaojing Finance root before dependent rows activate', async () => {
+  it('starts Xiaojing without creating a Finance workspace', async () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-web-startup-finance-'))
     tempDirs.push(root)
     const financeWorkspaceRoot = join(root, 'Finance工作区')
@@ -146,8 +146,8 @@ describe('web command-line provider', () => {
 
     const { values } = await bootProvider([])
 
-    expect(values?.financeWorkspaceRoot).toBe(financeWorkspaceRoot)
-    expect(existsSync(financeWorkspaceRoot)).toBe(true)
+    expect(values).toEqual({ openBrowser: true, trustedHosts: [] })
+    expect(existsSync(financeWorkspaceRoot)).toBe(false)
   })
 
   it('prints its own help and leaves the consumer pending', async () => {

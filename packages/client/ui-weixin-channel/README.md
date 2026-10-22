@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing settings page for the local Weixin iLink channel"
+description: "Katcat settings page for the local Weixin iLink channel"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 English | [中文](README.zh.md)
 
+User-visible application names and messages use Katcat. Existing installation identifiers and durable data paths retain their compatibility values.
+
 ## Summary
 
-Browser presentation for the Xiaojing Weixin channel. It adds a “Channels” settings section, keeps the Weixin card expanded by default, and presents pairing, verification, connection, reconnection, expiry, and error states without owning credentials or transport state.
+Browser presentation for the Katcat Weixin channel. It adds a “Channels” settings section, keeps the Weixin card expanded by default, and presents pairing, verification, connection, reconnection, expiry, and error states without owning credentials or transport state.
 
 
 ## Table of Contents
@@ -26,7 +28,7 @@ The page displays a Host-generated QR image with an expiry countdown, phone conf
 
 ## Security
 
-The UI refuses to register on a non-loopback origin or outside the Xiaojing build profile. Every response type is browser-safe and contains only connection state, a masked account label, QR image data, expiry, verification requirement, and a user-safe error. Credential and durable queue operations remain Host-only.
+The UI refuses to register on a non-loopback origin or outside the Katcat build profile. Every response type is browser-safe and contains only connection state, a masked account label, QR image data, expiry, verification requirement, and a user-safe error. Credential and durable queue operations remain Host-only.
 
 ## Model Experience
 

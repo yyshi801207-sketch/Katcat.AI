@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing Finance client management and immutable session-context surfaces"
+description: "Katcat Finance client management and immutable session-context surfaces"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,13 @@ kind: "package-reference"
 
 English | [中文](README.zh.md)
 
+User-visible application names and messages use Katcat. Existing installation identifiers and durable data paths retain their compatibility values.
+
 ## Summary
 
-Removable Xiaojing Client presentation for local Finance client records and per-session context selection. The package is compiled only for `DSH_CLIENT_BUILD_PROFILE=xiaojing`; removing its Web composition row removes every Finance client UI without changing the Host service, other presets, or official Harness UI. The UI labels these records `Ledgers`; persistence, Remote identifiers, and Workspace paths use the Finance client model.
+This package is maintained as an optional component for explicitly composed Finance profiles and is not mounted by the Katcat personal desktop defaults.
+
+Removable Katcat Client presentation for local Finance client records and per-session context selection. The package is compiled only for `DSH_CLIENT_BUILD_PROFILE=xiaojing`; removing its Web composition row removes every Finance client UI without changing the Host service, other presets, or official Harness UI. The UI labels these records `Ledgers`; persistence, Remote identifiers, and Workspace paths use the Finance client model.
 
 
 ## Table of Contents
@@ -38,13 +42,13 @@ Connection diagnostics distinguish timeout, network failure, and HTTP 403 access
 
 ## Attachment and reimbursement configuration
 
-On loopback Xiaojing pages, Settings includes `Attachment storage`. It edits one computer-wide private OSS configuration, accepts write-only RAM credentials, and distinguishes saving from a real upload/download/cleanup test. Unsaved changes invalidate the displayed test result. New installations have non-secret deployment defaults but require their own authorized keys; neither product login nor bundled credentials are assumed. Storage scope and transfer limits belong to the [Finance Host](../../xiaojing/xiaojing-finance-domain/README.md#private-attachments-and-reimbursement-drafts).
+On loopback Katcat pages, Settings includes `Attachment storage`. It edits one computer-wide private OSS configuration, accepts write-only RAM credentials, and distinguishes saving from a real upload/download/cleanup test. Unsaved changes invalidate the displayed test result. New installations have non-secret deployment defaults but require their own authorized keys; neither product login nor bundled credentials are assumed. Storage scope and transfer limits belong to the [Finance Host](../../xiaojing/xiaojing-finance-domain/README.md#private-attachments-and-reimbursement-drafts).
 
 The ledger information editor exposes financial connection settings only. It does not load, save, or test reimbursement configuration. Existing reimbursement credentials and historical records remain in Host storage; removing this UI entry does not delete them or disable the existing backend capability. Attachment storage settings remain available separately.
 
 ## Conversation context
 
-Finance tool names registered by this product use a dedicated Chat card. Successful calls show the persisted business summary from `tool/result.meta`; running and older calls without that metadata display a localized status instead of raw arguments or model-facing JSON. Failed calls display a localized status and a short, screened plain-text reason when one is available; structured or technical errors remain hidden. The model still receives the complete tool result. This card applies only to the Xiaojing Finance tools and does not change the generic Harness renderer.
+Finance tool names registered by this product use a dedicated Chat card. Successful calls show the persisted business summary from `tool/result.meta`; running and older calls without that metadata display a localized status instead of raw arguments or model-facing JSON. Failed calls display a localized status and a short, screened plain-text reason when one is available; structured or technical errors remain hidden. The model still receives the complete tool result. This card applies only to the Katcat Finance tools and does not change the generic Harness renderer.
 
 Committed `finance/file-published` events display an explicit file-opening button in Chat, including after history reload. The action uses the recorded destination with the existing Host opener; it does not depend on the model writing a link and does not open automatically. Non-loopback browsers cannot activate it. This is local-file opening, not download hosting or proof that the file still exists. Imports, archives and failed exports do not create a publication button.
 

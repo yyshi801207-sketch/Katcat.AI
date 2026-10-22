@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $desktopRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $sourcePath = Join-Path $desktopRoot 'build/installer-icon-source.png'
 $sourceHash = (Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash
-if ($sourceHash -ne '586221BFC8C3CB1B8C12B0EB43443469EA5974D98D025215B5BA6FB3DC2C1E04') {
+if ($sourceHash -ne '7231530038EAC029C126EE28819746F6409C39E7A81D762C60243CD5AFABB618') {
   throw 'The branded icon source changed; review its native crop before generating Windows icons.'
 }
 Add-Type -AssemblyName System.Drawing
@@ -12,8 +12,8 @@ try {
   if ($sourceBitmap.Width -ne 1254 -or $sourceBitmap.Height -ne 1254) {
     throw 'The branded icon source must be 1254 by 1254 pixels.'
   }
-  # This crop keeps two source pixels beyond the alpha-128 tile bounds.
-  $nativeBitmap = $sourceBitmap.Clone([Drawing.Rectangle]::new(49, 49, 1157, 1157), [Drawing.Imaging.PixelFormat]::Format32bppArgb)
+  # Keep transparent padding around the supplied black-and-white rounded tile.
+  $nativeBitmap = $sourceBitmap.Clone([Drawing.Rectangle]::new(90, 92, 1074, 1074), [Drawing.Imaging.PixelFormat]::Format32bppArgb)
   try {
     $stream = [IO.MemoryStream]::new()
     try {

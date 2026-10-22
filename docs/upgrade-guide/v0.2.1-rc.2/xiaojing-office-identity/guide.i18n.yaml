@@ -1,0 +1,16 @@
+# Bilingual-pair consistency record for guide.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/upgrade-guide/v0.2.1-rc.2/xiaojing-office-identity/guide.md
+/:
+  en: e65fbf42491f01b2
+  zh: 06ed3c8cca8b2d34
+/katcat-installation-identity:
+  en: 1de215575f558da4
+  zh: 697aaab18757c70e
+/katcat-installation-identity/change:
+  en: 75744a1a37ee255b
+  zh: 58eaab3d697a8b21
+/katcat-installation-identity/migration:
+  en: 6e57f2f369e444be
+  zh: 66504e3ee634897c

@@ -49,12 +49,12 @@ function assert(condition, message) {
 }
 
 if (contract.schemaVersion !== 1
-  || contract.electronUserData !== '%APPDATA%\\@sudotech\\xiaojing-accounting-desktop'
+  || contract.electronUserData !== '%APPDATA%\\Katcat-desktop'
   || contract.harnessHome !== 'harness'
-  || contract.documentsWorkspace !== '小兢会计工作区') {
+  || contract.documentsWorkspace !== 'Katcat_Home') {
   throw new Error('desktop user-data paths changed; an explicit migration and previous-version fixture are required')
 }
-if (JSON.stringify(identity.userDataSegments) !== JSON.stringify(['@sudotech', 'xiaojing-accounting-desktop'])) {
+if (JSON.stringify(identity.userDataSegments) !== JSON.stringify(['Katcat-desktop'])) {
   throw new Error('desktop identity no longer resolves the protected Electron user-data root')
 }
 if (builder.nsis?.deleteAppDataOnUninstall !== false) {
@@ -62,11 +62,9 @@ if (builder.nsis?.deleteAppDataOnUninstall !== false) {
 }
 if (!product.includes("const userData = join(application.getPath('appData'), ...XIAOJING_IDENTITY.userDataSegments)")
   || !product.includes("dshHome: join(userData, 'harness')")
-  || !product.includes("const workspaceRoot = join(application.getPath('documents'), '小兢会计工作区')")
-  || !product.includes("officeWorkspace: join(workspaceRoot, '办公工作区')")
-  || !product.includes("financeWorkspace: join(workspaceRoot, 'Finance工作区')")
+  || !product.includes("const workspaceRoot = join(application.getPath('documents'), 'Katcat_Home')")
+  || !product.includes("officeWorkspace: workspaceRoot")
   || !product.includes('XIAOJING_OFFICE_WORKSPACE_ROOT: paths.officeWorkspace')
-  || !product.includes('XIAOJING_FINANCE_WORKSPACE_ROOT: paths.financeWorkspace')
   || !main.includes('resources, (next) => { platformView.setSession(next) }, xiaojingPaths.officeWorkspace)')) {
   throw new Error('desktop startup no longer uses the permanent user-data paths')
 }
@@ -356,4 +354,4 @@ try {
   await rm(scratch, { recursive: true, force: true })
 }
 
-console.log(`desktop ${fixtureVersion} -> ${identity.productVersion} (DSH ${manifest.version}) user-data compatibility contract verified`)
+console.log(`desktop Office ${identity.productVersion} data isolation and legacy ${fixtureVersion} fixture retention verified (DSH ${manifest.version})`)

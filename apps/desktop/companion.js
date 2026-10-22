@@ -2,13 +2,16 @@ const companion = document.querySelector('#companion')
 const character = document.querySelector('#character')
 const bubble = document.querySelector('#bubble')
 const bubbleText = document.querySelector('#bubbleText')
-const STARTUP_GREETING = '你好，我是小兢会计，\n您的AI办公搭子！'
+const STARTUP_GREETING = '我是 Katcat，\n您的超级个人助理！'
 const STARTUP_GREETING_DELAY_MS = 3_000
 const STARTUP_GREETING_MS = 5_000
-const IDLE_POSE_INTERVAL_MS = 3 * 60_000
-const IDLE_POSE_ROUNDS = 2
-const IDLE_POSE_ROUND_MS = 3_000
-const IDLE_POSES = ['thinking', 'approval', 'executing']
+const idleMotion = document.querySelector('#idleMotion')
+const IDLE_MOTIONS = ['blink', 'tail', 'blink', 'blink', 'tail', 'blink', 'yawn']
+const IDLE_FRAMES = {
+  blink: [[0, 80], [1, 85], [2, 120], [3, 85], [0, 80]],
+  tail: [[4, 180], [5, 180], [6, 220], [7, 180], [6, 180], [5, 180], [4, 180]],
+  yawn: [[8, 400], [9, 850], [10, 400], [11, 200]],
+}
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
 const copy = {
@@ -20,16 +23,13 @@ const copy = {
 }
 
 let state = 'idle'
-let blinkTimer
 let transientTimer
 let startupGreetingDelayTimer
-let idlePoseTimer
-let idlePoseResetTimer
+let idleMotionTimer
+let idleFrameTimer
 let startupGreetingPending = new URLSearchParams(window.location.search).get('startupGreeting') === '1'
 let startupGreetingActive = false
-let idlePoseActive = false
-let idlePoseRound = 0
-let lastIdlePose
+let idleMotionIndex = 0
 let applicationReady = false
 
 function scheduleStartupGreeting() {
@@ -44,7 +44,7 @@ function scheduleStartupGreeting() {
     transientTimer = setTimeout(() => {
       startupGreetingActive = false
       bubble.classList.remove('transient')
-      scheduleIdlePose()
+      scheduleIdleMotion()
     }, STARTUP_GREETING_MS)
   }, STARTUP_GREETING_DELAY_MS)
 }
@@ -70,70 +70,45 @@ function applyScale(scale) {
 }
 
 function imageFor(next) {
-  return `assets/desktop-companion/runtime/${next}.webp`
+  return `assets/desktop-companion/runtime/${next === 'failure' ? 'idle' : next}.png`
 }
 
-function cancelIdlePose({ restore = false } = {}) {
-  clearTimeout(idlePoseTimer)
-  clearTimeout(idlePoseResetTimer)
-  idlePoseTimer = undefined
-  idlePoseResetTimer = undefined
-  idlePoseActive = false
-  idlePoseRound = 0
-  if (restore && state === 'idle') character.src = imageFor('idle')
+function setIdleFrame(frame) {
+  // Measured transparent gutters keep neighboring ears and tails outside each viewport.
+  const x = [12, 374, 736, 1098][frame % 4]
+  const y = [26, 380, 726][Math.floor(frame / 4)]
+  idleMotion.setAttribute('viewBox', `${x} ${y} 354 354`)
 }
 
-function advanceIdlePose() {
-  if (state !== 'idle' || reducedMotion.matches) {
-    cancelIdlePose()
-    return
-  }
-  if (idlePoseRound >= IDLE_POSE_ROUNDS) {
-    idlePoseActive = false
-    idlePoseRound = 0
-    character.src = imageFor('idle')
-    scheduleBlink()
-    scheduleIdlePose()
-    return
-  }
-  const choices = IDLE_POSES.filter(pose => pose !== lastIdlePose)
-  const pose = choices[Math.floor(Math.random() * choices.length)]
-  lastIdlePose = pose
-  idlePoseRound += 1
-  character.src = imageFor(pose)
-  idlePoseResetTimer = setTimeout(advanceIdlePose, IDLE_POSE_ROUND_MS)
+function cancelIdleMotion() {
+  clearTimeout(idleMotionTimer)
+  clearTimeout(idleFrameTimer)
+  idleMotionTimer = undefined
+  idleFrameTimer = undefined
+  setIdleFrame(0)
 }
 
-function scheduleIdlePose() {
-  if (
-    idlePoseTimer
-    || idlePoseActive
-    || reducedMotion.matches
-    || state !== 'idle'
-    || startupGreetingPending
-    || startupGreetingActive
-  ) return
-  idlePoseTimer = setTimeout(() => {
-    idlePoseTimer = undefined
-    if (reducedMotion.matches || state !== 'idle' || startupGreetingPending || startupGreetingActive) return
-    idlePoseActive = true
-    idlePoseRound = 0
-    clearTimeout(blinkTimer)
-    advanceIdlePose()
-  }, IDLE_POSE_INTERVAL_MS)
-}
-
-function scheduleBlink() {
-  clearTimeout(blinkTimer)
-  if (state !== 'idle' || idlePoseActive) return
-  blinkTimer = setTimeout(() => {
-    if (state !== 'idle' || idlePoseActive) return
-    character.src = imageFor('blink')
-    setTimeout(() => {
-      if (state === 'idle' && !idlePoseActive) character.src = imageFor('idle')
-      scheduleBlink()
-    }, 145)
-  }, 2_600 + Math.floor(Math.random() * 3_200))
+function scheduleIdleMotion() {
+  if (idleMotionTimer || idleFrameTimer || reducedMotion.matches || state !== 'idle') return
+  idleMotionTimer = setTimeout(() => {
+    idleMotionTimer = undefined
+    const frames = IDLE_FRAMES[IDLE_MOTIONS[idleMotionIndex % IDLE_MOTIONS.length]]
+    idleMotionIndex += 1
+    let index = 0
+    function advance() {
+      idleFrameTimer = undefined
+      if (state !== 'idle' || reducedMotion.matches) return cancelIdleMotion()
+      if (index === frames.length) {
+        setIdleFrame(0)
+        scheduleIdleMotion()
+        return
+      }
+      const [frame, duration] = frames[index++]
+      setIdleFrame(frame)
+      idleFrameTimer = setTimeout(advance, duration)
+    }
+    advance()
+  }, 4_000 + Math.floor(Math.random() * 3_000))
 }
 
 function render(view) {
@@ -141,19 +116,17 @@ function render(view) {
   const previous = state
   applicationReady = view.applicationReady === true
   state = view.snapshot.state
-  if (state !== 'idle') cancelIdlePose()
+  if (state !== 'idle') cancelIdleMotion()
   companion.className = `companion state-${state}`
-  if (!idlePoseActive || state !== 'idle') character.src = imageFor(state)
+  character.src = imageFor(state)
+  scheduleIdleMotion()
   if (startupGreetingActive && state === 'idle') {
-    scheduleBlink()
     return
   }
   if (startupGreetingPending && state === 'idle') {
     scheduleStartupGreeting()
-    scheduleBlink()
     return
   }
-  if (idlePoseActive && state === 'idle') return
   clearTimeout(startupGreetingDelayTimer)
   startupGreetingDelayTimer = undefined
   startupGreetingPending = false
@@ -174,16 +147,14 @@ function render(view) {
   } else {
     bubbleText.textContent = copy[state] ?? ''
   }
-  scheduleBlink()
-  scheduleIdlePose()
 }
 
 reducedMotion.addEventListener('change', () => {
-  cancelIdlePose({ restore: true })
-  scheduleIdlePose()
+  cancelIdleMotion()
+  scheduleIdleMotion()
 })
 
 companion.addEventListener('dblclick', () => { void window.xiaojingDesktop.showMainWindow() })
 const unsubscribe = window.xiaojingDesktop.subscribeCompanionState(render)
-window.addEventListener('beforeunload', unsubscribe, { once: true })
+window.addEventListener('beforeunload', () => { cancelIdleMotion(); unsubscribe() }, { once: true })
 void window.xiaojingDesktop.getCompanionState().then(render)

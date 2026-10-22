@@ -1,0 +1,16 @@
+# Bilingual-pair consistency record for guide.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/upgrade-guide/v0.2.1-rc.2/personal-office-only/guide.md
+/:
+  en: bac773df156885f3
+  zh: f303964be28d40e8
+/personal-xiaojing-uses-office-workspaces:
+  en: 02ad1b083668a789
+  zh: fe5ac42964fe0dd7
+/personal-xiaojing-uses-office-workspaces/change:
+  en: 5ff9b5277ed4c783
+  zh: eea2d7108f1f5b9a
+/personal-xiaojing-uses-office-workspaces/migration:
+  en: c44443f6ffb6041b
+  zh: db19d03f1ee89782

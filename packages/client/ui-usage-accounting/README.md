@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Xiaojing-profile browser presentation for the local usage-accounting Remote. It adds a current-day summary to `sidebar.footer.action` and a current-month calendar to `settings.section` without owning billing data or credential values. Official and local Harness client builds register neither entry.
+Xiaojing-profile browser presentation for the local usage-accounting Remote. It adds a current-day summary to `sidebar.footer.action` and a current-month calendar to `settings.section` without owning billing data or credential values. Official and local Harness client builds register neither entry. The sidebar icon and cost figures accept the product-owned `--dsw-specific-usage-accent` color; Katcat uses white in dark mode.
 
 
 ## Table of Contents

@@ -2,7 +2,9 @@
 
 [English](youcheng-finance-f3b-handoff.md) | 中文
 
-更新于2026-09-15。这是同一本地项目的当前衔接点。优先读取[开发状态](youcheng-finance-development-status.zh.md)、[最新六路径验收回执](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json)、[凭证最小删除回执](../../critique/f3b-lab/receipts/cf12-minimal-voucher-delete-20260915.json)和[维护提案](../../.agents/notes/proposed/feature/2026-09-10-finance-destructive-maintenance.zh.md)，不要先读历史长聊天或旧根交接。供应商确认的CF12最小请求已消除原appId／flowId来源依赖，并通过真实适配器验收；浏览器手工录入来源是尚未抽样的资格限制。
+历史验收材料 `critique/` 未随本源码发布；文中保留文件名作为历史引用，无法仅凭当前仓库复核这些材料。
+
+更新于2026-09-15。这是同一本地项目的当前衔接点。优先读取[开发状态](youcheng-finance-development-status.zh.md)、最新六路径验收回执 (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`)、凭证最小删除回执 (`critique/f3b-lab/receipts/cf12-minimal-voucher-delete-20260915.json`)和[维护提案](../../.agents/notes/proposed/feature/2026-09-10-finance-destructive-maintenance.zh.md)，不要先读历史长聊天或旧根交接。供应商确认的CF12最小请求已消除原appId／flowId来源依赖，并通过真实适配器验收；浏览器手工录入来源是尚未抽样的资格限制。
 
 ## 交接结论
 
@@ -10,9 +12,9 @@ F3已完成支持范围的收尾，详见[F3收尾文档](youcheng-finance-f3-cl
 
 最新[余额核验修复](youcheng-finance-development-status.zh.md)分别报告原币／本位币证据，不补写原始字段，解决同币种缺少本位币余额的误判。保存的应收应付快照均通过；当前只读恢复中应收匹配，应付保留清单已变化的不匹配结果。不得为追求恢复通过而重发删除。3092已随后重建并重启，由执行会话62427持有；下文63696归属为历史记录。只读测试会话0235e717-f8a6-442c-b97d-e4b46a9608c1已结束。
 
-2026-09-15供应商给出成功的凭证删除请求：`accountName` 加 `cerInfoList: [{ cerId }]`。产品准备操作现只接收voucherId，根据实时Host证据生成账套名称和准确目标，不要求本地创建记录。聚焦测试及组装无Key刷新／回放通过。真实适配器运行创建专用凭证244499，单次发送最小删除请求，观察到接收及两次完整不存在清单，最终准确恢复到41张凭证基线。桌面问题004作为已解决记录保留，并注明浏览器手工录入来源尚未抽样；示例凭证243978未被修改。此前[后续回归回执](../../critique/f3b-lab/receipts/f3-deferred-followup-20260914.json)继续作为历史F3组合证据，不是F4或发布验收。
+2026-09-15供应商给出成功的凭证删除请求：`accountName` 加 `cerInfoList: [{ cerId }]`。产品准备操作现只接收voucherId，根据实时Host证据生成账套名称和准确目标，不要求本地创建记录。聚焦测试及组装无Key刷新／回放通过。真实适配器运行创建专用凭证244499，单次发送最小删除请求，观察到接收及两次完整不存在清单，最终准确恢复到41张凭证基线。桌面问题004作为已解决记录保留，并注明浏览器手工录入来源尚未抽样；示例凭证243978未被修改。此前后续回归回执 (`critique/f3b-lab/receipts/f3-deferred-followup-20260914.json`)继续作为历史F3组合证据，不是F4或发布验收。
 
-[F3本轮回执](../../critique/f3b-lab/receipts/f3-remainder-20260914.json)新增当前代码的科目辅助类别及币种选择。真实主应用科目100292／客户01和100291／USD均有单次接收、配置匹配回查和独立保留审计。适配器实验科目100294／100293单独计证。首次账户ID和辅助项目启停状态仍未解决。后续CF12真实回执解决最小请求的参数／来源阻塞，但不核准浏览器手工录入来源。保留全部已消耗实验意图。该历史检查点重建后的3092由执行会话63696持有；后续重启前应重新核实实际监听归属。验收结束后不刻意保留运行中的测试模型。
+F3本轮回执 (`critique/f3b-lab/receipts/f3-remainder-20260914.json`)新增当前代码的科目辅助类别及币种选择。真实主应用科目100292／客户01和100291／USD均有单次接收、配置匹配回查和独立保留审计。适配器实验科目100294／100293单独计证。首次账户ID和辅助项目启停状态仍未解决。后续CF12真实回执解决最小请求的参数／来源阻塞，但不核准浏览器手工录入来源。保留全部已消耗实验意图。该历史检查点重建后的3092由执行会话63696持有；后续重启前应重新核实实际监听归属。验收结束后不刻意保留运行中的测试模型。
 
 后续F3剩余问题调查记录在[开发状态](youcheng-finance-development-status.zh.md)顶部。已修复独立日记账实验脚本跨日期选取前序的问题，并增加有界核销发送前检查阶段；不改写旧结果。新模拟流水141170／141171／141172保留在35616，其意图不得重放。桌面问题003仅针对已复现的实验脚本缺陷关闭，问题001／002继续暂缓。
 
@@ -56,7 +58,7 @@ pnpm.cmd dsh web --port 3092 --no-open
 
 ## 已验证路径与证据
 
-下表均为账套 35616 的当前真实主应用证据。[回执](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json)包含运行 ID、准确操作 ID、哈希、确认次数及限制。
+下表均为账套 35616 的当前真实主应用证据。回执 (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`)包含运行 ID、准确操作 ID、哈希、确认次数及限制。
 
 | 能力 | 已验证目标与结果 | 适用限制 |
 |---|---|---|

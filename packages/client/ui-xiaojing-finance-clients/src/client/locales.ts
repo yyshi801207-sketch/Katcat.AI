@@ -1,4 +1,4 @@
-/** Xiaojing Finance client-management dictionaries. */
+/** Katcat Finance client-management dictionaries. */
 
 /** Simplified Chinese Finance client-management dictionary. */
 export const zh = {
@@ -10,10 +10,10 @@ export const zh = {
   reimbursementProductionUrl: 'https://yiqbdata.superboss.cc',
   reimbursementTestUrl: 'https://yiqbdatatest.superboss.cc',
   toolWorking: '财务任务处理中…',
-  toolResultUnavailable: '财务结果已返回，请查看小兢会计的回复。',
+  toolResultUnavailable: '财务结果已返回，请查看Katcat的回复。',
   toolFailed: '财务任务未完成',
   publishedFileOpen: '打开财务成果',
-  publishedFileLocalOnly: '请在运行小兢会计的电脑上打开此文件。',
+  publishedFileLocalOnly: '请在运行Katcat的电脑上打开此文件。',
   reimbursementTitle: '有成报销连接',
   reimbursementAppKey: '报销 AppKey',
   reimbursementIntro: '报销与财务分别鉴权，AppKey 可以相同，AppSecret 分开保存。此处独立保存，外层取消不会撤销已保存的报销配置。报销归属由这组凭据确定，不由财务账套 ID 确定。',
@@ -156,10 +156,10 @@ export const en: Record<keyof typeof zh, string> = {
   reimbursementProductionUrl: 'https://yiqbdata.superboss.cc',
   reimbursementTestUrl: 'https://yiqbdatatest.superboss.cc',
   toolWorking: 'Finance task in progress…',
-  toolResultUnavailable: 'Finance result received. See Xiaojing’s reply.',
+  toolResultUnavailable: 'Finance result received. See Katcat’s reply.',
   toolFailed: 'Finance task not completed',
   publishedFileOpen: 'Open Finance deliverable',
-  publishedFileLocalOnly: 'Open this file on the computer running Xiaojing.',
+  publishedFileLocalOnly: 'Open this file on the computer running Katcat.',
   reimbursementTitle: 'Youcheng reimbursement connection',
   reimbursementAppKey: 'Reimbursement AppKey',
   reimbursementIntro: 'Reimbursement and finance authorize independently. AppKeys may match, but AppSecrets are saved separately. Saving here is independent; cancelling the outer editor does not undo it. These credentials determine the reimbursement organization, not the financial ledger ID.',

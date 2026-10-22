@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing Weixin iLink channel, durable Agent session bridge, and encrypted image/document transfer"
+description: "Katcat Weixin iLink channel, durable Agent session bridge, and encrypted image/document transfer"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 [English](README.md) | 中文
 
+用户可见的应用名称和提示文案统一使用 Katcat，现有安装标识和持久化数据路径保留兼容值。
+
 ## 概述
 
-小兢会计的 Host 侧微信频道。该 Cordis 插件绑定一个腾讯 iLink bot，通过出站 HTTPS 长轮询接收单聊文字、图片和文档消息，在持久化 Harness Agent 会话中执行任务，并返回适合手机阅读的文字或本机文件。它不需要公网 Webhook、Python 运行时、OpenClaw 或额外的模型 API Key。
+Katcat的 Host 侧微信频道。该 Cordis 插件绑定一个腾讯 iLink bot，通过出站 HTTPS 长轮询接收单聊文字、图片和文档消息，在持久化 Harness Agent 会话中执行任务，并返回适合手机阅读的文字或本机文件。它不需要公网 Webhook、Python 运行时、OpenClaw 或额外的模型 API Key。
 
 
 ## 目录
@@ -20,15 +22,15 @@ kind: "package-reference"
 <a id="capabilities"></a>
 ## 组合与协议
 
-该插件预装在小兢会计产品组合中。它只使用腾讯官方 iLink 和 CDN 主机，并拒绝服务端返回的非官方地址。媒体字节通过腾讯 CDN 引用和 AES-128-ECB 加密传输。浏览器设置插件通过仅限 loopback 的 `/xiaojing-weixin` RPC 频道与 Host 通信；浏览器响应只包含脱敏状态，不包含 bot token、消息 context token、CDN 密钥或绑定完成后的二维码内容。完成组装的插件还会向注入该能力的 Host 同级插件提供频道实例，并在连接状态变化后发送脱敏的 `xiaojing-weixin/status` 事件；该事件只包含同一组浏览器安全状态字段。
+该插件预装在Katcat产品组合中。它只使用腾讯官方 iLink 和 CDN 主机，并拒绝服务端返回的非官方地址。媒体字节通过腾讯 CDN 引用和 AES-128-ECB 加密传输。浏览器设置插件通过仅限 loopback 的 `/xiaojing-weixin` RPC 频道与 Host 通信；浏览器响应只包含脱敏状态，不包含 bot token、消息 context token、CDN 密钥或绑定完成后的二维码内容。完成组装的插件还会向注入该能力的 Host 同级插件提供频道实例，并在连接状态变化后发送脱敏的 `xiaojing-weixin/status` 事件；该事件只包含同一组浏览器安全状态字段。
 
 设置 RPC 通过 Connection 注册 Web 路由，因此 Host 插件启动时同时需要 `connection` 和 `webServer`。
 
-绑定从 iLink 二维码开始。扫码者在手机上确认后，Host 将签发的 token 保存到 Harness 凭据服务，并将账号、长轮询游标、会话身份、待处理任务和有界去重记录保存到带 schema 版本的私有状态文件。应用退出会中止轮询和当前轮次，等待频道任务完全停稳后再释放状态锁，因此只有小兢会计运行时频道才在线。
+绑定从 iLink 二维码开始。扫码者在手机上确认后，Host 将签发的 token 保存到 Harness 凭据服务，并将账号、长轮询游标、会话身份、待处理任务和有界去重记录保存到带 schema 版本的私有状态文件。应用退出会中止轮询和当前轮次，等待频道任务完全停稳后再释放状态锁，因此只有Katcat运行时频道才在线。
 
 ## 会话与回传
 
-第一条被接受的消息会使用当前默认预设、模型和小兢会计工作区创建唯一的持久化“微信助手”会话。后续启动会恢复该会话及其历史，即使 Host 从其他目录启动，也保留会话已记录的工作区。只有会话不存在时才按当前默认配置创建；其他恢复失败会保留原会话身份和待处理任务。来自扫码账号的消息通过 `sessionController.prompt()` 按 FIFO 顺序执行。入站图片和文档会解密到共享的 `$DSH_HOME/uploads` 目录，并使用经过清理的唯一文件名。PNG、JPEG、WebP 和 GIF 图片会作为原生图片块提交，并保留在 `$DSH_HOME/attachments/v1`；DeepSeek 提供方会通过 Files API 解析已保留图片，Files 解析失败时回退到已保留的内联数据。名称、类型、大小和本机来源路径仍保留在日志文字中。其他文件继续作为基于路径的文字附件。图片消息使用会话已选模型，不会自动切换；默认的 `deepseek-flash` 支持文字和图片，若用户选用仅支持文字的模型，图片提交会被拒绝。稳定的入站消息 ID 和 RPC ID 将每个微信任务与对应 Agent 轮次关联；同一会话中由桌面端发起的消息永远不会回传微信。
+第一条被接受的消息会使用当前默认预设、模型和Katcat工作区创建唯一的持久化“微信助手”会话。后续启动会恢复该会话及其历史，即使 Host 从其他目录启动，也保留会话已记录的工作区。只有会话不存在时才按当前默认配置创建；其他恢复失败会保留原会话身份和待处理任务。来自扫码账号的消息通过 `sessionController.prompt()` 按 FIFO 顺序执行。入站图片和文档会解密到共享的 `$DSH_HOME/uploads` 目录，并使用经过清理的唯一文件名。PNG、JPEG、WebP 和 GIF 图片会作为原生图片块提交，并保留在 `$DSH_HOME/attachments/v1`；DeepSeek 提供方会通过 Files API 解析已保留图片，Files 解析失败时回退到已保留的内联数据。名称、类型、大小和本机来源路径仍保留在日志文字中。其他文件继续作为基于路径的文字附件。图片消息使用会话已选模型，不会自动切换；默认的 `deepseek-flash` 支持文字和图片，若用户选用仅支持文字的模型，图片提交会被拒绝。稳定的入站消息 ID 和 RPC ID 将每个微信任务与对应 Agent 轮次关联；同一会话中由桌面端发起的消息永远不会回传微信。
 
 任务持久化入队后，频道会先为同一更新批次中的每条消息发送可见回执，再开始执行该批次的第一个任务：当前任务提示已开始执行，排队任务显示前方任务数。活跃任务在执行 30 秒后及此后每 30 秒发送一次进度；短暂执行失败会发送一次中断提示，持久化任务仍可自动重试。图片数量、大小、读取、格式或 Host 准入等确定性失败会改为返回可处理的原因、完成该队列项，并立即继续下一条任务。原生“正在输入”状态只作为辅助提示。最终助手回复发送前，格式化器会把标题、列表、链接、代码块和 Markdown 表格转换成紧凑的手机端纯文本。它会保留明确的金额、日期和状态，在段落或行边界拆分长回复，并且不修改桌面会话记录。
 
@@ -132,7 +134,7 @@ schema 和注册顺序在 Agent 生命周期内保持稳定，属于可复用请
 - V1 支持绑定账号的单聊文字、原生视觉 PNG/JPEG/WebP/GIF 输入和文档消息，不提供语音、视频、多人群聊或独立的本地 OCR 引擎。
 - 任意文档类型都可以传输，但 Agent 能否解析特定专有格式取决于已安装的本机工具。
 - 扫码绑定的是 iLink bot 身份，不是接管个人微信账号。
-- 腾讯 iLink 可用性和凭据有效性属于外部依赖。关闭小兢会计后，消息接收和任务执行都会停止。
+- 腾讯 iLink 可用性和凭据有效性属于外部依赖。关闭Katcat后，消息接收和任务执行都会停止。
 - 协议无法保证远程发送成功后立即崩溃场景下的最终结果严格只投递一次。
 
 <a id="dev-note"></a>

@@ -1,5 +1,5 @@
 ---
-description: "Shared deterministic local document normalization for Xiaojing sessions"
+description: "Shared deterministic local document normalization for Katcat sessions"
 kind: "package-reference"
 ---
 
@@ -11,7 +11,7 @@ XML 内容先通过 `fast-xml-validator` 检查语法，再交由 `fast-xml-pars
 
 ## 概述
 
-该小兢 Host 能力为已上传的 PDF、DOCX、XLSX、PPTX、数电发票 XML、OFD、CSV 和文本文件提供同一套确定性本地解析核心。两个会话适配器在不复制解析逻辑的前提下分别授权来源：Finance 会话通过 `finance_document` 消费不可变 Finance 导入事件，Standard、Goal、Plan 等非 Finance 小兢会话通过 `document_reader` 消费持久化的人类上传记录。本包不修改 Agent Loop，也不增加第二个上传按钮。
+该Katcat Host 能力为已上传的 PDF、DOCX、XLSX、PPTX、数电发票 XML、OFD、CSV 和文本文件提供同一套确定性本地解析核心。两个会话适配器在不复制解析逻辑的前提下分别授权来源：Finance 会话通过 `finance_document` 消费不可变 Finance 导入事件，Standard、Goal、Plan 等非 Finance Katcat会话通过 `document_reader` 消费持久化的人类上传记录。本包不修改 Agent Loop，也不增加第二个上传按钮。
 
 
 ## 目录
@@ -22,9 +22,11 @@ XML 内容先通过 `fast-xml-validator` 检查语法，再交由 `fast-xml-pars
 <a id="capabilities"></a>
 ## 来源授权与标准化
 
-现有小兢上传按钮仍是唯一文件入口。Finance 客户上传由 `xiaojing-finance-domain` 提交到绑定客户的 `02-原始资料` 目录，并记录 `finance/file-imported`；Finance 咨询上传记录为 `finance/consultation-file-imported`。Finance 适配器只接受当前会话中的这些不可变记录，并维持客户或咨询会话隔离。
+现有Katcat上传按钮仍是唯一文件入口。Finance 客户上传由 `xiaojing-finance-domain` 提交到绑定客户的 `02-原始资料` 目录，并记录 `finance/file-imported`；Finance 咨询上传记录为 `finance/consultation-file-imported`。Finance 适配器只接受当前会话中的这些不可变记录，并维持客户或咨询会话隔离。
 
-对于非 Finance 会话，普通适配器只扫描当前会话中由真人产生且已持久化的 `user/message` 事件。它只接受随包上传插件生成的精确上传引用行，要求真实来源仍位于小兢受保护上传目录下，并拒绝插件生成的文字、任意路径、符号链接、目录以及其他会话的上传。两个适配器都会在解析前核验普通文件状态和记录大小；经过授权但超过配置上限的文件会在 SHA-256 扫描和 Worker 接纳前返回 `file-too-large`，符合大小限制的文件仍须先通过 SHA-256 核验才能访问缓存。
+解析器要求附件存储；财务业务服务为可选依赖，仅在挂载时启用 Finance 导入预热。普通上传依次使用绝对路径配置 `uploadRoot`、`DSH_UPLOAD_DIR` 或 `<dshHome>/uploads`，相对上传路径在加载时直接报错。
+
+对于非 Finance 会话，普通适配器只扫描当前会话中由真人产生且已持久化的 `user/message` 事件。它只接受随包上传插件生成的精确上传引用行，要求真实来源仍位于Katcat受保护上传目录下，并拒绝插件生成的文字、任意路径、符号链接、目录以及其他会话的上传。两个适配器都会在解析前核验普通文件状态和记录大小；经过授权但超过配置上限的文件会在 SHA-256 扫描和 Worker 接纳前返回 `file-too-large`，符合大小限制的文件仍须先通过 SHA-256 核验才能访问缓存。
 
 支持格式会产生受限且带来源位置的结构单元：
 
@@ -45,7 +47,7 @@ XML 内容先通过 `fast-xml-validator` 检查语法，再交由 `fast-xml-pars
 
 ## 工具与模式隔离
 
-`document_reader` 只在小兢构建中全局注册，因此所有非 Finance 小兢预设都会获得相同的本地文档能力。它支持 `list`、`read` 和 `visuals`，且不接受文件系统路径。Finance 预设注册具有相同操作的 `finance_document`，并在该作用域内明确隐藏 `document_reader`。这样既只保留一套解析实现，又能防止普通适配器绕过 Finance 客户授权。
+`document_reader` 只在Katcat构建中全局注册，因此所有非 Finance Katcat预设都会获得相同的本地文档能力。它支持 `list`、`read` 和 `visuals`，且不接受文件系统路径。Finance 预设注册具有相同操作的 `finance_document`，并在该作用域内明确隐藏 `document_reader`。这样既只保留一套解析实现，又能防止普通适配器绕过 Finance 客户授权。
 
 标准化内容只通过普通已记录工具结果进入模型，不会注入常驻系统提示词。文本和图片均采用分页或分批读取，执行 `visuals` 前还必须确认当前实际模型路线声明支持图片输入。
 
@@ -61,7 +63,7 @@ XML 内容先通过 `fast-xml-validator` 检查语法，再交由 `fast-xml-pars
 
 #### 模型看到什么
 
-非 Finance 小兢预设获得 `document_reader(action, document_id?, cursor?)`，Finance 获得 `finance_document(action, document_id?, cursor?)`。`list` 只返回当前会话授权的文档与解析状态，`read` 返回带来源位置的受限文本单元，`visuals` 返回带来源位置的受限文档图片批次。两个工具都会要求模型停止反复尝试 Shell、Python、Office、本地文件路径或临时转换器。
+非 Finance Katcat预设获得 `document_reader(action, document_id?, cursor?)`，Finance 获得 `finance_document(action, document_id?, cursor?)`。`list` 只返回当前会话授权的文档与解析状态，`read` 返回带来源位置的受限文本单元，`visuals` 返回带来源位置的受限文档图片批次。两个工具都会要求模型停止反复尝试 Shell、Python、Office、本地文件路径或临时转换器。
 
 #### Token 影响
 

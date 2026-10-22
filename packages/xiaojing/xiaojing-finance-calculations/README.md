@@ -1,5 +1,5 @@
 ---
-description: "Versioned deterministic trial calculations for Xiaojing Finance mode"
+description: "Versioned deterministic trial calculations for Katcat Finance mode"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,9 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Versioned deterministic trial calculations for Xiaojing Finance mode. The Host service owns pure decimal calculation and client-context adaptation; a separate Finance-preset consumer registers `finance_calculation`. Standard and other presets receive no tool, and neither entry changes the Agent Loop.
+This package is maintained as an optional component for explicitly composed Finance profiles and is not mounted by the Katcat personal desktop defaults.
+
+Versioned deterministic trial calculations for Katcat Finance mode. The Host service owns pure decimal calculation and client-context adaptation; a separate Finance-preset consumer registers `finance_calculation`. Standard and other presets receive no tool, and neither entry changes the Agent Loop.
 
 
 ## Table of Contents

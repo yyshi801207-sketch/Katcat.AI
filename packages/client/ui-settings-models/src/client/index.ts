@@ -80,7 +80,9 @@ export function apply(ctx: ClientContext): void {
   const page = globalThis as Partial<Record<typeof ONBOARDING_CONFIG_GLOBAL, unknown>>
   const payload = page[ONBOARDING_CONFIG_GLOBAL]
   const configured = Config(payload === undefined ? {} : payload)
-  const credentialOnboarding = configured.credentialOnboarding && !('dshDesktop' in globalThis)
+  const productDesktop = 'dshDesktop' in globalThis && process.env.DSH_CLIENT_BUILD_PROFILE === 'xiaojing'
+  const credentialOnboarding = configured.credentialOnboarding
+    && (!('dshDesktop' in globalThis) || process.env.DSH_CLIENT_BUILD_PROFILE === 'xiaojing')
   ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'ui-settings-models: copy dictionaries')
 
   const schema = createSettingsSchemaOperations(ctx.settingsSchema)
@@ -107,7 +109,11 @@ export function apply(ctx: ClientContext): void {
     schema,
     t,
   })
-  const welcomeController = new WelcomeNoticeStore(ctx.configForms.get<Record<string, unknown>>(WELCOME_NOTICE_SETTINGS_NAMESPACE))
+  const welcomeController = new WelcomeNoticeStore(
+    ctx.configForms.get<Record<string, unknown>>(WELCOME_NOTICE_SETTINGS_NAMESPACE),
+    productDesktop ? configured.installationId : undefined,
+    productDesktop ? controller : undefined,
+  )
   const welcomeInjected = (): WelcomeNoticeInjected => ({
     controller: welcomeController,
     hooks: { welcome: welcomeController.store },

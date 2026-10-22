@@ -39,6 +39,8 @@ export { DirectoryPickerController } from './directory-picker.ts'
 export interface Config {
   /** Absolute starting directory for ordinary Workspace pickers; explicit picker paths take precedence. */
   directoryPickerInitialPath?: string
+  /** Fully qualified first-use Workspace directory; existing registrations keep their paths. */
+  defaultWorkspacePath?: string
   /** Existing absolute roots that an ordinary Workspace may neither contain nor enter. */
   protectedRoots?: string[]
   /** Override the system Documents directory with a fully qualified path. */
@@ -63,6 +65,7 @@ export class WorkspaceController extends TypertRemoteService {
 
   static Config: z<Config, ResolvedConfig> = z.object({
     directoryPickerInitialPath: z.string(),
+    defaultWorkspacePath: z.string(),
     protectedRoots: z.array(z.string()).default([]),
     documentsDirectory: z.string(),
     documentsLookupTimeoutMs: z.natural().min(1).default(10_000),
@@ -80,6 +83,7 @@ export class WorkspaceController extends TypertRemoteService {
     super(ctx, 'workspaceController', { namespace: 'workspace' })
     ctx.typert.resources.register('workspace', { field: 'workspaceId' })
     this.config = WorkspaceController.Config(config)
+    if (this.config.defaultWorkspacePath !== undefined) validateDocumentsDirectory(this.config.defaultWorkspacePath)
     if (this.config.documentsDirectory !== undefined) validateDocumentsDirectory(this.config.documentsDirectory)
     const protectedRoots = this.config.protectedRoots.map((root) => {
       if (!isAbsolute(root)) throw new Error(`workspace-controller: protected root must be absolute: ${root}`)
@@ -110,7 +114,7 @@ export class WorkspaceController extends TypertRemoteService {
 
   /**
    * Initialize or reuse the default Workspace during first-use startup. The
-   * directory name is fixed, so the Host never renames or relocates an
+   * directory is deployment-configurable, but the Host never renames or relocates an
    * existing default; its initial title is that same name, which browser
    * consumers label in the reader's language.
    * @param signal - caller lifetime; cancels native directory lookup.
@@ -119,6 +123,8 @@ export class WorkspaceController extends TypertRemoteService {
   @Remote('initializeDefault')
   async initializeDefault(signal: AbortSignal): Promise<WorkspaceValue | undefined> {
     const workspace = await this.ctx.workspaceRegistry.initializeDefault(async () => {
+      signal.throwIfAborted()
+      if (this.config.defaultWorkspacePath !== undefined) return this.config.defaultWorkspacePath
       const timeout = AbortSignal.timeout(this.config.documentsLookupTimeoutMs)
       return await defaultWorkspaceDirectory(
         this.config.documentsDirectory, AbortSignal.any([signal, timeout]),

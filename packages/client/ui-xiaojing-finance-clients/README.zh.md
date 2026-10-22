@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing Finance client management and immutable session-context surfaces"
+description: "Katcat Finance client management and immutable session-context surfaces"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,13 @@ kind: "package-reference"
 
 [English](README.md) | 中文
 
+用户可见的应用名称和提示文案统一使用 Katcat，现有安装标识和持久化数据路径保留兼容值。
+
 ## 概述
 
-小兢会计 Finance 本地客户档案与会话上下文选择的可移除 Client 展示插件。该包只在 `DSH_CLIENT_BUILD_PROFILE=xiaojing` 时编译；从 Web 组合中删除对应行即可移除全部 Finance 客户界面，不会修改 Host 服务、其他预设或官方 Harness UI。界面将这些记录称为“账套”；持久化、Remote 标识和 Workspace 路径仍使用 Finance 客户模型。
+本包作为显式组合的 Finance 配置的可选组件维护，不在 Katcat 个人桌面版的默认组合中挂载。
+
+Katcat Finance 本地客户档案与会话上下文选择的可移除 Client 展示插件。该包只在 `DSH_CLIENT_BUILD_PROFILE=xiaojing` 时编译；从 Web 组合中删除对应行即可移除全部 Finance 客户界面，不会修改 Host 服务、其他预设或官方 Harness UI。界面将这些记录称为“账套”；持久化、Remote 标识和 Workspace 路径仍使用 Finance 客户模型。
 
 
 ## 目录
@@ -38,13 +42,13 @@ loopback 页面上已配置有成的活跃账套行在客户名称和已核验�
 
 ## 附件与报销配置
 
-loopback 小兢页面的设置提供“附件存储”，编辑本机全局的私有 OSS 配置，接收只写 RAM 凭据，并区分保存与真实的上传／下载／清理测试。未保存修改会使已显示的测试结果失效。新安装只有部署默认的非秘密配置，仍需各自获授权的密钥，不假定存在产品登录或内置凭据。存储范围与传输限制由 [Finance Host](../../xiaojing/xiaojing-finance-domain/README.zh.md#private-attachments-and-reimbursement-drafts) 定义。
+loopback Katcat页面的设置提供“附件存储”，编辑本机全局的私有 OSS 配置，接收只写 RAM 凭据，并区分保存与真实的上传／下载／清理测试。未保存修改会使已显示的测试结果失效。新安装只有部署默认的非秘密配置，仍需各自获授权的密钥，不假定存在产品登录或内置凭据。存储范围与传输限制由 [Finance Host](../../xiaojing/xiaojing-finance-domain/README.zh.md#private-attachments-and-reimbursement-drafts) 定义。
 
 帐套信息编辑器仅提供财务连接设置，不加载、保存或测试报销配置。已保存的报销凭据与历史记录保留在 Host 存储中；移除此界面入口不会删除这些数据，也不会禁用既有后端能力。附件存储设置仍单独保留。
 
 ## 会话上下文
 
-本产品注册的财务工具名称在聊天中使用专用卡片。成功调用显示 `tool/result.meta` 中持久保存的业务摘要；运行中及缺少该元数据的旧调用只显示本地化状态，不展开原始参数或供模型使用的 JSON。失败调用显示本地化状态；当结果包含一段经过筛查的简短文字时，还显示具体原因，结构化或技术性错误继续隐藏。模型仍能获得完整工具结果。该卡片只作用于小兢财务工具，不改变 Harness 通用展示。
+本产品注册的财务工具名称在聊天中使用专用卡片。成功调用显示 `tool/result.meta` 中持久保存的业务摘要；运行中及缺少该元数据的旧调用只显示本地化状态，不展开原始参数或供模型使用的 JSON。失败调用显示本地化状态；当结果包含一段经过筛查的简短文字时，还显示具体原因，结构化或技术性错误继续隐藏。模型仍能获得完整工具结果。该卡片只作用于Katcat财务工具，不改变 Harness 通用展示。
 
 已提交的 `finance/file-published` 事件在聊天中显示明确的文件打开按钮，历史重载后仍可显示。操作使用记录的目标路径和现有 Host 打开功能，不依赖模型编写链接，也不自动打开。非回环浏览器不能启用此操作。这是本地文件打开，不是下载托管，也不证明文件仍存在。导入、归档和导出失败不生成发布按钮。
 

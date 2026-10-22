@@ -1,7 +1,6 @@
 ---
-name: Task
-about: 明确的非 Feature、非 Bug 工作
-type: Task
+name: Task / 文档与维护
+about: 文档、示例或维护任务 / Documentation, examples, or maintenance
 ---
 
 ## Summary

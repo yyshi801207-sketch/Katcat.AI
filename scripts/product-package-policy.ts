@@ -16,6 +16,9 @@ export interface ProductPackagePolicy {
  * Optional integrations may be reached by an optional bundle without becoming default capabilities.
  */
 export const PRODUCT_PACKAGE_POLICY: Readonly<Record<string, ProductPackagePolicy>> = {
+  'packages/client/ui-xiaojing-finance-clients': { category: 'optional', reason: 'Client management UI for explicitly composed Finance profiles, outside the Katcat personal desktop.' },
+  'packages/xiaojing/xiaojing-finance-calculations': { category: 'optional', reason: 'Trial calculations mounted by explicitly composed Finance profiles.' },
+  'packages/xiaojing/xiaojing-finance-evidence': { category: 'optional', reason: 'Official-source research mounted by explicitly composed Finance profiles.' },
   'packages/computer-use/computer-use': { category: 'optional', reason: 'Service definition used by explicitly selected computer providers.' },
   'packages/lsp/lsp': { category: 'optional', reason: 'Service definition for deployment-configured language servers.' },
   'packages/lsp/lsp-stdio': { category: 'optional', reason: 'Requires an explicit server list and language-server executables.' },

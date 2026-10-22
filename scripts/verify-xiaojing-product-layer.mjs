@@ -27,7 +27,7 @@ const coreRoots = [
   'packages/client/ui-renderer/src',
   'packages/client/web/src',
 ]
-const productMarks = /小兢|数豆|SUDO|sdoobot|sudo-logo|xiaojing-product|Finance模式/i
+const productMarks = /Katcat|小兢|数豆|SUDO|sdoobot|sudo-logo|xiaojing-product|Finance模式/i
 const errors = []
 const expectedFinancePreset = {
   id: 'finance',
@@ -35,8 +35,8 @@ const expectedFinancePreset = {
   base: 'standard',
   composition: 'apps/cli/config/xiaojing-agent-presets/finance/agent.cordis.yml',
 }
-if (JSON.stringify(manifest.agentPresets) !== JSON.stringify([expectedFinancePreset])) {
-  errors.push('xiaojing product manifest does not own the expected Finance模式 preset')
+if (JSON.stringify(manifest.agentPresets) !== '[]') {
+  errors.push('personal Xiaojing must not ship a Finance preset')
 }
 const expectedFinanceRules = {
   schemaVersion: 1,
@@ -226,8 +226,8 @@ const productPresetIds = await directoryIds(join(root, expectedFinanceRules.pres
 if (JSON.stringify(officialPresetIds) !== JSON.stringify(['cordis', 'minimal', 'ptc', 'standard'])) {
   errors.push('official Agent-preset root must contain only the four upstream presets')
 }
-if (JSON.stringify(productPresetIds) !== JSON.stringify(manifest.agentPresets.map(value => value.id).sort())) {
-  errors.push('Xiaojing Agent-preset root does not match the product manifest')
+if (JSON.stringify(productPresetIds) !== JSON.stringify([expectedFinancePreset.id])) {
+  errors.push('retained Finance source inventory changed')
 }
 
 async function sourceFiles(directory) {
@@ -287,18 +287,23 @@ for (const id of ['session-log-deepseek', 'ui-settings-session-log']) {
 const webAppManifest = JSON.parse(await readFile(join(root, 'packages', 'bundle', 'web-app', 'package.json'), 'utf8'))
 const financeCalculationsHostRow = compositionRows.find(row => row.id === 'xiaojing-finance-calculations')
 if (financeCalculationsHostRow?.name !== '@deepseek-ai/dsh-xiaojing-finance-calculations'
-  || financeCalculationsHostRow?.disabled?.__jsExpr !== "process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'") {
-  errors.push('Finance deterministic-calculation Host must be isolated to the Xiaojing build profile')
+  || financeCalculationsHostRow?.disabled !== true) {
+  errors.push('personal Xiaojing must disable Finance calculations')
 }
 const financeEvidenceHostRow = compositionRows.find(row => row.id === 'xiaojing-finance-evidence')
 if (financeEvidenceHostRow?.name !== '@deepseek-ai/dsh-xiaojing-finance-evidence'
-  || financeEvidenceHostRow?.disabled?.__jsExpr !== "process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'") {
-  errors.push('Finance official-evidence Host must be isolated to the Xiaojing build profile')
+  || financeEvidenceHostRow?.disabled !== true) {
+  errors.push('personal Xiaojing must disable Finance evidence')
 }
 const financeDocumentsHostRow = compositionRows.find(row => row.id === 'xiaojing-finance-documents')
 if (financeDocumentsHostRow?.name !== '@deepseek-ai/dsh-xiaojing-finance-documents'
   || financeDocumentsHostRow?.disabled?.__jsExpr !== "process.env.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing'") {
   errors.push('Finance document-normalization Host must be isolated to the Xiaojing build profile')
+}
+for (const id of ['xiaojing-finance-domain', 'ui-xiaojing-finance-clients']) {
+  if (compositionRows.find(row => row.id === id)?.disabled !== true) {
+    errors.push(`personal Xiaojing must disable ${id}`)
+  }
 }
 for (const path of [...manifest.assets, ...manifest.desktopManifests]) {
   await readFile(join(root, path))
@@ -437,7 +442,7 @@ if (!desktopMain.includes("window.on('close'")
   || !desktopMain.includes('backgroundNotice.close(hide)')
   || !desktopMain.includes('quitConfirmation.confirm()')
   || !desktopMain.includes('quitApplication: () => { app.quit() }')
-  || !desktopCompanion.includes("label: '退出小兢会计', click: () => { void this.requestQuit() }")
+  || !desktopCompanion.includes("label: '退出Katcat', click: () => { void this.requestQuit() }")
   || !desktopMain.includes("app.on('window-all-closed'")
   || !desktopCompanion.includes("new URL('/xiaojing-desktop-companion/events', hostUrl)")) {
   errors.push('desktop tray lifecycle no longer keeps close, tray exit, and window-all-closed behavior explicit')

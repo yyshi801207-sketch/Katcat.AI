@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-desktop",
-  "description": "小兢会计 Windows desktop application",
+  "description": "Katcat Windows desktop application",
   "version": "0.2.1-rc.2",
   "private": true,
   "license": "MIT",
@@ -45,13 +45,15 @@
     "verify:installer-shortcuts": "node scripts/verify-installer-shortcuts.mjs",
     "verify:installer-cancel": "node scripts/verify-installer-cancel-helper.mjs",
     "verify:installer-shutdown": "node scripts/verify-installer-shutdown-helper.mjs",
+    "verify:installer-installation": "node scripts/verify-installer-installation.mjs",
     "verify:identity": "node scripts/verify-desktop-identity.mjs",
     "verify:product-layer": "node ../../scripts/verify-xiaojing-product-layer.mjs",
     "verify:user-data": "node scripts/verify-user-data-contract.mjs",
-    "verify:xiaojing": "pnpm run verify:identity && pnpm run verify:installer-shortcuts && pnpm run verify:installer-cancel && pnpm run verify:installer-shutdown && pnpm run verify:user-data && pnpm run verify:product-layer",
+    "verify:xiaojing": "pnpm run verify:identity && pnpm run verify:installer-shortcuts && pnpm run verify:installer-cancel && pnpm run verify:installer-shutdown && pnpm run verify:installer-installation && pnpm run verify:user-data && pnpm run verify:product-layer",
     "dist:win": "pnpm run package:win:x64"
   },
   "dependencies": {
+    "yaml": "^2.8.1",
     "electron-updater": "^6.8.9",
     "semver": "^7.8.5",
     "ws": "^8.21.3",

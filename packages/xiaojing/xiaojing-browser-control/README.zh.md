@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing native Edge and Chrome browser control and the optional legacy Edge adapter"
+description: "Katcat native Edge and Chrome browser control and the optional legacy Edge adapter"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 [English](README.md) | 中文
 
+用户可见的应用名称和提示文案统一使用 Katcat，现有安装标识和持久化数据路径保留兼容值。
+
 ## 概述
 
-小兢会计的 `./native` 入口通过 Harness 浏览器 MCP 提供方连接 Edge 或 Chrome。`./native-settings` 服务为产品设置 Client 提供持久化的用户权限。产品禁用旧 `browser_control` Host；包根入口保留该适配器供显式部署。这些入口均不修改 `agent-loop` 或浏览器企业策略。
+Katcat的 `./native` 入口通过 Harness 浏览器 MCP 提供方连接 Edge 或 Chrome。`./native-settings` 服务为产品设置 Client 提供持久化的用户权限。产品禁用旧 `browser_control` Host；包根入口保留该适配器供显式部署。这些入口均不修改 `agent-loop` 或浏览器企业策略。
 
 
 ## 目录
@@ -32,11 +34,11 @@ kind: "package-reference"
 <a id="connecting-already-open-tabs"></a>
 ### 连接已打开的标签页
 
-在小兢的浏览器控制设置中启用指定浏览器。“管理”显示说明及固定的 `chrome://inspect/#remote-debugging` 或 `edge://inspect/#remote-debugging` 地址。Windows 的“打开设置页”按钮在新的普通浏览器窗口打开并验证该页面；用户仍须勾选远程调试并批准连接。通过 Windows UI Automation 验证安装、唯一的新窗口、进程身份、空白地址栏、固定导航和已经加载的 inspect 文档，不导航已有窗口。Chromium 拒绝内部地址作为命令行启动 URL，因此启动参数只传 `about:blank`。验证失败明确报错，保留复制按钮，不关闭浏览器窗口；其他系统采用手动地址。原生自动连接发现现有 profile。Chrome 要求 144 或更高版本；Edge 须支持远程调试权限页。无需扩展、端口或 Token 输入。新连接可能再次要求批准；产品开关不承诺永久授权。关闭开关会断开现有标签页控制，不会关闭个人浏览器。
+在Katcat的浏览器控制设置中启用指定浏览器。“管理”显示说明及固定的 `chrome://inspect/#remote-debugging` 或 `edge://inspect/#remote-debugging` 地址。Windows 的“打开设置页”按钮在新的普通浏览器窗口打开并验证该页面；用户仍须勾选远程调试并批准连接。通过 Windows UI Automation 验证安装、唯一的新窗口、进程身份、空白地址栏、固定导航和已经加载的 inspect 文档，不导航已有窗口。Chromium 拒绝内部地址作为命令行启动 URL，因此启动参数只传 `about:blank`。验证失败明确报错，保留复制按钮，不关闭浏览器窗口；其他系统采用手动地址。原生自动连接发现现有 profile。Chrome 要求 144 或更高版本；Edge 须支持远程调试权限页。无需扩展、端口或 Token 输入。新连接可能再次要求批准；产品开关不承诺永久授权。关闭开关会断开现有标签页控制，不会关闭个人浏览器。
 
 Profile 发现只读取 Windows 的 `UserDataDir` 和 `RemoteDebuggingAllowed` 策略元数据。显式绝对目录优先于策略，其次为 stable LocalAppData 目录。策略禁止调试、读取失败或返回无效时拒绝连接。应用不读取 Preferences 或凭据、不改变策略、不自动开启调试，也不绕过浏览器批准。含变量的策略目录需要显式绝对目录覆盖。
 
-显式部署可配置已开启的 `existingEndpoint`，或选择 `existingConnection: "extension"` 并安装 [Playwright 官方浏览器扩展](https://github.com/microsoft/playwright-mcp#browser-extension)。该方式需要批准连接和选择标签页。旧小兢 Edge 扩展及其配对码不能建立此连接。
+显式部署可配置已开启的 `existingEndpoint`，或选择 `existingConnection: "extension"` 并安装 [Playwright 官方浏览器扩展](https://github.com/microsoft/playwright-mcp#browser-extension)。该方式需要批准连接和选择标签页。旧Katcat Edge 扩展及其配对码不能建立此连接。
 
 连接失败会撤销会话的当前选择，不会改用其他浏览器、另开替代窗口或重放已完成操作。诊断文案标明所选浏览器；原生 HTTP 403 只说明连接被拒绝，不推断拒绝原因。再次使用浏览器工具前必须显式重新连接。专用连接属于一个存活的 Agent；现有浏览器连接在释放前只允许一个拥有者。调用按连接排队，并在执行前复查所选路线。资源释放会等待正在执行的操作，关闭自有专用浏览器；对于现有浏览器只断开连接，保留其标签页。
 
@@ -50,7 +52,7 @@ Profile 发现只读取 Windows 的 `UserDataDir` 和 `RemoteDebuggingAllowed` �
 
 `NativeBrowser` 标识 `edge` 或 `chrome`。Host 专属的 `NativeBrowserSettingsRuntime` 注册向设置服务提供安装检查、已观察连接状态和撤销回调；其 disposer 仅移除该 runtime 的注册。这些声明由 `src/native-settings-types.ts` 维护，不属于通用子系统类型目录。
 
-`edge`、`chrome` 设置各自支持可选的 `executablePath`、`existingEndpoint`、`existingConnection`、绝对 `userDataDir` 和保密的 `extensionToken`。省略 `existingConnection` 时保留显式扩展部署；小兢设置为 `auto-connect`。其 `requireUserSettings` 在权限服务不可用或浏览器禁用时拒绝现有标签页访问。`./native-settings` 在 profile 中保存 live `edge`、`chrome` 布尔值，初值均为 false。其 `openSettingsTimeoutMs` 默认为 30000 毫秒，限制固定设置页导航；拒绝重叠的打开请求，释放服务时取消并等待正在执行的操作。状态新增必填 `canOpenSettings` 布尔值，仅 Windows 为 true；匹配的 Host 和 Client 应一起发布。经过认证的 `open-settings` RPC 只接受浏览器品牌，不建立原生连接或授予许可。设置页区分安装、调试准备状态及原生连接成功；读取状态不获取浏览器资源。安装检查失败显示无法识别，不阻塞另一浏览器或关闭权限。关闭先保存权限再释放连接；重复关闭不重复释放。启用只保存权限意图，不启动浏览器或开启调试权限。
+`edge`、`chrome` 设置各自支持可选的 `executablePath`、`existingEndpoint`、`existingConnection`、绝对 `userDataDir` 和保密的 `extensionToken`。省略 `existingConnection` 时保留显式扩展部署；Katcat设置为 `auto-connect`。其 `requireUserSettings` 在权限服务不可用或浏览器禁用时拒绝现有标签页访问。`./native-settings` 在 profile 中保存 live `edge`、`chrome` 布尔值，初值均为 false。其 `openSettingsTimeoutMs` 默认为 30000 毫秒，限制固定设置页导航；拒绝重叠的打开请求，释放服务时取消并等待正在执行的操作。状态新增必填 `canOpenSettings` 布尔值，仅 Windows 为 true；匹配的 Host 和 Client 应一起发布。经过认证的 `open-settings` RPC 只接受浏览器品牌，不建立原生连接或授予许可。设置页区分安装、调试准备状态及原生连接成功；读取状态不获取浏览器资源。安装检查失败显示无法识别，不阻塞另一浏览器或关闭权限。关闭先保存权限再释放连接；重复关闭不重复释放。启用只保存权限意图，不启动浏览器或开启调试权限。
 
 `connectTimeoutMs` 为连接探测提供默认 600000 毫秒的等待时间，包括浏览器授权；`toolCallTimeoutMs` 为后续原生调用提供默认 60000 毫秒的执行时间。产品组装接受 `XIAOJING_NATIVE_EDGE_EXECUTABLE`、`XIAOJING_CHROME_EXECUTABLE`、`XIAOJING_EDGE_CDP_ENDPOINT`、`XIAOJING_CHROME_CDP_ENDPOINT`，以及对应的 `XIAOJING_EDGE_PLAYWRIGHT_EXTENSION_TOKEN` / `XIAOJING_CHROME_PLAYWRIGHT_EXTENSION_TOKEN`。生产中的 `allowPrivateHosts` 保持 false。
 
@@ -68,7 +70,7 @@ Profile 发现只读取 Windows 的 `UserDataDir` 和 `RemoteDebuggingAllowed` �
 
 专用路线是默认且无需设置的路线。它使用配置的 `profileDir` 持久 profile，以可见方式启动本机已安装的 Microsoft Edge。用户可以登录并最小化窗口；Playwright 仍能继续普通 DOM 操作，不移动物理鼠标，也不通过物理键盘输入。只有 `disposition: "new_window"` 才会创建另一个顶层窗口。
 
-可选个人路线可以操作用户在日常 Edge 中手动打开的普通 HTTP(S) 标签页。Manifest V3 扩展随包放在 [`extension/`](extension/) 解压目录中。用户只需开启 Edge 开发人员模式、加载一次该目录，并使用小兢设置中的八位配对码完成配对。扩展只在目标标签租约期间附加 `chrome.debugger`，并在轮次结束、失败、取消或插件关闭时解除附加。Edge 显示扩展调试提示属于正常行为。InPrivate、`edge://`、扩展页、本地文件页和其他受保护页面会被拒绝。
+可选个人路线可以操作用户在日常 Edge 中手动打开的普通 HTTP(S) 标签页。Manifest V3 扩展随包放在 [`extension/`](extension/) 解压目录中。用户只需开启 Edge 开发人员模式、加载一次该目录，并使用Katcat设置中的八位配对码完成配对。扩展只在目标标签租约期间附加 `chrome.debugger`，并在轮次结束、失败、取消或插件关闭时解除附加。Edge 显示扩展调试提示属于正常行为。InPrivate、`edge://`、扩展页、本地文件页和其他受保护页面会被拒绝。
 
 `open` 在两个适配器之间执行固定选择顺序：
 
@@ -108,7 +110,7 @@ Host 会验证固定扩展 ID 和协议版本，然后双方通过与随机 nonc
 ## 配置
 
 - `profileDir` 必填，用于标识专用 Edge profile。
-- `executablePath` 只为测试或受控部署提供可选的 Edge 兼容可执行文件；小兢 Windows 应用保持未设置。
+- `executablePath` 只为测试或受控部署提供可选的 Edge 兼容可执行文件；Katcat Windows 应用保持未设置。
 - `headless`、动作和导航超时、观察有效期、结果上限及最大批量步骤数都是部署可调项。
 - `allowPrivateHosts` 只用于确定性本地测试，在产品组合中必须保持 false。
 

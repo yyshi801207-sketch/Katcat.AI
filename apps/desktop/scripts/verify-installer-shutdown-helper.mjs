@@ -47,7 +47,7 @@ async function runHelper(installDirectory) {
 const scratch = await mkdtemp(join(tmpdir(), 'xiaojing-installer-shutdown-'))
 let unrelated
 try {
-  const installDirectory = join(scratch, 'xiaojing-agent-desktop')
+  const installDirectory = join(scratch, 'Katcat-desktop')
   const runtimeDirectory = join(installDirectory, 'resources', 'runtime')
   await mkdir(runtimeDirectory, { recursive: true })
 
@@ -86,7 +86,14 @@ try {
   }
   await packagedExit
 
-  const unsafeDirectory = join(scratch, 'not-the-product-directory')
+  const previousInstallDirectory = join(scratch, 'xiaojing-office-desktop')
+  await mkdir(previousInstallDirectory)
+  const previous = await runHelper(previousInstallDirectory)
+  if (previous.code !== 0 || previous.stderr !== '') {
+    throw new Error('shutdown helper rejected the previous Katcat installation directory')
+  }
+
+  const unsafeDirectory = join(scratch, 'xiaojing-agent-desktop')
   await mkdir(unsafeDirectory)
   const rejected = await runHelper(unsafeDirectory)
   if (rejected.code === 0) {

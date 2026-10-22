@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-xiaojing-visualize",
-  "description": "Xiaojing isolated visualization cards with the original dsh-visualize palette.",
+  "description": "Katcat isolated visualization cards with the original dsh-visualize palette.",
   "version": "0.2.1-rc.2",
   "publishConfig": {
     "access": "public"

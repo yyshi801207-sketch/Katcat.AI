@@ -19,6 +19,7 @@ concurrency:
 
 jobs:
   validate:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.source.outputs.version }}
@@ -41,11 +42,13 @@ jobs:
           appendFileSync(process.env.GITHUB_OUTPUT, `version=${version}\ncommit=${commit}\n`);
           JS
   build:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     needs: validate
     uses: ./.github/workflows/build-exe-for-ssh-helper.yml
     with:
       release: true
   verify:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     needs: [validate, build]
     runs-on: ubuntu-latest
     steps:
@@ -78,7 +81,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: inputs.publish
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' && (inputs.publish) }}
     needs: [validate, verify]
     runs-on: ubuntu-latest
     permissions:

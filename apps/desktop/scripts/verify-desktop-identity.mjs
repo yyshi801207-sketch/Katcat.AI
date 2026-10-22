@@ -8,6 +8,15 @@ const identity = JSON.parse(await readFile(join(appRoot, 'identity.json'), 'utf8
 const integration = JSON.parse(await readFile(join(appRoot, 'integration-patches.json'), 'utf8'))
 const manifest = JSON.parse(await readFile(join(appRoot, 'package.json'), 'utf8'))
 const rootManifest = JSON.parse(await readFile(join(appRoot, '..', '..', 'package.json'), 'utf8'))
+const webManifest = JSON.parse(await readFile(join(appRoot, '..', 'web', 'public', 'xiaojing-manifest.webmanifest'), 'utf8'))
+if (webManifest.name !== 'Katcat.AI - 您的超级个人助理' || webManifest.short_name !== 'Katcat.AI') {
+  throw new Error('installed browser application metadata must use Katcat.AI')
+}
+for (const path of ['build/internal-use-notice.txt', 'src/locale.ts', 'companion.html', 'companion.js']) {
+  if (/小兢|小竞|小金|Xiaojing(?:[ ’]|Accounting)/u.test(await readFile(join(appRoot, path), 'utf8'))) {
+    throw new Error(`old product display text remains in ${path}`)
+  }
+}
 const installer = await readFile(join(appRoot, 'build', 'installer.nsh'), 'utf8')
 const shortcutInstaller = await readFile(join(appRoot, 'build', 'installer-shortcuts.nsh'), 'utf8')
 const installerProductLogo = await readFile(join(appRoot, 'build', 'installer-product-logo.bmp'))
@@ -30,15 +39,15 @@ const builder = createElectronBuilderConfig({
 
 const expected = Object.freeze({
   packageName: '@deepseek-ai/dsh-desktop',
-  productVersion: '0.3.3',
-  appId: 'com.sudotech.xiaojing-accounting',
-  nsisGuid: '1f6e3c2a-13e7-5ab1-a2d7-10b68c1b911a',
-  installDirectoryName: 'xiaojing-agent-desktop',
-  executableName: '小兢会计',
-  productName: '小兢会计-您的AI办公搭子',
+  productVersion: '1.0.0',
+  appId: 'com.sudotech.xiaojing-office',
+  nsisGuid: 'ddf2b5a9-34d7-4a3b-8f09-71ca62b6f58f',
+  installDirectoryName: 'Katcat-desktop',
+  executableName: 'Katcat.AI',
+  productName: 'Katcat.AI',
   installScope: 'currentUser',
-  shortcutName: '小兢会计',
-  userDataSegments: ['@sudotech', 'xiaojing-accounting-desktop'],
+  shortcutName: 'Katcat.AI',
+  userDataSegments: ['Katcat-desktop'],
 })
 
 function assertWhiteBmpBorder(buffer, name) {
@@ -110,6 +119,11 @@ for (const [label, actual, wanted] of checks) {
   if (actual !== wanted) throw new Error(`${label} must remain ${JSON.stringify(wanted)}`)
 }
 
+if (JSON.stringify(builder.protocols) !== JSON.stringify([{ name: identity.productName, schemes: ['xiaojing-office'] }])
+  || !main.includes("app.setAsDefaultProtocolClient('xiaojing-office')")) {
+  throw new Error('Office must register its own protocol without taking over another desktop application')
+}
+
 const packagedFiles = new Set(builder.files?.filter(value => typeof value === 'string') ?? [])
 for (const file of ['lib/main.js', 'lib/preload-app.cjs', 'lib/preload-xiaojing-companion.cjs',
   'companion.html', 'companion.css', 'companion.js', 'identity.json', 'integration-patches.json',
@@ -165,7 +179,7 @@ if (builder.nsis?.license != null || autoDiscoveredLicenseFiles.length > 0) {
   throw new Error('installer must not generate a separate electron-builder license page')
 }
 if (!builder.extraResources?.some(resource => resource.from === join(appRoot, 'build', 'internal-use-notice.txt')
-  && resource.to === 'legal/Xiaojing-Internal-Use-Notice.txt')) {
+  && resource.to === 'legal/Katcat-Internal-Use-Notice.txt')) {
   throw new Error('installer internal-use notice must remain available under resources/legal')
 }
 if (!installer.includes('installer-product-logo.bmp')
@@ -195,7 +209,7 @@ if (!installer.includes('!define MUI_CUSTOMFUNCTION_ABORT xiaojingInstallerAbort
   || !installer.includes('SetErrorLevel 1602')
   || !installer.includes('Call muiPageLoadFullWindow')
   || !installer.includes('ShowWindow $mui.InstFilesPage.Log ${SW_HIDE}')
-  || !installer.includes('正在安装小兢会计，请稍候…')
+  || !installer.includes('正在安装Katcat.AI，请稍候…')
   || !installer.includes('xiaojing-company-logo.bmp')
   || !installer.includes('${NSD_SetStretchedImage} $xiaojingProgressProductControl')
   || !/CreateWindowExW\([^\n]+p \$mui\.InstFilesPage[^\n]+\) p \.r0'[\s\S]+StrCpy \$xiaojingProgressProductControl \$0/.test(installer)
@@ -204,7 +218,7 @@ if (!installer.includes('!define MUI_CUSTOMFUNCTION_ABORT xiaojingInstallerAbort
   || installer.includes('Function xiaojingRestoreNativeInstallerWindow')
   || installer.includes('USER32::GetMessageW')
   || installer.includes('xiaojingCancelMessageLoop')
-  || !installerCancelHelper.includes("-cne 'xiaojing-agent-desktop'")
+  || !installerCancelHelper.includes("-cne 'Katcat-desktop'")
   || !installerCancelHelper.includes('Wait-Process -Timeout 30')) {
   throw new Error('installer must retain the branded progress layout, use native cancellation prompts, and prevent cancellation after an update starts')
 }
@@ -216,7 +230,7 @@ if (installer.includes('xiaojingScheduleRollback')
 if (!installer.includes('!macro customCheckAppRunning')
   || !installer.includes('ReadRegStr $R8 HKCU "${INSTALL_REGISTRY_KEY}" InstallLocation')
   || !installer.includes('installer-shutdown-helper.ps1')
-  || !installerShutdownHelper.includes("$expectedDirectoryName = 'xiaojing-agent-desktop'")
+  || !installerShutdownHelper.includes("$expectedDirectoryNames = @('Katcat-desktop', 'xiaojing-office-desktop')")
   || !installerShutdownHelper.includes('Get-CimInstance -ClassName Win32_Process')
   || !installerShutdownHelper.includes('$_.ExecutablePath')
   || !installerShutdownHelper.includes('Remove-OverlongLegacyInstallEntries')

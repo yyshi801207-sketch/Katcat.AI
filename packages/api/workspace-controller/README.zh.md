@@ -6,6 +6,8 @@ kind: "package-reference"
 
 [English](README.md) | 中文
 
+`defaultWorkspacePath` 为首次创建的 Workspace 指定完整绝对目录，不追加子目录。已注册的默认工作区保留原路径；该选项不会迁移文件或 Session。未设置时继续使用系统 Documents 目录及标准子目录。
+
 ## 概述
 
 `@deepseek-ai/dsh-api-workspace-controller` 拥有 Host 的 `ctx.workspaceController` 服务和生成的 Client `ctx.remote.workspace` namespace。它的 Remote 方法负责创建、重命名、移除和重排 Workspace，在 Workspace 内重排 Session，归档与取消归档 Session，以及跟随完整的 Workspace 投影。当 Client 必须修改或跟随 Workspace 导航时，请通过 API 网关使用它。本包同时拥有 `ctx.directoryPickerController` 与生成的 `ctx.remote.directoryPicker` namespace，因为它承载的选目录 seam 是抽象的，自身从不作为 Loader entry。

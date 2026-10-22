@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-finance-evidence/README.md
 /:
-  en: 5ab1da5d3f4ee164
-  zh: 5ab1da5d3f4ee164
+  en: ef86f1005aa5c7fa
+  zh: ef86f1005aa5c7fa
 /deepseek-ai-dsh-xiaojing-finance-evidence:
   en: 90e8b2f6657fb556
   zh: 9987e64738cdda81
 /deepseek-ai-dsh-xiaojing-finance-evidence/summary:
-  en: 740c8d635aadba99
-  zh: 60cd1e253cedd1d1
+  en: 5dbfbb429f1380fa
+  zh: dabf6e69570f4d5e
 /deepseek-ai-dsh-xiaojing-finance-evidence/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d

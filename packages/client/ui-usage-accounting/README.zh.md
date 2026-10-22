@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-本机用量 Remote 的小兢产品浏览器展示插件。它在 `sidebar.footer.action` 增加当日摘要，在 `settings.section` 增加本月日历，但不拥有计费数据或凭据值。官方和本地 Harness 客户端构建都不会注册这两个入口。
+本机用量 Remote 的小兢产品浏览器展示插件。它在 `sidebar.footer.action` 增加当日摘要，在 `settings.section` 增加本月日历，但不拥有计费数据或凭据值。官方和本地 Harness 客户端构建都不会注册这两个入口。侧栏图标和费用数字接受产品层的 `--dsw-specific-usage-accent` 颜色；Katcat 在深色模式下使用白色。
 
 
 ## 目录

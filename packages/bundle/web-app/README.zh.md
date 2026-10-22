@@ -7,6 +7,8 @@ kind: "package-bundle"
 
 [English](README.md) | 中文
 
+个性版默认使用浅色主题，首次创建工作区与目录选择器使用 `XIAOJING_OFFICE_WORKSPACE_ROOT`，未提供时使用 `Documents/Katcat_Home`。已保存的偏好及已有工作区注册继续有效。
+
 桌面埋点遵循[产品采集策略](../../client/product-analytics/README.zh.md)及其动态应用配置，不包含 Web 使用情况。
 
 桌面埋点每 30 秒调度未满批次，exporter 超时为 15 秒，processor 超时为 20 秒。退出时允许 2 秒排空，随后取消待完成的请求和重试等待，避免埋点阻止 Host 退出。尚未发送完成的事件可能丢失。

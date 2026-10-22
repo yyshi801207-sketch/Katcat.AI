@@ -6,6 +6,8 @@ import { ConfigFormController } from '@deepseek-ai/dsh-client-ui-settings/src/cl
 import { RemoteError, TestRemote } from '@deepseek-ai/dsh-client-test-runtime'
 import { apply as applySettings, inject as settingsInject } from '@deepseek-ai/dsh-client-ui-settings/client'
 import { decodeWelcomeSection, WelcomeNoticeStore, type WelcomeSection } from '../src/client/welcome-store.ts'
+import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
+import type { ModelsSettingsState, ModelsSettingsStore } from '../src/client/store.ts'
 import {
   WELCOME_NOTICE_ACK_FIELD, WELCOME_NOTICE_SETTINGS_NAMESPACE, WELCOME_NOTICE_VERSION,
 } from '../src/onboarding-copy.ts'
@@ -42,6 +44,8 @@ function acknowledgedNamespace(version: string, revision = 1) {
 /** The welcome store over a real mirror-derived scope and a fake wire. */
 function buildWelcome(
   api: { describe?: ReturnType<typeof vi.fn>; mutate?: ReturnType<typeof vi.fn> },
+  installationId?: string,
+  models?: Pick<ModelsSettingsStore, 'store' | 'load'>,
 ) {
   const ctx = { remote: { settings: api } } as never
   const mirror = new SettingsDescribeMirror(ctx)
@@ -51,10 +55,80 @@ function buildWelcome(
     mirror,
     schemaService,
   )
-  return { mirror, controller: new WelcomeNoticeStore(scope) }
+  return { mirror, controller: new WelcomeNoticeStore(scope, installationId, models) }
+}
+
+function modelsJoin(configured: boolean, status: ModelsSettingsState['status'] = 'ready') {
+  const store = createSnapshotStore<ModelsSettingsState>({
+    status, error: null, credentialError: null, writable: true, namespaces: new Map(),
+    rows: [{
+      entry: { provider: 'deepseek-official', displayName: 'DeepSeek', settingsNs: 'llm-deepseek', settingsPath: [], active: true },
+      configured: true, removable: false, apiKeyEnv: 'DEEPSEEK_API_KEY',
+      credential: { configured, writable: true },
+    }],
+  })
+  return { store, load: vi.fn(async () => { store.update((state) => { state.status = 'ready' }) }) }
 }
 
 describe('WelcomeNoticeStore', () => {
+  it('requires acknowledgement for a new installation while retaining acknowledgement for that installation', async () => {
+    const versions = [WELCOME_NOTICE_VERSION, `${WELCOME_NOTICE_VERSION}:previous-install`, `${WELCOME_NOTICE_VERSION}:current-install`]
+    for (const version of versions) {
+      const describe = vi.fn(async () => ok({ writable: true, hasDocument: true, namespaces: [acknowledgedNamespace(version)] }))
+      const { mirror, controller } = buildWelcome({ describe }, 'current-install', modelsJoin(false))
+      await mirror.load()
+      await controller.load()
+      expect(controller.store.getSnapshot()).toMatchObject({
+        status: 'ready', acknowledged: version === `${WELCOME_NOTICE_VERSION}:current-install`,
+      })
+      controller.dispose()
+    }
+  })
+
+  it('persists the current installation acknowledgement through the existing settings scope', async () => {
+    const current = `${WELCOME_NOTICE_VERSION}:current-install`
+    const describe = vi.fn(async () => ok({
+      writable: true, hasDocument: true, namespaces: [acknowledgedNamespace(WELCOME_NOTICE_VERSION, 3)],
+    }))
+    const mutate = vi.fn(async () => ok(acknowledgedNamespace(current, 4)))
+    const { mirror, controller } = buildWelcome({ describe, mutate }, 'current-install', modelsJoin(false))
+    await mirror.load()
+    await controller.load()
+    await expect(controller.acknowledge()).resolves.toBe(true)
+    expect(mutate).toHaveBeenCalledWith(
+      WELCOME_NOTICE_SETTINGS_NAMESPACE,
+      [{ op: 'set', path: [WELCOME_NOTICE_ACK_FIELD], value: current }], 3,
+    )
+    controller.dispose()
+  })
+
+  it('waits for the shared Models join and skips the guide for a usable provider without writing acknowledgement', async () => {
+    const describe = vi.fn(async () => ok({ writable: true, hasDocument: true, namespaces: [namespace()] }))
+    const mutate = vi.fn()
+    const models = modelsJoin(true, 'loading')
+    const { mirror, controller } = buildWelcome({ describe, mutate }, 'current-install', models)
+    await mirror.load()
+    await controller.load()
+    expect(controller.store.getSnapshot()).toMatchObject({ status: 'loading', acknowledged: false })
+    models.store.update((state) => { state.status = 'ready' })
+    expect(controller.store.getSnapshot()).toMatchObject({ status: 'ready', acknowledged: true })
+    expect(models.load).not.toHaveBeenCalled()
+    expect(mutate).not.toHaveBeenCalled()
+    controller.dispose()
+  })
+
+  it('loads the shared Models join once while the welcome step is mounted', async () => {
+    const describe = vi.fn(async () => ok({ writable: true, hasDocument: true, namespaces: [namespace()] }))
+    const models = modelsJoin(false, 'idle')
+    const { mirror, controller } = buildWelcome({ describe }, 'current-install', models)
+    await mirror.load()
+    await controller.load()
+    await controller.load()
+    expect(models.load).toHaveBeenCalledOnce()
+    expect(controller.store.getSnapshot()).toMatchObject({ status: 'ready', acknowledged: false })
+    controller.dispose()
+  })
+
   it('acknowledges only the exact current copy version', async () => {
     for (const [version, acknowledged] of [
       [undefined, false],

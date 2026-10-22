@@ -1473,7 +1473,7 @@ describe('XiaojingFinanceDomain', () => {
       const assembly = await ctx.systemPrompt.assemble({ agent: finance })
       const rules = assembly.sections.find(section => section.name === 'xiaojing:finance-capabilities')
       expect(rules?.text).toContain('当前会话已绑定客户档案')
-      expect(rules?.text).toContain('小兢会计，您的AI财务助手')
+      expect(rules?.text).toContain('Katcat，您的AI财务助手')
       expect(rules?.text).toContain('不得在一般介绍中主动逐项展开')
       expect(rules?.text).toContain('[暂不支持] 报销业务（适用范围：当前财务工作区）')
       expect(rules?.text).toContain('[暂不支持] 六类原生账簿与报表（适用范围：当前有成财务接入）')

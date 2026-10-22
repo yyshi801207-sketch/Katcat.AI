@@ -2,6 +2,8 @@
 
 English | [中文](youcheng-finance-f4-acceptance.zh.md)
 
+Historical acceptance artifacts under `critique/` are not distributed with this source tree. Their filenames remain as historical references; this checkout alone cannot verify those artifacts.
+
 ## Scope and completion
 
 F4 currently delivers F4.1 in the [execution plan](youcheng-finance-execution-plan.md): qualify the approved non-report Finance capabilities together, retain explicit limitations, and obtain user acceptance. The six native ledgers/reports D01–D06 are deferred because the supplier provides no AppKey server API; they are not completion conditions for this delivery and must not be advertised as implemented. Internal work batches are not separate completed Goals.
@@ -20,7 +22,7 @@ One persistent Goal covers all checkpoints without waiting for confirmation or r
 
 The [F3 closeout](youcheng-finance-f3-closeout.md) is the starting evidence, not proof of complete Finance delivery. Reimbursement, actual bank payments and unqualified maintenance operations are excluded. Issues001 and002 remain deferred. Issue004's minimal voucher-deletion request has live adapter acceptance on dedicated voucher244499; browser-manual-origin remains unsampled and broader linked effects remain unqualified. Historical accepted or unknown write intents must not be resent.
 
-D01–D06 are the general ledger, detail ledger, auxiliary ledger, balance sheet, income statement and cash-flow statement. The [public catalog](../../critique/f4-lab/official-finance-catalog-20260914.json) has no corresponding server endpoints; the [read-only AppKey probe](../../critique/f4-lab/f4-native-openapi-route-probe-messages-20260915.json) confirms that native website paths reject public-platform mapping or are not exposed. Neither the Chrome extension nor phone-based SSO is a product route for this delivery, and local grouping or calculation does not impersonate a native report. The [server API proposal](../../.agents/notes/proposed/feature/2026-09-15-native-finance-report-apis.md) defines the condition for resuming this work.
+D01–D06 are the general ledger, detail ledger, auxiliary ledger, balance sheet, income statement and cash-flow statement. The public catalog (`critique/f4-lab/official-finance-catalog-20260914.json`) has no corresponding server endpoints; the read-only AppKey probe (`critique/f4-lab/f4-native-openapi-route-probe-messages-20260915.json`) confirms that native website paths reject public-platform mapping or are not exposed. Neither the Chrome extension nor phone-based SSO is a product route for this delivery, and local grouping or calculation does not impersonate a native report. The [server API proposal](../../.agents/notes/proposed/feature/2026-09-15-native-finance-report-apis.md) defines the condition for resuming this work.
 
 ## Execution batches
 
@@ -44,7 +46,7 @@ An independent batch continues when another depends on unavailable vendor inform
 | CF05–CF07 | Voucher list/detail and balance journeys | Missing values remain unavailable; complete hierarchy and query scope must be explicit |
 | CF13, CF18–CF19 | Journal and both open-item directions | Empty results, transport failure and summary rows are distinct |
 | CF26–CF28 | Comparison, aggregation and exported workbooks | Supported dimensions only; no cross-currency totals or substitution for statutory reports |
-| CF10–CF11, A01 | Voucher preparation, approval, single send, originals and recovery; [F2 audit](../../critique/f2-final-audit.json) | Historical PDF/PNG expiry checks are inherited evidence, not a new test or perpetual-retention guarantee |
+| CF10–CF11, A01 | Voucher preparation, approval, single send, originals and recovery; F2 audit (`critique/f2-final-audit.json`) | Historical PDF/PNG expiry checks are inherited evidence, not a new test or perpetual-retention guarantee |
 | CF08–CF09, CF14, CF20–CF21 | F3A evidence plus assembled creation journeys | Supported configurations only; CF09 enable state remains unverified |
 | CF12, CF15, CF22–CF25 | F3B evidence plus deletion/write-off journeys and durable records | CF12's minimal accountName/cerId request has live adapter acceptance on dedicated244499; browser-manual-origin and broader linked effects are not separately qualified; write-off remains base-currency full settlement only and is not an actual payment |
 | D01–D03 | General, detail and auxiliary ledgers | Deferred and unavailable; no supplier AppKey server APIs, with no local grouping or browser substitute |
@@ -54,7 +56,7 @@ An independent batch continues when another depends on unavailable vendor inform
 
 This section retains only the evidence for the scope decision. D01–D06 remain 0/6 implemented and 0/6 accepted.
 
-The [public catalog](../../critique/f4-lab/official-finance-catalog-20260914.json) lists 22 Finance APIs without dedicated entries for the six reports. The [HTTP-only probe](../../critique/f4-lab/f4-native-openapi-route-probe-messages-20260915.json) shows public-platform mapping failures for all six website-native paths, while `/finance` candidates are closed or absent. These paths are not AppKey APIs.
+The public catalog (`critique/f4-lab/official-finance-catalog-20260914.json`) lists 22 Finance APIs without dedicated entries for the six reports. The HTTP-only probe (`critique/f4-lab/f4-native-openapi-route-probe-messages-20260915.json`) shows public-platform mapping failures for all six website-native paths, while `/finance` candidates are closed or absent. These paths are not AppKey APIs.
 
 Work resumes only after Youcheng supplies supported server APIs: first qualify six AppKey operations and ledger binding, then integrate query ranges, pagination and native columns, and finally accept success, empty results, missing amounts, foreign-ledger rejection, timeout and interruption recovery. No browser-filter, extension-control or phone-based SSO experiments are part of that route.
 
@@ -70,4 +72,4 @@ The fresh current-code run records 46 passing assembled tests across 15 Finance 
 
 Fresh combined regression, cross-context isolation, installed-delivery qualification, evidence reconciliation and user acceptance must all be accounted for. The six native ledgers/reports are explicitly deferred and unavailable: they do not pass, but they do not block the remaining F4 closeout. Passing these scoped tests cannot establish production release readiness.
 
-The [delivery-readiness receipt](../../critique/f4-lab/delivery-readiness-20260914.json) records the earlier build checkpoint. The current September15 package is built separately while the August30 installer remains at its original standard path. Package-internal Host boot, a real current-user fresh install/uninstall and an August30-to-current same-version replacement all pass; installed key files match the current package, settings and credentials remain byte-identical, and the running development application is unaffected. Because both installers declare version0.2.3, the replacement is not a formal cross-version upgrade. A distributed release must increment the desktop version and repeat that upgrade test.
+The delivery-readiness receipt (`critique/f4-lab/delivery-readiness-20260914.json`) records the earlier build checkpoint. The current September15 package is built separately while the August30 installer remains at its original standard path. Package-internal Host boot, a real current-user fresh install/uninstall and an August30-to-current same-version replacement all pass; installed key files match the current package, settings and credentials remain byte-identical, and the running development application is unaffected. Because both installers declare version0.2.3, the replacement is not a formal cross-version upgrade. A distributed release must increment the desktop version and repeat that upgrade test.

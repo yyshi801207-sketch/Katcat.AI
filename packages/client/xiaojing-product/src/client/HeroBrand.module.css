@@ -28,10 +28,10 @@
   align-self: start;
   margin-top: 2px;
   padding: 1px 7px 0;
-  border: 1px solid var(--sudo-brand);
+  border: 1px solid var(--dsw-alias-border-l2);
   border-radius: 3px;
-  background: var(--sudo-brand);
-  color: var(--dsw-alias-label-primary-foreground);
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-secondary);
   font-family: var(--ds-font-family-code);
   font-size: 12px;
   font-weight: 500;

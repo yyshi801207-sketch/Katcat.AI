@@ -1,5 +1,5 @@
 ---
-description: "Shared deterministic local document normalization for Xiaojing sessions"
+description: "Shared deterministic local document normalization for Katcat sessions"
 kind: "package-reference"
 ---
 
@@ -11,7 +11,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-This Xiaojing Host capability provides one deterministic local parser for uploaded PDF, DOCX, XLSX, PPTX, digital-invoice XML, OFD, CSV, and text files. Two session adapters authorize sources without duplicating parsing logic: Finance sessions consume immutable Finance import events through `finance_document`, while Standard, Goal, Plan, and other non-Finance Xiaojing sessions consume durable human-upload references through `document_reader`. The package does not modify the Agent Loop or add another upload control.
+This Katcat Host capability provides one deterministic local parser for uploaded PDF, DOCX, XLSX, PPTX, digital-invoice XML, OFD, CSV, and text files. Two session adapters authorize sources without duplicating parsing logic: Finance sessions consume immutable Finance import events through `finance_document`, while Standard, Goal, Plan, and other non-Finance Katcat sessions consume durable human-upload references through `document_reader`. The package does not modify the Agent Loop or add another upload control.
 
 
 ## Table of Contents
@@ -22,7 +22,9 @@ This Xiaojing Host capability provides one deterministic local parser for upload
 <a id="capabilities"></a>
 ## Source authorization and normalization
 
-The existing Xiaojing upload button remains the only file entry. Finance customer uploads are committed by `xiaojing-finance-domain` to the bound customer's `02-原始资料` directory and recorded as `finance/file-imported`; Finance consultation uploads are recorded as `finance/consultation-file-imported`. The Finance adapter accepts only those immutable current-session records and preserves customer or consultation isolation.
+The existing Katcat upload button remains the only file entry. Finance customer uploads are committed by `xiaojing-finance-domain` to the bound customer's `02-原始资料` directory and recorded as `finance/file-imported`; Finance consultation uploads are recorded as `finance/consultation-file-imported`. The Finance adapter accepts only those immutable current-session records and preserves customer or consultation isolation.
+
+The parser requires attachment storage; the Finance business service is optional and only enables Finance import warming when mounted. Ordinary uploads use the absolute `uploadRoot` configuration, then `DSH_UPLOAD_DIR`, then `<dshHome>/uploads`. Relative upload roots fail at load.
 
 For non-Finance sessions, the ordinary adapter scans only durable `user/message` events created by a human in the current session. It accepts the exact upload-reference lines emitted by the bundled upload plugin, requires the canonical source to remain below Xiaojing's protected upload directory, and rejects plugin-authored text, arbitrary paths, symlinks, directories, and uploads from another session. Both adapters verify a regular file and its recorded size before parsing. An authorized file above the configured size limit returns `file-too-large` before SHA-256 scanning or Worker admission; accepted files still require SHA-256 verification before cache access.
 
@@ -45,7 +47,7 @@ The parser runs in a serialized Worker with a wall deadline and V8 memory ceilin
 
 ## Tools and mode isolation
 
-`document_reader` is registered globally only in the Xiaojing build, so every non-Finance Xiaojing preset receives the same local document capability. It supports `list`, `read`, and `visuals`; it cannot accept a filesystem path. The Finance preset registers `finance_document` with the same actions and explicitly hides `document_reader` in that scoped Agent. This keeps one parser implementation while preventing the ordinary adapter from bypassing Finance customer authorization.
+`document_reader` is registered globally only in the Katcat build, so every non-Finance Katcat preset receives the same local document capability. It supports `list`, `read`, and `visuals`; it cannot accept a filesystem path. The Finance preset registers `finance_document` with the same actions and explicitly hides `document_reader` in that scoped Agent. This keeps one parser implementation while preventing the ordinary adapter from bypassing Finance customer authorization.
 
 Normalized content enters the model only as an ordinary logged tool result. It is not inserted into the standing system prompt. Pagination limits text and visual batches, and the exact active model route must declare image input before `visuals` succeeds.
 
@@ -61,7 +63,7 @@ Remove the `xiaojing-finance-documents` Host row and `xiaojing-document-reader` 
 
 #### What the model sees
 
-Non-Finance Xiaojing presets receive `document_reader(action, document_id?, cursor?)`; Finance receives `finance_document(action, document_id?, cursor?)`. `list` returns only the current session's authorized documents and parser states, `read` returns bounded source-located text units, and `visuals` returns a bounded document-picture batch with source locations. Both tools direct the model away from trial-and-error Shell, Python, Office, filesystem-path, or converter attempts.
+Non-Finance Katcat presets receive `document_reader(action, document_id?, cursor?)`; Finance receives `finance_document(action, document_id?, cursor?)`. `list` returns only the current session's authorized documents and parser states, `read` returns bounded source-located text units, and `visuals` returns a bounded document-picture batch with source locations. Both tools direct the model away from trial-and-error Shell, Python, Office, filesystem-path, or converter attempts.
 
 #### Token effect
 

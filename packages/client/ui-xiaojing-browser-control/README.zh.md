@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing settings for controlling existing Chrome and Edge tabs"
+description: "Katcat settings for controlling existing Chrome and Edge tabs"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 [English](README.md) | 中文
 
+用户可见的应用名称和提示文案统一使用 Katcat，现有安装标识和持久化数据路径保留兼容值。
+
 ## 概述
 
-小兢会计本机产品的 Chrome 与 Edge 设置。只有 `DSH_CLIENT_BUILD_PROFILE=xiaojing` 且 Client 连接属于 loopback 时，插件才会贡献一个可移除的 `settings.section`；Node 入口没有运行时行为。
+Katcat本机产品的 Chrome 与 Edge 设置。只有 `DSH_CLIENT_BUILD_PROFILE=xiaojing` 且 Client 连接属于 loopback 时，插件才会贡献一个可移除的 `settings.section`；Node 入口没有运行时行为。
 
 ## 目录
 
@@ -19,7 +21,7 @@ kind: "package-reference"
 <a id="capabilities"></a>
 ## 功能说明
 
-每个浏览器行显示安装情况、用户许可和 Host 观测到的连接状态。检测失败显示为暂时无法识别，保留该行错误，不妨碍另一种浏览器使用。开关允许控制已经打开的标签页，启用并不建立连接。即使检测失败或浏览器已卸载，用户仍能撤销已有许可。撤销不会关闭用户的浏览器；小兢专用浏览器仍可使用。
+每个浏览器行显示安装情况、用户许可和 Host 观测到的连接状态。检测失败显示为暂时无法识别，保留该行错误，不妨碍另一种浏览器使用。开关允许控制已经打开的标签页，启用并不建立连接。即使检测失败或浏览器已卸载，用户仍能撤销已有许可。撤销不会关闭用户的浏览器；Katcat专用浏览器仍可使用。
 
 管理按钮显示对应浏览器固定的远程调试地址、复制控件，以及 Windows 的“打开设置页”按钮。点击打开后，Host 新建普通浏览器窗口并验证其实际 inspect 页面，确认后才显示成功。用户仍须允许远程调试，并在任务连接时批准请求。失败时保留手动设置和明确的重试按钮；打开过程中禁用重复操作，关闭说明后的旧结果不能更新另一浏览器的说明。其他系统保留复制说明。确认开启后，如果 Host 返回尚未完成设置，也会显示说明；关闭不改变许可，轮询不会反复弹出。仅显示管理、开启许可或轮询都不会启动浏览器。这条路线无需扩展、配对码、端口或 Token 输入框。
 

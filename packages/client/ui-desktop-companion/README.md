@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing settings page for the Windows desktop companion"
+description: "Katcat settings page for the Windows desktop companion"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 English | [中文](README.zh.md)
 
+User-visible application names and messages use Katcat. Existing installation identifiers and durable data paths retain their compatibility values.
+
 ## Summary
 
-Xiaojing-only settings presentation for the Windows desktop companion. The Client plugin registers the “Desktop Xiaojing” settings section and delegates native actions to the restricted Electron preload bridge. It does not create native windows, read files, or own companion task state.
+Xiaojing-only settings presentation for the Windows desktop companion. The Client plugin registers the “Desktop Pet” settings section and delegates native actions to the restricted Electron preload bridge. It does not create native windows, read files, or own companion task state.
 
 
 ## Table of Contents
@@ -20,11 +22,11 @@ Xiaojing-only settings presentation for the Windows desktop companion. The Clien
 <a id="capabilities"></a>
 ## Composition and Presentation
 
-The plugin registers `settings.section` with id `desktop-companion` and order `1000` only for the `xiaojing` build profile, placing it last in the Settings navigation. The section shows the character preview, current sanitized state, active task count, a 30%–100% size control, and controls to wake, tuck, or reset the companion. Missing persisted size preferences default to 50% of the original character size.
+The plugin registers `settings.section` with id `desktop-companion` and order `1000` only for the `xiaojing` build profile, placing it last in the Settings navigation. The section uses the application theme and shows the transparent Katcat kitten preview, current sanitized state, active task count, a 30%–100% size control, and controls to wake, tuck, or reset the companion. Missing persisted size preferences default to 50% of the original character size.
 
 Wake creates or shows the companion window. Tuck destroys only that window and leaves the application, Host, active tasks, and Weixin channel running. Reset moves the companion to the primary display's lower-right work area and wakes it when necessary. The page updates immediately from the same preload subscription used by the tray and companion window.
 
-When the preload bridge is absent, the page displays that Desktop Xiaojing is available only in the Windows desktop application and renders no inactive native controls. This keeps an ordinary browser preview accurate without emulating desktop behavior.
+When the preload bridge is absent, the page displays that Desktop Pet is available only in the Windows desktop application and renders no inactive native controls. This keeps an ordinary browser preview accurate without emulating desktop behavior.
 
 ## Electron Bridge
 
@@ -40,7 +42,7 @@ No direct effect; opening the settings section or controlling the companion does
 
 ## Known Limitations and Deferred Work
 
-- Native controls require the Xiaojing Windows Electron preload bridge.
+- Native controls require the Katcat Windows Electron preload bridge.
 - The settings page does not provide animation, sound, character customization, autostart, or an input box.
 - Closing the whole application removes the settings page as well; the application must be started again before the companion can be awakened.
 

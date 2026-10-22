@@ -1,5 +1,5 @@
 !undef APP_FILENAME
-!define APP_FILENAME "xiaojing-agent-desktop"
+!define APP_FILENAME "Katcat-desktop"
 
 !include FileFunc.nsh
 !include nsDialogs.nsh
@@ -7,6 +7,7 @@
 
 !ifndef BUILD_UNINSTALLER
   !include "${__FILEDIR__}\..\scripts\installer-directories.nsh"
+  !include "${BUILD_RESOURCES_DIR}\installer-installation.nsh"
 !endif
 
 !ifndef BUILD_UNINSTALLER
@@ -35,7 +36,9 @@
   !endif
 
   StrCmp $R8 "" xiaojingAppCheckDone
-  IfFileExists "$R8\${APP_EXECUTABLE_FILENAME}" 0 xiaojingAppCheckDone
+  IfFileExists "$R8\${APP_EXECUTABLE_FILENAME}" xiaojingAppCheckStart
+  IfFileExists "$R8\小兢办公.exe" 0 xiaojingAppCheckDone
+xiaojingAppCheckStart:
   InitPluginsDir
   File /oname=$PLUGINSDIR\xiaojing-installer-shutdown.ps1 "${BUILD_RESOURCES_DIR}\installer-shutdown-helper.ps1"
   System::Call 'KERNEL32::GetCurrentProcessId() i .R9'
@@ -45,7 +48,7 @@ xiaojingAppCheckRetry:
   Pop $R0
   Pop $R1
   StrCmp $R0 "0" xiaojingAppCheckDone
-  MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "无法安全关闭旧版小兢会计。请结束旧版进程后重试。" /SD IDCANCEL IDRETRY xiaojingAppCheckRetry
+  MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "无法安全关闭旧版Katcat.AI。请结束旧版进程后重试。" /SD IDCANCEL IDRETRY xiaojingAppCheckRetry
   Quit
 
 xiaojingAppCheckDone:
@@ -56,6 +59,13 @@ xiaojingRefreshShortcutsRetry:
   !insertmacro xiaojingRefreshShortcutIcons
   ${If} ${Errors}
     MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "程序文件已安装，但快捷方式图标更新失败。请关闭快捷方式属性窗口后重试。" /SD IDCANCEL IDRETRY xiaojingRefreshShortcutsRetry
+    SetErrorLevel 2
+    Quit
+  ${EndIf}
+  !insertmacro katcatWriteInstallationId
+  ${If} ${Errors}
+    MessageBox MB_OK|MB_ICONEXCLAMATION "无法完成本次安装的首次启动准备。请重新运行安装程序。" /SD IDOK
+    Call dshCleanupDirectories
     SetErrorLevel 2
     Quit
   ${EndIf}
@@ -258,7 +268,7 @@ xiaojingRefreshShortcutsRetry:
       System::Call 'USER32::SetWindowPos(p $xiaojingWelcomeProductControl, p 0, i R0, i 8, i $xiaojingInstallerArtworkWidth, i $xiaojingInstallerArtworkHeight, i 0x0004)'
       ${NSD_SetStretchedImage} $xiaojingWelcomeProductControl "$PLUGINSDIR\xiaojing-product-logo.bmp" $xiaojingWelcomeProductBitmap
 
-      ${NSD_CreateLabel} 0u 0u 1u 1u "小兢会计"
+      ${NSD_CreateLabel} 0u 0u 1u 1u "Katcat.AI"
       Pop $xiaojingWelcomeTitleControl
       ${NSD_AddStyle} $xiaojingWelcomeTitleControl ${SS_CENTER}|${SS_CENTERIMAGE}
       SetCtlColors $xiaojingWelcomeTitleControl "102A36" "FFFFFF"
@@ -427,7 +437,7 @@ xiaojingRefreshShortcutsRetry:
       IntOp $R0 $xiaojingInstallerPageWidth - 480
       IntOp $R0 $R0 / 2
       IntOp $R1 $xiaojingInstallerArtworkHeight + 22
-      System::Call 'USER32::CreateWindowExW(i 0, w "STATIC", w "正在安装小兢会计，请稍候…", i 0x50000201, i R0, i R1, i 480, i 36, p $mui.InstFilesPage, p 0, p 0, p 0) p .r0'
+      System::Call 'USER32::CreateWindowExW(i 0, w "STATIC", w "正在安装Katcat.AI，请稍候…", i 0x50000201, i R0, i R1, i 480, i 36, p $mui.InstFilesPage, p 0, p 0, p 0) p .r0'
       StrCpy $xiaojingProgressTitleControl $0
       SetCtlColors $xiaojingProgressTitleControl "102A36" "FFFFFF"
       CreateFont $1 "Microsoft YaHei UI" "15" "600"

@@ -3,20 +3,20 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-desktop-companion/README.md
 /:
-  en: 3c7876b21234df13
-  zh: 3c7876b21234df13
+  en: 98ed121e5ae3def3
+  zh: 98ed121e5ae3def3
 /deepseek-ai-dsh-xiaojing-desktop-companion:
   en: 661736134d308a56
   zh: 383f40d0055bd392
 /deepseek-ai-dsh-xiaojing-desktop-companion/summary:
-  en: 84f44e1d5b9c81c9
-  zh: c566371aae12e83f
+  en: c4d931ff33332a5d
+  zh: 47cdca13bf0692fd
 /deepseek-ai-dsh-xiaojing-desktop-companion/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-xiaojing-desktop-companion/composition-and-state:
-  en: dc94f81903364004
-  zh: e122f8c052f9fda6
+  en: f5501f8069cdcbba
+  zh: 98d58db685ec4313
 /deepseek-ai-dsh-xiaojing-desktop-companion/desktop-transport:
   en: 81067dc9e0a2315a
   zh: 5f4fc5785008b4a8

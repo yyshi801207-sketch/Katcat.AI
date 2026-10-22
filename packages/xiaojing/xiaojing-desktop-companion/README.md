@@ -1,5 +1,5 @@
 ---
-description: "Sanitized task-state aggregation for the Xiaojing Windows desktop companion"
+description: "Sanitized task-state aggregation for the Katcat Windows desktop companion"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-Host-side task-state aggregation for the Xiaojing Windows desktop companion. This Cordis plugin observes Harness session, approval, and sanitized Weixin status events and publishes one content-free global snapshot for the Electron desktop. It does not modify the Agent Loop, task execution, model prompts, or user sessions.
+Host-side task-state aggregation for the Katcat Windows desktop companion. This Cordis plugin observes Harness session, approval, and sanitized Weixin status events and publishes one content-free global snapshot for the Electron desktop. It does not modify the Agent Loop, task execution, model prompts, or user sessions.
 
 
 ## Table of Contents
@@ -20,7 +20,7 @@ Host-side task-state aggregation for the Xiaojing Windows desktop companion. Thi
 <a id="capabilities"></a>
 ## Composition and State
 
-The plugin is loaded only by the Xiaojing product composition. It tracks open turns, unfinished tools, unresolved approvals, recent terminal results, and the sanitized Weixin online flag. The global state priority is approval, failure, execution, thinking, success, then idle. Completed turns retain success for 2.5 seconds, while failed, blocked, max-token, and interrupted turns retain failure for 5 seconds. Concurrent active turns contribute only a count. Tool completion reads the call id from the tool message source, including results with empty content.
+The plugin is loaded only by the Katcat product composition. It tracks open turns, unfinished tools, unresolved approvals, recent terminal results, and the sanitized Weixin online flag. The global state priority is approval, failure, execution, thinking, success, then idle. Completed turns retain success for 2.5 seconds, while failed, blocked, max-token, and interrupted turns retain failure for 5 seconds. Concurrent active turns contribute only a count. Tool completion reads the call id from the tool message source, including results with empty content.
 
 The exported `CompanionSnapshot` contains `state`, `activeTaskCount`, `approvalCount`, `weixinOnline`, and `revision`. It never contains session titles, user instructions, file names, tool arguments, model replies, API keys, or Weixin credentials. The tracker retains only lifecycle counters and timestamps per session and discards a session record when the session is disposed.
 

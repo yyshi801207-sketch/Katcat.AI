@@ -39,7 +39,7 @@ export async function serveWebDocument(request: Request, root: string, locale?: 
   if (pathname === '/' || pathname === '/index.html') {
     content = body.toString().replace('<head>', '<head>' + BOOT)
     if (locale !== undefined) {
-      const startup = `<main id="xiaojing-startup" aria-busy="true"><img src="dsh-app://shell/assets/startup-logo.png" alt=""><h1>${htmlText(locale.messages.startupTitle)}</h1><p role="status">${htmlText(locale.messages.startupLoading)}</p><div class="xiaojing-startup-loader" aria-hidden="true"></div></main>`
+      const startup = `<main id="xiaojing-startup" aria-busy="true" aria-labelledby="katcat-startup-title"><div class="katcat-startup-scene"><img class="katcat-startup-art" src="dsh-app://shell/assets/katcat-startup.png" alt="" width="1565" height="1005" fetchpriority="high"><svg class="katcat-startup-wordmark" viewBox="45 135 2082 425" aria-hidden="true"><image href="dsh-app://shell/assets/katcat-startup-wordmark.png" width="2172" height="724" /></svg><h1 id="katcat-startup-title">${htmlText(locale.messages.startupTitle)}</h1><div class="katcat-startup-status"><div class="katcat-startup-progress" aria-hidden="true"></div><p role="status">${htmlText(locale.messages.startupLoading)}</p></div></div></main>`
       // Keep the kernel boot DOM alone inside #root so React's loading-page hydration stays intact.
       content = content.replace('<head>', '<head><link rel="stylesheet" href="dsh-app://shell/startup.css">')
         .replace('<div id="root"></div>', `<div id="root"></div>${startup}`)

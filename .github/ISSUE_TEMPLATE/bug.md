@@ -1,7 +1,6 @@
 ---
-name: Bug
-about: 记录现有预期行为的失效
-type: Bug
+name: Bug / 问题反馈
+about: 报告 Katcat 的可复现问题 / Report a reproducible Katcat problem
 ---
 
 ## Summary
@@ -14,7 +13,7 @@ type: Bug
 
 ## Current behavior
 
-<!-- 说明实际结果，并附上必要的错误信息、日志或截图。 -->
+<!-- 附必要日志或截图。请先移除 API Key、私人文档、个人路径和会话内容。 -->
 
 ## Expected behavior
 
@@ -22,4 +21,4 @@ type: Bug
 
 ## Environment
 
-<!-- 说明相关版本、平台、配置或运行条件。 -->
+<!-- Katcat 版本、系统版本和架构、安装包或源码运行、全新安装或保留数据的升级。 -->

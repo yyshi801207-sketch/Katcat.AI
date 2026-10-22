@@ -1,4 +1,4 @@
-/** Authenticated loopback bridge to the optional Xiaojing personal Edge extension. */
+/** Authenticated loopback bridge to the optional Katcat personal Edge extension. */
 
 import { createHmac, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto'
 import type { Context } from '@deepseek-ai/cordis'
@@ -507,7 +507,7 @@ export class PersonalEdgeAdapter {
       this.extensionVersion = message.version
       if (message.protocol !== PERSONAL_EDGE_PROTOCOL_VERSION) {
         this.protocolIncompatible = true
-        this.stateError = '扩展协议版本不兼容，请更新小兢会计 Edge 扩展。'
+        this.stateError = '扩展协议版本不兼容，请更新Katcat Edge 扩展。'
         send(socket, { type: 'hello-result', state: 'incompatible', protocol: PERSONAL_EDGE_PROTOCOL_VERSION })
         return
       }

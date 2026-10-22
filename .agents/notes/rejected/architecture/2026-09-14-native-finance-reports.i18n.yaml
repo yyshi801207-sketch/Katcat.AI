@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/architecture/2026-09-14-native-finance-reports.md
 /agent-note-native-finance-reports-through-a-bounded-browser-reader:
-  en: 7a36a2cfa5096eb9
-  zh: c7550c001c5c00dc
+  en: 2a3e7f763ba72332
+  zh: befb84aebe6f818c
 /agent-note-native-finance-reports-through-a-bounded-browser-reader/problem:
   en: 17aa3cc1767d0a45
   zh: 66390fec6f5ea2da
 /agent-note-native-finance-reports-through-a-bounded-browser-reader/proposal:
-  en: afe50f73a7583cbc
-  zh: 94751506e045667c
+  en: 8c24099b4eb63064
+  zh: cd9ea3fb263d3298
 /agent-note-native-finance-reports-through-a-bounded-browser-reader/alternatives-considered:
   en: 0abe160a8fe0ae6a
   zh: 211e96818ea42b29

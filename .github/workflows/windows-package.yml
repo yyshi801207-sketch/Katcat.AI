@@ -52,6 +52,7 @@ concurrency:
 
 jobs:
   package:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     runs-on: dsh-win-package-trial
     timeout-minutes: 120
     defaults:

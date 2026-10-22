@@ -250,7 +250,7 @@ export function financeResultContent(content: unknown, isError: boolean,
     return [{ type: 'text', text: businessError(rawText(content)) }]
   }
   const value = parse(content)
-  if (value === undefined) return [{ type: 'text', text: '财务结果已返回，小兢会计将根据结果继续处理。' }]
+  if (value === undefined) return [{ type: 'text', text: '财务结果已返回，Katcat将根据结果继续处理。' }]
   const lines = presentation === 'voucher-detail' ? voucherDetail(value)
     : presentation === 'voucher-list' ? voucherList(value)
       : presentation === 'balance' ? balance(value)

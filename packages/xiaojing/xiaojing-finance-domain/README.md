@@ -64,7 +64,7 @@ Selected PDF/PNG/JPEG originals use financial-voucher approval, never reimbursem
 
 `finance_prepare_voucher` exposes `prepareVoucher` in the Finance preset: prepare, revise and inspect local previews, never submit. Revision requires the last returned version. Sources must belong to the session's import log and source directory; preparation, revision and inspection reread bounded bytes and reject changed sizes/hashes. This verifies imported bytes, not invoice authenticity or successful transfer. Client-version and credential changes invalidate the configuration digest. Tool configuration bounds entries (`maxEntries`, default100) and full records/results (`maxBytes`, default131072). Results explicitly retain pending checks and are not confirmation or proof of creation.
 
-Xiaojing Finance Host capability for local taxpayer-entity records and immutable per-session client context. The Cordis plugin owns storage, revision-safe mutations, pre-turn selection, durable session binding, the browser Remote, and model-visible Finance context. It does not modify the Agent Loop and is loaded only by the Xiaojing product composition.
+Katcat Finance Host capability for local taxpayer-entity records and immutable per-session client context. The Cordis plugin owns storage, revision-safe mutations, pre-turn selection, durable session binding, the browser Remote, and model-visible Finance context. It does not modify the Agent Loop and is loaded only by the Katcat product composition.
 
 ## Client records
 
@@ -160,7 +160,7 @@ Later edits to the client record affect only future sessions. Historical session
 
 The Finance preset consumer is exported separately as `@deepseek-ai/dsh-xiaojing-finance-domain/context`. Removing that preset row removes model context while leaving the Host record service independently removable from the Web composition.
 
-Every Finance prompt assembly contributes `xiaojing:finance-capabilities`, generated from `FINANCE_POSITIONING` and the canonical `FINANCE_CAPABILITIES` registry. Ordinary capability introductions use the broad product positioning—financial-document handling, daily accounting assistance, analysis and deliverables, tax support, and multi-step task execution—without enumerating implementation status or unsupported reports. Specific capability questions, complete-list requests, and actual operations use the detailed registry; execution also checks the current connection, authorization, ledger, period, and data scope. Each detailed status names its scope: general Xiaojing, the current Finance workspace, or the current Youcheng connector. A Youcheng limitation does not prohibit general consultation, user-supplied document work, reliable-data analysis, or a future connector. A client binding remains evidence of customer identity only, not a live Youcheng connection or permission. Standard and other presets receive no Finance capability contribution.
+Every Finance prompt assembly contributes `xiaojing:finance-capabilities`, generated from `FINANCE_POSITIONING` and the canonical `FINANCE_CAPABILITIES` registry. Ordinary capability introductions use the broad product positioning—financial-document handling, daily accounting assistance, analysis and deliverables, tax support, and multi-step task execution—without enumerating implementation status or unsupported reports. Specific capability questions, complete-list requests, and actual operations use the detailed registry; execution also checks the current connection, authorization, ledger, period, and data scope. Each detailed status names its scope: general Katcat, the current Finance workspace, or the current Youcheng connector. A Youcheng limitation does not prohibit general consultation, user-supplied document work, reliable-data analysis, or a future connector. A client binding remains evidence of customer identity only, not a live Youcheng connection or permission. Standard and other presets receive no Finance capability contribution.
 
 ## Remote and privacy
 
@@ -204,7 +204,7 @@ The result notice limits empty-page wording to “this query page returned no bu
 
 The tool's leading instruction routes natural-language income/expense comparisons and totals to `analyze: true`, including mixed requests involving other Finance queries. Raw-page notices repeat the required account lookup and analysis call rather than permitting manual subtraction of unqualified summaries. This is model guidance, not deterministic validation of a generated answer; live mixed-request acceptance remains necessary.
 
-`verificationOwner: xiaojing` explicitly attributes the internal report's checks to Xiaojing, not the vendor. The workbook presents the resulting reconciliation in business terms without exposing that internal owner or coverage label.
+`verificationOwner: xiaojing` explicitly attributes the internal report's checks to Katcat, not the vendor. The workbook presents the resulting reconciliation in business terms without exposing that internal owner or coverage label.
 
 `incomeMissingValueCount` and `expenseMissingValueCount` count missing amount cells in returned business rows, not missing transactions or omitted pages. Workbook headers state this distinction; source rows and nulls remain unchanged.
 
@@ -228,7 +228,7 @@ This missing-identifier failure reports a fixed local explanation and suggests c
 
 Open-item answer instructions preserve `previous-page` as “上一页总计”, not an initial balance, and `total` as “接口合计” without inferring page scope. A requested export can accompany the initial query. A later export repeats the explicit direction and period; the Host starts at page one and reconciles the exported business-row count to the vendor count. Successful answers give the selected business range, record count and full published path without narrating that internal collection process. These instructions require real-model acceptance and do not deterministically validate generated prose.
 
-Both open-item tools constrain the final conclusion as well as intermediate tables: period filters select records, not a historical balance snapshot. Youcheng supplies business rows; Xiaojing computes groups and differences locally rather than labeling them vendor aggregates. Blank summary currencies remain unqualified. Answers report the returned records' outstanding balances without turning them into month-end balances. Result notices retain data limitations without embedding development acceptance status.
+Both open-item tools constrain the final conclusion as well as intermediate tables: period filters select records, not a historical balance snapshot. Youcheng supplies business rows; Katcat computes groups and differences locally rather than labeling them vendor aggregates. Blank summary currencies remain unqualified. Answers report the returned records' outstanding balances without turning them into month-end balances. Result notices retain data limitations without embedding development acceptance status.
 
 The Finance-only `finance_open_item_analysis` tool collects every page declared by the open-item count before grouping by currency, subject, or the full auxiliary-ID combination. It authenticates once and uses `youchengRequestTimeoutMs` for the whole collection/comparison. `youchengAnalysisPageSize` defaults to 100; existing open-item row limits apply per period, and accumulated page bytes and the complete report share the open-item byte limit. Changed counts, short pages, duplicate IDs, mismatched ledger/selection and cancellation reject the entire report. No model-supplied accounting rows are accepted.
 
@@ -276,7 +276,7 @@ Reconciliation status counts are computed for each period's eight columns. Answe
 
 Ordinary explicit single-month level-one queries also attach these checks and counts, without another network call or changing query scope. The complete enriched response remains byte-limited and configuration-checked; analysis workbooks present the checks in a dedicated business sheet. Other selections remain source-only.
 
-Query reconciliation identifies `verificationOwner: xiaojing`: Youcheng supplies amounts; Xiaojing computes checks, not vendor-issued certification.
+Query reconciliation identifies `verificationOwner: xiaojing`: Youcheng supplies amounts; Katcat computes checks, not vendor-issued certification.
 
 Requests to reconcile totals or count reconciliation statuses use `analyze: true` at level one. The consumer instructs the model not to recompute counts from raw reports or reuse conflicting historical answers; four source-only Balance fields are excluded from the eight debit/credit checks.
 

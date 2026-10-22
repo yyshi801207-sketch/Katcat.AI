@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing Weixin iLink channel, durable Agent session bridge, and encrypted image/document transfer"
+description: "Katcat Weixin iLink channel, durable Agent session bridge, and encrypted image/document transfer"
 kind: "package-reference"
 ---
 
@@ -7,9 +7,11 @@ kind: "package-reference"
 
 English | [中文](README.zh.md)
 
+User-visible application names and messages use Katcat. Existing installation identifiers and durable data paths retain their compatibility values.
+
 ## Summary
 
-Host-side Weixin channel for Xiaojing. This Cordis plugin pairs one Tencent iLink bot, receives direct text, image, and document messages by outbound HTTPS long polling, runs them through a durable Harness Agent session, and returns phone-friendly text or local files. It does not require a public webhook, Python runtime, OpenClaw, or an additional model API key.
+Host-side Weixin channel for Katcat. This Cordis plugin pairs one Tencent iLink bot, receives direct text, image, and document messages by outbound HTTPS long polling, runs them through a durable Harness Agent session, and returns phone-friendly text or local files. It does not require a public webhook, Python runtime, OpenClaw, or an additional model API key.
 
 
 ## Table of Contents
@@ -20,15 +22,15 @@ Host-side Weixin channel for Xiaojing. This Cordis plugin pairs one Tencent iLin
 <a id="capabilities"></a>
 ## Composition and Protocol
 
-The plugin is preinstalled in the Xiaojing product composition. It uses only Tencent's official iLink and CDN hosts and rejects a server-returned non-official address. Media bytes use Tencent CDN references and AES-128-ECB encryption. The browser settings plugin communicates with the Host through the loopback-only `/xiaojing-weixin` RPC channel; browser responses contain sanitized state and never include bot tokens, message context tokens, CDN keys, or QR contents after pairing. The assembled plugin also provides the channel instance to injected Host peers and emits a sanitized `xiaojing-weixin/status` event after connection transitions; this event contains only the same browser-safe status fields.
+The plugin is preinstalled in the Katcat product composition. It uses only Tencent's official iLink and CDN hosts and rejects a server-returned non-official address. Media bytes use Tencent CDN references and AES-128-ECB encryption. The browser settings plugin communicates with the Host through the loopback-only `/xiaojing-weixin` RPC channel; browser responses contain sanitized state and never include bot tokens, message context tokens, CDN keys, or QR contents after pairing. The assembled plugin also provides the channel instance to injected Host peers and emits a sanitized `xiaojing-weixin/status` event after connection transitions; this event contains only the same browser-safe status fields.
 
 The settings RPC registers a Web route through Connection, so the Host plugin requires both `connection` and `webServer` at startup.
 
-Pairing starts with an iLink QR code. After the scanner confirms on the phone, the Host stores the issued token in the Harness credential service and stores the account, long-poll cursor, session identity, pending tasks, and bounded deduplication records in a schema-versioned private state file. Application shutdown aborts polling and the active turn, then waits for channel work to become idle before releasing the state lease, so the channel is online only while Xiaojing is running.
+Pairing starts with an iLink QR code. After the scanner confirms on the phone, the Host stores the issued token in the Harness credential service and stores the account, long-poll cursor, session identity, pending tasks, and bounded deduplication records in a schema-versioned private state file. Application shutdown aborts polling and the active turn, then waits for channel work to become idle before releasing the state lease, so the channel is online only while Katcat is running.
 
 ## Session and Delivery
 
-The first accepted message creates one durable session named “微信助手” with the current default preset, model, and Xiaojing workspace. Later starts recover that session and its history, preserving its recorded workspace even when the Host starts in another directory. Only an absent session is created with the current defaults; other recovery failures leave its identity and pending tasks intact. Messages from the paired scanner are processed FIFO through `sessionController.prompt()`. Inbound images and documents are decrypted into the shared `$DSH_HOME/uploads` directory with sanitized unique names. PNG, JPEG, WebP, and GIF images are submitted as native image blocks and retained under `$DSH_HOME/attachments/v1`; the DeepSeek provider resolves retained images through the Files API and falls back to retained inline data when Files resolution fails. Their name, type, size, and local source path remain in the logged text. Other files remain path-backed text attachments. Image messages use the session's selected model without switching it; the default `deepseek-flash` accepts text and images, while a selected text-only model rejects image submission. Stable inbound message IDs and RPC IDs correlate each Weixin task with its Agent turn; desktop-originated messages in the same session are never sent to Weixin.
+The first accepted message creates one durable session named “微信助手” with the current default preset, model, and Katcat workspace. Later starts recover that session and its history, preserving its recorded workspace even when the Host starts in another directory. Only an absent session is created with the current defaults; other recovery failures leave its identity and pending tasks intact. Messages from the paired scanner are processed FIFO through `sessionController.prompt()`. Inbound images and documents are decrypted into the shared `$DSH_HOME/uploads` directory with sanitized unique names. PNG, JPEG, WebP, and GIF images are submitted as native image blocks and retained under `$DSH_HOME/attachments/v1`; the DeepSeek provider resolves retained images through the Files API and falls back to retained inline data when Files resolution fails. Their name, type, size, and local source path remain in the logged text. Other files remain path-backed text attachments. Image messages use the session's selected model without switching it; the default `deepseek-flash` accepts text and images, while a selected text-only model rejects image submission. Stable inbound message IDs and RPC IDs correlate each Weixin task with its Agent turn; desktop-originated messages in the same session are never sent to Weixin.
 
 After durable enqueue, the channel acknowledges every message in one update batch before starting that batch's first task: the active task reports that execution started, while a queued task includes the number of tasks ahead. An active task sends a progress notice after 30 seconds and every 30 seconds thereafter; a transient execution failure sends one interruption notice while the durable task remains eligible for automatic retry. A deterministic image limit, read, format, or Host admission failure instead returns an actionable message, completes that queue item, and immediately continues with the next task. The native typing indicator remains supplemental. The final assistant reply is formatted by converting headings, lists, links, code blocks, and Markdown tables into compact mobile plain text. It preserves explicit amounts, dates, and statuses, splits long replies at paragraph or line boundaries, and leaves the desktop transcript unchanged.
 
@@ -132,7 +134,7 @@ The schema and registration order remain stable for the Agent lifetime and stay 
 - V1 supports paired-account direct text, native visual PNG/JPEG/WebP/GIF input, and document messages. Audio, video, multiple-party group chats, and a separate local OCR engine are not provided.
 - Arbitrary document types can be transported, but whether the Agent can parse a specific proprietary format depends on its installed local tools.
 - Pairing creates an iLink bot identity; it does not take over a personal Weixin account.
-- Tencent iLink availability and credential validity are external dependencies. Closing Xiaojing stops message reception and task execution.
+- Tencent iLink availability and credential validity are external dependencies. Closing Katcat stops message reception and task execution.
 - The protocol cannot guarantee exactly-once final-result delivery across a crash after the remote send succeeds.
 
 <a id="dev-note"></a>

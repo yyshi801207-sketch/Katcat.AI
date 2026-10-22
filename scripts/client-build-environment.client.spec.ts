@@ -79,14 +79,15 @@ function repositoryFixture(version = '1.2.3-rc.4'): string {
 }
 
 describe('client build environment', () => {
-  it('supplies the Xiaojing boot brand without changing the official profile', () => {
+  it('supplies the Katcat boot brand without changing the official profile', () => {
     const metadata = { DSH_CLIENT_COMMIT_HASH: COMMIT_HASH.slice(0, 7), DSH_CLIENT_VERSION: '1.2.3' }
     expect(resolveClientBuildEnvironment({ ...metadata, DSH_BUILD_CLIENT_PROFILE: 'xiaojing' })).toMatchObject({
       DSH_CLIENT_BOOT_LOGO: './sudo-logo-gray.png',
       DSH_CLIENT_BOOT_LOGO_ALT: '数豆科技',
       DSH_CLIENT_FAVICON: './xiaojing-character-logo.png',
-      DSH_CLIENT_RUNNING_LABEL_ZH: '小兢会计思考中',
-      DSH_CLIENT_RUNNING_LABEL_EN: 'Xiaojing Accounting is thinking',
+      DSH_CLIENT_RUNNING_LABEL_ZH: 'Katcat is thinking',
+      DSH_CLIENT_RUNNING_LABEL_EN: 'Katcat is thinking',
+      DSH_CLIENT_WORKSPACE_LABEL: 'Katcat Home',
     })
     expect(resolveClientBuildEnvironment({ ...metadata, DSH_BUILD_CLIENT_PROFILE: 'official' }))
       .not.toHaveProperty('DSH_CLIENT_BOOT_LOGO')

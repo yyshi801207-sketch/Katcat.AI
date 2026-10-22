@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/client/ui-weixin-channel/README.md
 /:
-  en: 025d534368ad0400
-  zh: 025d534368ad0400
+  en: ef25841c4085fa9b
+  zh: ef25841c4085fa9b
 /deepseek-ai-dsh-client-ui-weixin-channel:
-  en: f1f74de51366f782
-  zh: 2d7fe7d7b6ef88bf
+  en: 83db8be1b79b1e74
+  zh: e4fde5a4e5e6cd25
 /deepseek-ai-dsh-client-ui-weixin-channel/summary:
-  en: 0bdd9a60b7682373
-  zh: 37361dd6697f6d22
+  en: ab735e2f4d4267d8
+  zh: 60e8b75984779660
 /deepseek-ai-dsh-client-ui-weixin-channel/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
@@ -18,8 +18,8 @@
   en: 6b1b24408f87872a
   zh: d6d6e06a1490c9eb
 /deepseek-ai-dsh-client-ui-weixin-channel/security:
-  en: 793b2be13b42cd3b
-  zh: 5bf9221d870416b5
+  en: 45f4c79206ea5cdf
+  zh: b43dda40a3b473f5
 /deepseek-ai-dsh-client-ui-weixin-channel/model-experience:
   en: 73bfb512ed49e39d
   zh: 1dfd69c5e650dd57

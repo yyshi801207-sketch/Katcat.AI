@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-client-ui-xiaojing-browser-control",
-  "description": "Xiaojing settings for controlling existing Chrome and Edge tabs",
+  "description": "Katcat settings for controlling existing Chrome and Edge tabs",
   "version": "0.2.1-rc.2",
   "publishConfig": {
     "access": "public"

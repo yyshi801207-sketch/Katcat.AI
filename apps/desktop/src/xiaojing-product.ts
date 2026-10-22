@@ -20,7 +20,7 @@ interface XiaojingIdentity {
 function readIdentity(): XiaojingIdentity {
   const value: unknown = JSON.parse(readFileSync(new URL('../identity.json', import.meta.url), 'utf8'))
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-    throw new Error('xiaojing desktop: invalid identity manifest')
+    throw new Error('Katcat desktop: invalid identity manifest')
   }
   const row = value as Record<string, unknown>
   const userDataSegments = row.userDataSegments
@@ -30,7 +30,7 @@ function readIdentity(): XiaojingIdentity {
     || row.installScope !== 'currentUser' || typeof row.shortcutName !== 'string'
     || !Array.isArray(userDataSegments) || userDataSegments.length === 0
     || userDataSegments.some(segment => typeof segment !== 'string' || segment.length === 0)) {
-    throw new Error('xiaojing desktop: invalid identity manifest fields')
+    throw new Error('Katcat desktop: invalid identity manifest fields')
   }
   return {
     packageName: row.packageName,
@@ -58,7 +58,6 @@ export interface XiaojingDesktopPaths {
   readonly dshHome: string
   readonly workspaceRoot: string
   readonly officeWorkspace: string
-  readonly financeWorkspace: string
 }
 
 /**
@@ -87,15 +86,14 @@ export function initializeXiaojingApplication(
   application.setPath('userData', userData)
   application.setName(XIAOJING_IDENTITY.productName)
   application.setAppUserModelId(XIAOJING_IDENTITY.appId)
-  const workspaceRoot = join(application.getPath('documents'), '小兢会计工作区')
+  const workspaceRoot = join(application.getPath('documents'), 'Katcat_Home')
   const paths = {
     userData,
     dshHome: join(userData, 'harness'),
     workspaceRoot,
-    officeWorkspace: join(workspaceRoot, '办公工作区'),
-    financeWorkspace: join(workspaceRoot, 'Finance工作区'),
+    officeWorkspace: workspaceRoot,
   }
-  for (const path of [paths.userData, paths.dshHome, paths.officeWorkspace, paths.financeWorkspace]) {
+  for (const path of [paths.userData, paths.dshHome, paths.officeWorkspace]) {
     mkdirSync(path, { recursive: true })
   }
   environment.DSH_HOME = paths.dshHome
@@ -119,10 +117,9 @@ export function xiaojingHostEnvironment(
     DSH_CLIENT_BUILD_PROFILE: 'xiaojing',
     DSH_HOME: paths.dshHome,
     XIAOJING_OFFICE_WORKSPACE_ROOT: paths.officeWorkspace,
-    XIAOJING_FINANCE_WORKSPACE_ROOT: paths.financeWorkspace,
     DSH_TELEMETRY_DISABLED: '1',
     XIAOJING_EDGE_EXTENSION_DIR: application.isPackaged
-      ? join(process.resourcesPath, 'xiaojing-edge-extension')
+      ? join(process.resourcesPath, 'katcat-edge-extension')
       : resolve(import.meta.dirname, '..', '..', '..', 'packages', 'xiaojing', 'xiaojing-browser-control', 'extension'),
     NODE_USE_ENV_PROXY: environment.NODE_USE_ENV_PROXY ?? '1',
     NO_COLOR: '1',
@@ -143,19 +140,19 @@ export function assertXiaojingDesktopClientBuild(repositoryRoot: string, package
   if (packaged) return
   const recordPath = join(repositoryRoot, '.dsh-build', 'client-build-environment.json')
   if (!existsSync(recordPath)) {
-    throw new Error('缺少小兢会计前端构建记录，请先运行 pnpm run build:xiaojing。')
+    throw new Error('缺少Katcat前端构建记录，请先运行 pnpm run build:xiaojing。')
   }
   let record: unknown
   try { record = JSON.parse(readFileSync(recordPath, 'utf8')) }
   catch (error) {
     const detail = error instanceof Error ? error.message : String(error)
-    throw new Error(`小兢会计前端构建记录无效，请重新运行 pnpm run build:xiaojing：${detail}`)
+    throw new Error(`Katcat前端构建记录无效，请重新运行 pnpm run build:xiaojing：${detail}`)
   }
   if (typeof record !== 'object' || record === null || !('environment' in record)
     || typeof record.environment !== 'object' || record.environment === null
     || !('DSH_CLIENT_BUILD_PROFILE' in record.environment)
     || record.environment.DSH_CLIENT_BUILD_PROFILE !== 'xiaojing') {
-    throw new Error('当前前端产物不是小兢会计版本，请运行 pnpm run build:xiaojing 后再启动桌面预览。')
+    throw new Error('当前前端产物不是Katcat版本，请运行 pnpm run build:xiaojing 后再启动桌面预览。')
   }
 }
 

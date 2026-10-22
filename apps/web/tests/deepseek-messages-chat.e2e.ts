@@ -56,6 +56,18 @@ describe.skipIf(MODE === 'record')('web e2e: DeepSeek Messages conversation', ()
     onTestFailed(() => saveFailureShot(page, 'web-e2e-deepseek-messages-chat'))
     const prompts = fixtureUserPrompts(await readFile(replayFixture, 'utf8'))
     expect(prompts).toHaveLength(1)
+    if (webClientProfile() === 'xiaojing') {
+      expect(scaffold.ctx.get('xiaojingFinanceDomain')).toBeUndefined()
+      expect(scaffold.ctx.get('xiaojingFinanceCalculations')).toBeUndefined()
+      expect(scaffold.ctx.get('xiaojingFinanceEvidence')).toBeUndefined()
+      expect(scaffold.ctx.get('xiaojingFinanceDocuments')).toBeDefined()
+      expect(await page.getByRole('button', { name: /财务助手|Finance Assistant|Finance模式/ }).count()).toBe(0)
+      await page.getByRole('button', { name: '标准模式', exact: true }).click()
+      await page.getByRole('menu').waitFor()
+      await compareOrRefreshGolden(join(LEGACY_XIAOJING_DIR, 'presets.expected.md'),
+        await captureStableAria(page, '[role="menu"]', scaffold.workspaceCwd), MODE)
+      await page.keyboard.press('Escape')
+    }
     expect(scaffold.ctx.agentDefaultModel.currentSelection()).toEqual({ provider: 'deepseek-messages', model: 'deepseek-v4-flash' })
     await page.getByRole('button', { name: /^选择模型/ }).click()
     await page.getByRole('menuitem', { name: /模型/ }).click()
@@ -77,7 +89,7 @@ describe.skipIf(MODE === 'record')('web e2e: DeepSeek Messages conversation', ()
   it('keeps the recorded-session inventory closed', async () => {
     if (WINDOWS_XIAOJING) {
       await assertFixtureInventory(SNAPSHOT_DIR, ['session.v4.jsonl'])
-      await assertFixtureInventory(LEGACY_XIAOJING_DIR, ['session.v4.jsonl', 'ui.expected.md'])
+      await assertFixtureInventory(LEGACY_XIAOJING_DIR, ['session.v4.jsonl', 'ui.expected.md', 'presets.expected.md'])
     } else {
       await assertFixtureInventory(SNAPSHOT_DIR, ['session.v3.jsonl', 'ui.expected.md'])
     }

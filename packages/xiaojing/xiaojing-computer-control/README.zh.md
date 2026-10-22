@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing semantic Windows computer control through the built-in UI Automation API"
+description: "Katcat semantic Windows computer control through the built-in UI Automation API"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-小兢会计的 Windows 语义电脑操控插件。一个 Cordis 插件同时提供 `ctx.xiaojingComputerControl`、注册 `computer_control` 工具，并维护一个有界的换行 JSON 辅助进程；辅助进程只使用 Windows PowerShell 5.1、Windows“开始”应用目录与操作系统自带的 `System.Windows.Automation` API。
+Katcat的 Windows 语义电脑操控插件。一个 Cordis 插件同时提供 `ctx.xiaojingComputerControl`、注册 `computer_control` 工具，并维护一个有界的换行 JSON 辅助进程；辅助进程只使用 Windows PowerShell 5.1、Windows“开始”应用目录与操作系统自带的 `System.Windows.Automation` API。
 
 
 ## 目录

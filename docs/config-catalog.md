@@ -308,6 +308,8 @@ export interface Config {
 export interface Config {
   /** Absolute starting directory for ordinary Workspace pickers; explicit picker paths take precedence. */
   directoryPickerInitialPath?: string
+  /** Fully qualified first-use Workspace directory; existing registrations keep their paths. */
+  defaultWorkspacePath?: string
   /** Existing absolute roots that an ordinary Workspace may neither contain nor enter. */
   protectedRoots?: string[]
   /** Override the system Documents directory with a fully qualified path. */
@@ -615,8 +617,10 @@ export type OnboardingProcess = 'compact' | 'standard' | 'detailed'
 ```ts config-catalog
 /** Onboarding options after schema defaults are applied. */
 export interface Config {
-  /** Offer the browser API-key step when no native shell owns credential onboarding. */
+  /** Allow automatic API-key setup in browser and product-owned Desktop onboarding. */
   credentialOnboarding: boolean
+  /** Public identifier for the current product Desktop installation. */
+  installationId?: string
 }
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-client-ui-settings-models -->
@@ -4743,7 +4747,7 @@ export interface Config {
 
 ## `@deepseek-ai/dsh-xiaojing-finance-documents`
 
-- `inject`: `xiaojingFinanceDomain` · `attachments`
+- `inject`: `attachments`
 - `source`: [`packages/xiaojing/xiaojing-finance-documents/src/index.ts:45`](../packages/xiaojing/xiaojing-finance-documents/src/index.ts)
 
 ```ts config-catalog
@@ -4751,6 +4755,8 @@ export interface Config {
 export interface Config {
   /** Explicit Harness home; omission follows `DSH_HOME`, then `~/.dsh`. */
   dshHome?: string
+  /** Absolute human-upload directory; omission uses `DSH_UPLOAD_DIR`, then `<dshHome>/uploads`. */
+  uploadRoot?: string
   /** Maximum accepted source bytes. */
   maxFileBytes?: number
   /** Parser worker wall deadline in milliseconds. */

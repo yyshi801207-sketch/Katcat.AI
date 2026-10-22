@@ -42,7 +42,7 @@ export function DesktopCompanionSection({ useCompanion, actions, t }: DesktopCom
       <article className={css.card}>
         <div className={css.preview}>
           <span className={css.halo} aria-hidden="true" />
-          <img src="/desktop-companion/idle.webp" alt={t('title')} />
+          <img src="/desktop-companion/idle.png" alt={t('title')} />
         </div>
         <div className={css.content}>
           {!view.available ? (

@@ -3,20 +3,20 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/xiaojing/xiaojing-visualize/README.md
 /:
-  en: 07cb2c083fd497f5
-  zh: 07cb2c083fd497f5
+  en: c987b691dde8ca96
+  zh: c987b691dde8ca96
 /deepseek-ai-dsh-xiaojing-visualize:
   en: 777b35f092aa5f4b
   zh: ca2526b549d20240
 /deepseek-ai-dsh-xiaojing-visualize/summary:
   en: 300294dc520eca83
-  zh: 28df8a7fcda7318c
+  zh: e2a7dbc256bc8086
 /deepseek-ai-dsh-xiaojing-visualize/table-of-contents:
   en: f1d967a7e5342ebc
   zh: 86774d5ea1aab22d
 /deepseek-ai-dsh-xiaojing-visualize/composition:
-  en: 5801f49e46def021
-  zh: 824a586196a45b62
+  en: 9b22d191bc704657
+  zh: 6e0ae2d6da5f7030
 /deepseek-ai-dsh-xiaojing-visualize/configuration:
   en: 51fdd2b2cd4a29ae
   zh: ce4d8ad16ee76dcb
@@ -28,7 +28,7 @@
   zh: df4e6838e49e72eb
 /deepseek-ai-dsh-xiaojing-visualize/source-and-license:
   en: 644a32a73004da27
-  zh: 0674d7860777b0ac
+  zh: ba015bf5499574a8
 /deepseek-ai-dsh-xiaojing-visualize/model-experience:
   en: 215e7ba838619b7b
   zh: 215e7ba838619b7b

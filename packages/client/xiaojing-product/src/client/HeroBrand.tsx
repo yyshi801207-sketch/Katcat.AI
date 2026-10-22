@@ -19,33 +19,29 @@ export type HeroBrandMarkProps =
 export type HeroBrandContentProps =
   PropsRuntime<'conversation.hero.brand.content'> & InjectFace<HeroBrandInjected>
 
-/** Render the shared artwork from the office or finance asset alias at the product hero size. */
-export function HeroBrandMark({ className, t, sessionId, useSessions }: HeroBrandMarkProps): ReactNode {
-  const finance = useSessions(state => sessionId !== undefined
-    && state.byId[sessionId]?.projectionValues?.agentPreset === 'finance')
-  const artworkHeight = 970
+/** Render the supplied transparent Katcat character pair at the product hero size. */
+export function HeroBrandMark({ className, t }: HeroBrandMarkProps): ReactNode {
+  const artworkHeight = 1024
   const displayHeight = 'min(220px, 35vh, 55vw)'
   return (
     <svg
       className={[css.logo, className].filter(Boolean).join(' ')}
-      style={{ width: `calc(${displayHeight} * 1254 / ${artworkHeight})`, height: displayHeight, overflow: 'hidden' }}
-      viewBox={`0 105 1254 ${artworkHeight}`}
+      style={{ width: `calc(${displayHeight} * 1536 / ${artworkHeight})`, height: displayHeight, overflow: 'hidden' }}
+      viewBox={`0 0 1536 ${artworkHeight}`}
       role="img"
       aria-label={t('assistantAlt')}
     >
-      <image href={finance ? './xiaojing-finance-robot-logo.png' : './xiaojing-office-robot-logo.png'} width="1254" height="1254" />
+      <image href="./katcat-hero.png" width="1536" height="1024" />
     </svg>
   )
 }
 
-/** Render the Xiaojing product title and internal-beta badge. */
-export function HeroBrandContent({ t, sessionId, useSessions }: HeroBrandContentProps): ReactNode {
+/** Render the Xiaojing product title and release version. */
+export function HeroBrandContent({ t }: HeroBrandContentProps): ReactNode {
   const version = useApplicationVersion()
-  const finance = useSessions(state => sessionId !== undefined
-    && state.byId[sessionId]?.projectionValues?.agentPreset === 'finance')
   return (
     <span className={css.titleGroup}>
-      <span className={css.title}>{t(finance ? 'financeHeroTitle' : 'heroTitle')}</span>
+      <span className={css.title}>{t('heroTitle')}</span>
       <span className={css.badge}>{t('betaBadgeFormat').replace('{version}', version)}</span>
     </span>
   )

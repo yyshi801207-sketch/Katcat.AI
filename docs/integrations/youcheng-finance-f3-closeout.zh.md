@@ -2,9 +2,11 @@
 
 [English](youcheng-finance-f3-closeout.md) | 中文
 
+历史验收材料 `critique/` 未随本源码发布；文中保留文件名作为历史引用，无法仅凭当前仓库复核这些材料。
+
 ## 收尾结论
 
-2026-09-14已完成已支持的F3A新增及F3B维护路径收尾，保留用户已同意暂缓的供应商缺口。十条支持路径具备验收证据；CF09创建及身份核验通过，但公开启停状态仍未核实。新增CF22／CF23余额核验验收均已通过。本文不认证无限制的财务能力完成、F4验收或生产发布。[收尾回执](../../critique/f3b-lab/receipts/f3-supported-scope-closeout-20260914.json)区分本次和复用证据，并记录文件哈希。
+2026-09-14已完成已支持的F3A新增及F3B维护路径收尾，保留用户已同意暂缓的供应商缺口。十条支持路径具备验收证据；CF09创建及身份核验通过，但公开启停状态仍未核实。新增CF22／CF23余额核验验收均已通过。本文不认证无限制的财务能力完成、F4验收或生产发布。收尾回执 (`critique/f3b-lab/receipts/f3-supported-scope-closeout-20260914.json`)区分本次和复用证据，并记录文件哈希。
 
 2026-09-15补充：供应商确认删除凭证只需要 `accountName` 和 `cerInfoList: [{ cerId }]`。CF12实现及组装无Key测试现已使用该请求，不再要求本地创建来源。真实适配器实验创建API来源的专用合成凭证244499，单次发送最小删除请求，经两次完整清单确认不存在，最终准确恢复到41张凭证基线。这已解决问题004的参数及来源阻塞。浏览器手工录入来源只是尚未抽样的资格限制，不是未解决的接口要求。问题001、002继续暂缓。
 
@@ -12,17 +14,17 @@
 
 | 编号 | 能力 | 证据与限制 |
 |---|---|---|
-| CF14 | 新增收入／支出流水 | [F3A审计](../../critique/f3a-lab/receipts/f3a-completion-audit-20260910.json)；仅记账记录，不是银行资金划转或自动生成凭证 |
-| CF20 | 新增应收 | [主应用验收](../../critique/f3a-lab/receipts/open-item-live-host/receivable/audit.json)；当前须有可核实的同账套账户资料 |
-| CF21 | 新增应付 | [独立主应用验收](../../critique/f3a-lab/receipts/open-item-live-host/payable/audit.json)；不由应收结论推断 |
-| CF08 | 新增科目 | [根级／分支证据](../../critique/f3a-lab/receipts/f3a-completion-audit-20260910.json)和[显式核算配置](../../critique/f3b-lab/receipts/f3-remainder-20260914.json)；不支持历史末级升父级、数量核算及新增币种 |
-| CF09 | 新增辅助项目 | [创建及身份核验通过](../../critique/f3a-lab/receipts/master-data-live-host/auxiliary-item/audit.json)；公开启停状态不可用，继续正确保留 `complete=false` |
-| CF12 | 删除凭证 | 既有[主应用验收](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json)；[最小请求真实回执](../../critique/f3b-lab/receipts/cf12-minimal-voucher-delete-20260915.json)记录专用凭证244499被接收、单次删除、两次完整清单不存在并准确恢复基线；浏览器手工录入来源尚未单独抽样 |
-| CF15 | 删除流水 | [主应用验收](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json)；仅支持的ADD记录，已知关联及WRITE_OFF流水继续阻止 |
+| CF14 | 新增收入／支出流水 | F3A审计 (`critique/f3a-lab/receipts/f3a-completion-audit-20260910.json`)；仅记账记录，不是银行资金划转或自动生成凭证 |
+| CF20 | 新增应收 | 主应用验收 (`critique/f3a-lab/receipts/open-item-live-host/receivable/audit.json`)；当前须有可核实的同账套账户资料 |
+| CF21 | 新增应付 | 独立主应用验收 (`critique/f3a-lab/receipts/open-item-live-host/payable/audit.json`)；不由应收结论推断 |
+| CF08 | 新增科目 | 根级／分支证据 (`critique/f3a-lab/receipts/f3a-completion-audit-20260910.json`)和显式核算配置 (`critique/f3b-lab/receipts/f3-remainder-20260914.json`)；不支持历史末级升父级、数量核算及新增币种 |
+| CF09 | 新增辅助项目 | 创建及身份核验通过 (`critique/f3a-lab/receipts/master-data-live-host/auxiliary-item/audit.json`)；公开启停状态不可用，继续正确保留 `complete=false` |
+| CF12 | 删除凭证 | 既有主应用验收 (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`)；最小请求真实回执 (`critique/f3b-lab/receipts/cf12-minimal-voucher-delete-20260915.json`)记录专用凭证244499被接收、单次删除、两次完整清单不存在并准确恢复基线；浏览器手工录入来源尚未单独抽样 |
+| CF15 | 删除流水 | 主应用验收 (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`)；仅支持的ADD记录，已知关联及WRITE_OFF流水继续阻止 |
 | CF22 | 删除应收 | 新样例72620已通过创建、精确删除、原币／本位币余额比较、两次独立回查及新会话检查 |
 | CF23 | 删除应付 | 新样例72621独立通过创建、精确删除、原币／本位币余额比较、两次回查及新会话检查 |
-| CF24 | 应收核销 | [主应用验收](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json)；仅本位币整笔结清，独立匹配关联流水 |
-| CF25 | 应付核销 | [独立主应用验收](../../critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json)；不含实际银行付款、部分／外币／反核销 |
+| CF24 | 应收核销 | 主应用验收 (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`)；仅本位币整笔结清，独立匹配关联流水 |
+| CF25 | 应付核销 | 独立主应用验收 (`critique/f3b-lab/receipts/f3b-main-app-acceptance-20260914.json`)；不含实际银行付款、部分／外币／反核销 |
 
 历史回执不改写。后续回执仅更新对应能力及已验证路径：旧F3A往来单位参数失败已由CF20／CF21真实Host审计补证；科目辅助／币种能力由F3剩余工作回执补充。CF09状态仍未通过公开接口核验。
 
@@ -34,7 +36,7 @@
 
 CF23在创建已接收后的删除前只读快照中，分别于认证和账套核验阶段遇到两次连接超时。恢复复用已保存的创建结果；两次中断时均尚无删除意图，没有再次创建。后续读取、删除及独立核验均通过。网络错误不代表账户或数据不存在。
 
-余额修复已通过314项聚焦测试、十个组装Web场景和小兢构建；[修复回执](../../critique/f3b-lab/receipts/open-item-deletion-balance-fix-20260914.json)区分这些验证层次。本次产品源码未变，收尾复用这些证据。八项实验命令／确认／禁止重发保护测试再次通过。外币本位币余额缺失仍保持不可用；明确相同币种代码允许带标记的本位币余额推导，不改写有成字段。
+余额修复已通过314项聚焦测试、十个组装Web场景和小兢构建；修复回执 (`critique/f3b-lab/receipts/open-item-deletion-balance-fix-20260914.json`)区分这些验证层次。本次产品源码未变，收尾复用这些证据。八项实验命令／确认／禁止重发保护测试再次通过。外币本位币余额缺失仍保持不可用；明确相同币种代码允许带标记的本位币余额推导，不改写有成字段。
 
 ## 暂缓及不支持范围
 

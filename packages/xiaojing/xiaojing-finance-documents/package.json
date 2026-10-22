@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-xiaojing-finance-documents",
-  "description": "Shared deterministic local document normalization for Xiaojing sessions",
+  "description": "Shared deterministic local document normalization for Katcat sessions",
   "version": "0.2.1-rc.2",
   "publishConfig": {
     "access": "public"

@@ -137,7 +137,7 @@ Source: [`packages/xiaojing/xiaojing-finance-calculations/src/index.ts`](../../p
 
 ### `ctx.xiaojingFinanceDocuments` — `XiaojingFinanceDocuments`
 
-Host service exposed only through the Finance preset's document tool.
+Shared parser for ordinary uploads and explicitly mounted Finance consumers.
 
 ```ts cordis-catalog
 /**

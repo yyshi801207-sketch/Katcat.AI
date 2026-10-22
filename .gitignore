@@ -43,6 +43,7 @@ apps/web/dist/
 /artifacts/
 .dsh-build/
 .dsh-report/
+.local-personal-preview/
 .playwright-mcp/
 .orig
 .worktrees/
@@ -50,3 +51,19 @@ worktrees/
 .agents/worktrees/
 .typert-*/
 native/system/test/bin/
+
+# Local design exports, browser captures, and handoff notes.
+/output/
+/design/
+/视觉资产/
+/.playwright-cli/
+/个性化Agent开发交接.md
+/小兢办公V1.0-开发基线说明.txt
+/BACKUP-VERIFICATION.json
+
+# Local environment overrides; examples remain publishable.
+.env.*
+!.env.example
+!.env.*.example
+*.p12
+*.pfx

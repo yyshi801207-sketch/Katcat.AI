@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-xiaojing-finance-domain",
-  "description": "Local finance client records and immutable per-session client context for Xiaojing",
+  "description": "Local finance client records and immutable per-session client context for Katcat",
   "version": "0.2.1-rc.2",
   "publishConfig": {
     "access": "public"

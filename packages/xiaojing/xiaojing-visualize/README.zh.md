@@ -1,5 +1,5 @@
 ---
-description: "Xiaojing isolated visualization cards with the original dsh-visualize palette."
+description: "Katcat isolated visualization cards with the original dsh-visualize palette."
 kind: "package-bundle"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-bundle"
 
 ## 概述
 
-本包是小兢会计对 `Nagi-ovo/dsh-visualize` 的可移除适配。模型可以在 Web 对话中把交互式模拟器、图表、对比内容和界面 mockup 渲染成卡片。
+本包是Katcat对 `Nagi-ovo/dsh-visualize` 的可移除适配。模型可以在 Web 对话中把交互式模拟器、图表、对比内容和界面 mockup 渲染成卡片。
 
 
 ## 目录
@@ -22,9 +22,9 @@ kind: "package-bundle"
 
 渲染状态、错误后备文案及实时预览标题使用带类型的中英文字典。已保存的可视化标题及工具结果文本保留写入方记录的值。
 
-Host 半侧注册 `visualize` 工具及其内置创作 skill，Client 半侧注册完成态工具视图和流式预览。小兢会计 Web 组合只在 `DSH_CLIENT_BUILD_PROFILE=xiaojing` 时加载这两个半侧，官方 Harness profile 保持不变。
+Host 半侧注册 `visualize` 工具及其内置创作 skill，Client 半侧注册完成态工具视图和流式预览。Katcat Web 组合只在 `DSH_CLIENT_BUILD_PROFILE=xiaojing` 时加载这两个半侧，官方 Harness profile 保持不变。
 
-卡片固定使用原插件的浅色鲸鱼蓝配色，不继承 Harness 主题、小兢会计浅绿色产品主题或操作系统外观。禁用或删除 Web 组合中的唯一 `xiaojing-visualize` 配置行并重新构建，即可移除该功能。从源码中彻底删除时，还需移除 `web-app` 解析清单中的包依赖；其他小兢功能和持久数据 owner 都不依赖这两处声明。
+卡片固定使用原插件的浅色鲸鱼蓝配色，不继承 Harness 主题、Katcat浅绿色产品主题或操作系统外观。禁用或删除 Web 组合中的唯一 `xiaojing-visualize` 配置行并重新构建，即可移除该功能。从源码中彻底删除时，还需移除 `web-app` 解析清单中的包依赖；其他Katcat功能和持久数据 owner 都不依赖这两处声明。
 
 ## 配置
 
@@ -50,7 +50,7 @@ Host 半侧注册 `visualize` 工具及其内置创作 skill，Client 半侧注�
 
 ## 来源与许可
 
-本包适配自 [Nagi-ovo/dsh-visualize](https://github.com/Nagi-ovo/dsh-visualize)，已审阅提交为 `b0bed38f40ffbb0d72bb88393d865307944c1bce`。上游 BSD-3-Clause 许可保留在 [`LICENSE`](LICENSE) 中，[`NOTICE.md`](NOTICE.md) 记录小兢会计专属改动。
+本包适配自 [Nagi-ovo/dsh-visualize](https://github.com/Nagi-ovo/dsh-visualize)，已审阅提交为 `b0bed38f40ffbb0d72bb88393d865307944c1bce`。上游 BSD-3-Clause 许可保留在 [`LICENSE`](LICENSE) 中，[`NOTICE.md`](NOTICE.md) 记录Katcat专属改动。
 
 ## Model Experience
 

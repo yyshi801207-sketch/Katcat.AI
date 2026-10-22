@@ -3,44 +3,44 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/integrations/youcheng-finance-development-status.md
 /youcheng-finance-development-status-and-verification:
-  en: 70569c120f118a2e
-  zh: 546cffd378518a05
+  en: d9a85d651645aa73
+  zh: 3624d906f4e3dbb1
 /youcheng-finance-development-status-and-verification/authority-and-progress:
   en: f1ebe3351b54f8f3
   zh: f15d6c5cfeb70032
 /youcheng-finance-development-status-and-verification/authority-and-progress/f4-non-report-delivery-closeout-2026-09-15:
-  en: 1a0a3f0b1bd77995
-  zh: df5b9feca6153173
+  en: dc736b171d5bbd54
+  zh: ce3ee6a62a21fc8e
 /youcheng-finance-development-status-and-verification/authority-and-progress/cf12-minimal-deletion-request-2026-09-15:
-  en: 5cfe725b8f692904
-  zh: 13465869a3f1027e
+  en: bf21a7779df03ff8
+  zh: 30f63153cb4e80a3
 /youcheng-finance-development-status-and-verification/authority-and-progress/f4-native-report-scope-correction-2026-09-15:
-  en: 7c4cdcc5c6fbdca1
-  zh: 737286c1aa33d202
+  en: be8bd6631db5d04b
+  zh: 52f83beef910c324
 /youcheng-finance-development-status-and-verification/authority-and-progress/f4-combined-acceptance-2026-09-14:
-  en: 990e0e6f76fbb266
-  zh: 90c3ab6476367559
+  en: 481c632571bba259
+  zh: 6fd52bbbe4d89b3a
 /youcheng-finance-development-status-and-verification/authority-and-progress/f3-supported-scope-closeout-2026-09-14:
-  en: 99c6736d3628033d
-  zh: e0bf62501ab7bc3b
+  en: e57cca3b4cddfc67
+  zh: e1b28a76468d4731
 /youcheng-finance-development-status-and-verification/authority-and-progress/ar-ap-deletion-balance-verification-2026-09-14:
-  en: 7ce8723a203386be
-  zh: 66fadfe7af85ba28
+  en: 50251be56d320275
+  zh: 71b231dcda1440d2
 /youcheng-finance-development-status-and-verification/authority-and-progress/f3-remainder-investigation-2026-09-14:
-  en: 511d51977af79710
-  zh: de5467f255b8dd3a
+  en: fbe10cb4eca1ad1d
+  zh: 39a74db63f211985
 /youcheng-finance-development-status-and-verification/authority-and-progress/f3b-current-code-acceptance-2026-09-14:
-  en: 257b60d3d970bfb6
-  zh: 778d3b40dc96836e
+  en: e7dcec5b4c1277b1
+  zh: 04203140da58493f
 /youcheng-finance-development-status-and-verification/authority-and-progress/historical-f3b-checkpoints-2026-09-10:
-  en: 0917fd7432fcdf21
-  zh: a754596bc5c04116
+  en: 3a565646c87acaea
+  zh: 11bd5d24a26e6e89
 /youcheng-finance-development-status-and-verification/authority-and-progress/f3a-current-acceptance-scope-and-blockers:
-  en: 03c37c1d00792a30
-  zh: 50f5c59dbd914646
+  en: 7f098c5b93dc513b
+  zh: e812f7c19ec8290c
 /youcheng-finance-development-status-and-verification/authority-and-progress/f3a-active-goal-and-initial-checkpoint-september-9-2026:
-  en: ade956a27511fb17
-  zh: 746ca5b6c82bcedc
+  en: 8b64e50426d2729b
+  zh: 5867ebb3918f8d21
 /youcheng-finance-development-status-and-verification/authority-and-progress/f2-technical-acceptance-conclusion-september-9-2026:
   en: ad8db02dc6670058
   zh: 49937fb87c0755e3

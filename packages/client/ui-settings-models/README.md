@@ -37,7 +37,7 @@ A provider with a stored catalog error remains visible with its diagnostic and e
 
 After Apply closes an editor, its saved status appears when the current provider, settings, and credential snapshot is ready. Opening any row's editor, adding a provider, and opening a removal confirmation wait for that refresh. A newly opened Models section, or one retrying after a page-load failure, waits for a ready snapshot before mounting editors. A background refresh preserves an open draft while its editor remains mounted; a failed page load or provider removal can close it.
 
-Host configuration `credentialOnboarding` defaults to `true`. The Electron preload marker suppresses automatic credential onboarding; the official Desktop also suppresses the Web welcome notice, while Xiaojing Desktop keeps its product-owned API-key guide. Models settings and explicit API-key editing remain available. The [account plugin](../ui-settings-account/README.md#desktop-onboarding) owns the official Desktop introduction. Other native shells can disable only the credential step with `credentialOnboarding: false`. Host publishes this public boolean through `webserver/index-inject`, and Client validates it before registering dialogs. It is page initialization data, not a durable completion marker.
+Host configuration `credentialOnboarding` defaults to `true`. Katcat Desktop uses its product welcome and conditional API-key setup. The official Desktop suppresses both Web steps because its [account plugin](../ui-settings-account/README.md#desktop-onboarding) owns the introduction. Models settings and explicit API-key editing remain available. Native shells can disable only the credential step with `credentialOnboarding: false`, including Katcat. Host publishes this boolean and optional non-empty `installationId` through `webserver/index-inject`; Client validates these public, non-secret initialization values before registering dialogs. Only Katcat Desktop consumes `installationId`; neither value is a durable completion marker.
 
 ### API keys
 
@@ -67,7 +67,7 @@ A model row on a hand-declared pi-ai route also edits its **Reasoning levels**, 
 
 ### First-run dialogs
 
-After the versioned notice step completes, the DeepSeek step projects first-run readiness from the same joined snapshot. ANY provider the user can already reach ends it without rendering; only a user with none is asked for the official DeepSeek key. Configure later completes only this coordinator pass, and an absent adapter, inactive route, failed join, read-only deployment, or unusable capability completes the step without rendering — Models remains the diagnostic surface.
+The DeepSeek step derives first-run readiness from the shared Models snapshot. Any usable provider skips the credential dialog; only a user with none is asked for the official DeepSeek key. Configure later completes only this coordinator pass, so a later launch without a usable provider offers the key dialog again. An absent adapter, inactive route, failed join, read-only deployment, or unusable capability completes the step without rendering; Models remains the diagnostic surface. Katcat Desktop also uses this readiness result to skip its welcome when a provider is already usable, including after reinstallation.
 
 ### Extension slots
 
@@ -95,9 +95,10 @@ Each settings write carries the card's current `revision`, so a concurrent write
 
 Concurrent `ModelsSettingsStore.load()` callers resolve after the current refresh publishes its ready or error snapshot, including callers whose reads were superseded. Older responses cannot publish or settle callers; a refresh started synchronously by a snapshot subscriber owns the waiting callers. Expected Remote failures remain snapshot diagnostics, while an unexpected rejection of the current read rejects its waiting callers.
 
+<a id="onboarding-coordinator"></a>
 ### Onboarding coordinator
 
-The notice step owns its exact copy in `src/client/locales.ts` and its acknowledgement version in `src/onboarding-copy.ts`. Authenticated browsers compare and write `ui-settings-general.welcomeNoticeVersion` through the shared configuration form; only an explicit Continue records the current version, and an unavailable namespace or a refused write leaves the notice unacknowledged. Users who acknowledged an earlier version see the current notice again. The DeepSeek step targets `deepseek-official` in `llm-deepseek` and renders the existing `ProviderEditor` in credential-only mode inside the shared onboarding modal; `credentials.set` stays the only secret write, and no provider settings are changed.
+The notice step owns its shared copy in `src/client/locales.ts` and its acknowledgement version in `src/onboarding-copy.ts`. Authenticated browsers compare and write `ui-settings-general.welcomeNoticeVersion` through the shared configuration form; only an explicit Continue records the current version, and an unavailable namespace or a refused write leaves the notice unacknowledged. Users who acknowledged an earlier version see the current notice again. Katcat Desktop expects `<notice-version>:<installationId>` when the [Desktop installation ID](../../../apps/desktop/README.md#permanent-user-data-paths) is present. With no usable provider, a new installation therefore shows its product welcome despite an earlier acknowledgement; Start saves the current acknowledgement before the API-key step. The same installation keeps that acknowledgement on relaunch. Ordinary browsers and official Desktop retain their existing notice behavior. The DeepSeek step targets `deepseek-official` in `llm-deepseek` and renders the existing `ProviderEditor` in credential-only mode inside the shared onboarding modal; `credentials.set` stays the only secret write, and no provider settings are changed.
 
 </details>
 

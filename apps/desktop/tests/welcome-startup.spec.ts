@@ -111,7 +111,7 @@ vi.mock('../src/xiaojing-companion.ts', () => ({ XiaojingDesktopCompanion: class
 vi.mock('../src/xiaojing-product.ts', async importOriginal => ({
   ...await importOriginal<typeof import('../src/xiaojing-product.ts')>(),
   initializeXiaojingApplication: () => ({ userData: '/desktop-user-data', dshHome: '/profile',
-    workspaceRoot: '/workspaces', officeWorkspace: '/workspaces/office', financeWorkspace: '/workspaces/finance' }),
+    workspaceRoot: '/workspaces', officeWorkspace: '/workspaces/office' }),
   assertXiaojingDesktopClientBuild: vi.fn(),
 }))
 
@@ -210,7 +210,7 @@ it.each([false, true])('shows startup before locale readiness and enters Xiaojin
   state.beforeRead.mockReturnValueOnce(reading.promise)
   const activate = () => {
     state.appListeners.get('second-instance')!({}, [])
-    state.appListeners.get('open-url')!({ preventDefault: vi.fn() }, 'dsh://open')
+    state.appListeners.get('open-url')!({ preventDefault: vi.fn() }, 'xiaojing-office://open')
   }
   await import('../src/main.ts')
   await vi.waitFor(() => { expect(state.beforeRead).toHaveBeenCalledOnce() })

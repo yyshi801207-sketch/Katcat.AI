@@ -2103,7 +2103,7 @@
     "ed2fec09418bc1a78fde5097fd01d5aabf903166ed1bf480a5e38bccdd3948a6": 1
   },
   "packages/workflow/tool-workflow/tests/tool-workflow.spec.ts": {
-    "061944ebda38f8da144d88cfa668e6336efc68c33441a9fe3215d8c001124526": 2
+    "061944ebda38f8da144d88cfa668e6336efc68c33441a9fe3215d8c001124526": 1
   },
   "packages/workflow/workflow-ptc/tests/workflow-ptc.spec.ts": {
     "3ddf655a4c4522404be3c2758f0511c7605887c72d9d91cb4ad521433cbdb0b4": 1,

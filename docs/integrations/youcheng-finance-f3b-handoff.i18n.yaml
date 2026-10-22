@@ -3,11 +3,11 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/integrations/youcheng-finance-f3b-handoff.md
 /youcheng-finance-f3b-task-handoff:
-  en: 02ac5a904f0f6019
-  zh: 189501ab6a391159
+  en: 5b5b1c27bb4794da
+  zh: ed811576470f8d3a
 /youcheng-finance-f3b-task-handoff/handoff-conclusion:
-  en: f31bc8753ffc15f9
-  zh: 75381043ff22cd85
+  en: 082a5ae1b906f494
+  zh: 1631083c7efc051c
 /youcheng-finance-f3b-task-handoff/project-and-git:
   en: cad8605cf0539319
   zh: dd27bd888731bae4
@@ -15,8 +15,8 @@
   en: 119ba5d44adfce99
   zh: 324fc60245c57584
 /youcheng-finance-f3b-task-handoff/qualified-paths-and-evidence:
-  en: 2901bb0fcbdddc8b
-  zh: 1be933a3a6a33365
+  en: 01a309326e1c9223
+  zh: b5b875cfc4ade6c9
 /youcheng-finance-f3b-task-handoff/tests-and-repository-gates:
   en: cb5f0e4603d8b060
   zh: 0b76bef2a527f287

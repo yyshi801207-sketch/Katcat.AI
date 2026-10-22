@@ -70,12 +70,12 @@ describe('Desktop directory picker', () => {
   })
 
   it('uses the product default when the renderer supplies no initial directory', async () => {
-    const f = fixture('C:\\Users\\fixture\\Documents\\小兢会计工作区\\办公工作区')
+    const f = fixture('C:\\Users\\fixture\\Documents\\Katcat_Home')
     electron.showOpenDialog.mockResolvedValue({ canceled: true, filePaths: [] })
     await expect(f.handler(f.event)).resolves.toBeNull()
     expect(electron.showOpenDialog).toHaveBeenCalledExactlyOnceWith(f.window, {
       properties: ['openDirectory', 'createDirectory'],
-      defaultPath: 'C:\\Users\\fixture\\Documents\\小兢会计工作区\\办公工作区',
+      defaultPath: 'C:\\Users\\fixture\\Documents\\Katcat_Home',
     })
   })
 

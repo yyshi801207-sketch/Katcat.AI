@@ -153,7 +153,7 @@ export async function analyzeOpenItems(input: OpenItemAnalysisQuery,
   assert(identity, 'Collection must read its first page before publishing a report')
   const result: OpenItemAnalysisResult = { accountId: identity.id, accountName: identity.name,
     selection, current, ...baseline === undefined ? {} : { baseline, differences }, coverage: 'vendor-count-reconciled',
-    notice: '小兢会计根据有成接口返回的业务行在本地计算分组与差额，不是有成接口直接返回的汇总报表。已逐页核对接口声明的记录数并排除重复 ID，只计业务行，不计汇总行。金额和余额按原币分组，差额为当前查询组减基准查询组；完整读取的某组缺席按零组总额参与比较。辅助项目按完整 ID 组合分组，不推断客户身份。余额为接口返回的往来余额，不是历史期末余额；两组期间比较不是正式财务报表或资金流分析。接口没有原子快照保证，同笔数据期间内变动可能无法识别。不执行写入或核销。' }
+    notice: 'Katcat根据有成接口返回的业务行在本地计算分组与差额，不是有成接口直接返回的汇总报表。已逐页核对接口声明的记录数并排除重复 ID，只计业务行，不计汇总行。金额和余额按原币分组，差额为当前查询组减基准查询组；完整读取的某组缺席按零组总额参与比较。辅助项目按完整 ID 组合分组，不推断客户身份。余额为接口返回的往来余额，不是历史期末余额；两组期间比较不是正式财务报表或资金流分析。接口没有原子快照保证，同笔数据期间内变动可能无法识别。不执行写入或核销。' }
   signal.throwIfAborted()
   if (Buffer.byteLength(JSON.stringify(result), 'utf8') > limits.maxBytes) throw new Error('汇总结果超过输出上限。')
   return result

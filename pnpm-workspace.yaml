@@ -1,3 +1,7 @@
+storeDir: .pnpm-store
+packageImportMethod: copy
+verifyDepsBeforeRun: false
+
 packages:
   - vendor/*
   - packages/*/*

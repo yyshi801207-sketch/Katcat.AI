@@ -1,7 +1,7 @@
-Xiaojing Accounting
-Xiaojing Accounting
+Katcat.AI
+Katcat.AI
 Add an API key to get started
-Configure official DeepSeek models to start using Xiaojing Accounting
+Configure official DeepSeek models to start using Katcat
 Enter API key [password]
 Save and continue [disabled]
 Set up later

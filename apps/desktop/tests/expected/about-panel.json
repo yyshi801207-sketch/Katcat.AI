@@ -2,7 +2,7 @@
   "darwin:en-US": {
     "menu": [
       {
-        "label": "About Xiaojing Accounting",
+        "label": "About Katcat",
         "role": "about"
       },
       {
@@ -10,7 +10,7 @@
       }
     ],
     "options": {
-      "applicationName": "小兢会计-您的AI办公搭子",
+      "applicationName": "Katcat",
       "applicationVersion": "1.0.0",
       "version": "",
       "copyright": "",
@@ -20,7 +20,7 @@
   "darwin:zh-CN": {
     "menu": [
       {
-        "label": "关于小兢会计",
+        "label": "关于Katcat",
         "role": "about"
       },
       {
@@ -28,8 +28,8 @@
       }
     ],
     "options": {
-      "applicationName": "小兢会计-您的AI办公搭子",
-      "applicationVersion": "0.3.3",
+      "applicationName": "Katcat",
+      "applicationVersion": "1.0.0",
       "version": "",
       "copyright": "",
       "iconPath": "<app icon>"
@@ -38,14 +38,14 @@
   "win32:zh-CN": {
     "menu": [
       {
-        "label": "关于小兢会计"
+        "label": "关于Katcat"
       },
       {
         "type": "separator"
       }
     ],
     "options": {
-      "applicationName": "小兢会计-您的AI办公搭子",
+      "applicationName": "Katcat",
       "applicationVersion": "1.0.0",
       "version": "",
       "copyright": "",
@@ -55,15 +55,15 @@
   "win32:en-US": {
     "menu": [
       {
-        "label": "About Xiaojing Accounting"
+        "label": "About Katcat"
       },
       {
         "type": "separator"
       }
     ],
     "options": {
-      "applicationName": "小兢会计-您的AI办公搭子",
-      "applicationVersion": "0.3.3",
+      "applicationName": "Katcat",
+      "applicationVersion": "1.0.0",
       "version": "",
       "copyright": "",
       "iconPath": "<app icon>"

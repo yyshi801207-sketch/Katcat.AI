@@ -7,7 +7,7 @@
   },
   {
     "role": "hide",
-    "label": "隐藏小兢会计"
+    "label": "隐藏Katcat"
   },
   {
     "role": "hideOthers",
@@ -19,6 +19,6 @@
   },
   {
     "role": "quit",
-    "label": "退出小兢会计"
+    "label": "退出Katcat"
   }
 ]

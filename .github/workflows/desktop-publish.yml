@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   route:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     runs-on: ubuntu-latest
     outputs:
       selection: ${{ steps.route.outputs.selection }}
@@ -50,6 +51,7 @@ jobs:
         run: node --import tsx apps/desktop/scripts/resolve-desktop-publish-ci.ts
 
   prepare:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     needs: route
     runs-on: [self-hosted, '${{ needs.route.outputs.runner }}']
     timeout-minutes: 30
@@ -90,6 +92,7 @@ jobs:
         run: node --import tsx apps/desktop/scripts/publish-desktop-ci.ts --check
 
   publish:
+    if: ${{ github.repository == 'deepseek-ai/deepseek-harness' }}
     name: Approve ${{ needs.prepare.outputs.label }}
     needs: [route, prepare]
     runs-on: [self-hosted, '${{ needs.route.outputs.runner }}']

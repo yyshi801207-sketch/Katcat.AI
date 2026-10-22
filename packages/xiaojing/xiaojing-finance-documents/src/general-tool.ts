@@ -35,7 +35,7 @@ export function apply(ctx: Context): void {
       'Use action=list after an upload, then action=read for source-located text. For any supported document with visual_count, use action=visuals to inspect rendered scanned PDF pages or embedded raster images with the current native visual model.',
       'Digital-invoice XML and OFD parsing extracts content only; it does not verify electronic signatures, authenticity, or invoice status.',
       'Continue with next_cursor until the required text or image range is covered. Treat truncation and parser warnings as material limitations.',
-      'The tool accepts only durable human-upload references from the current session under the Xiaojing upload directory; it cannot read arbitrary paths or uploads from another conversation.',
+      'The tool accepts only durable human-upload references from the current session under the Katcat upload directory; it cannot read arbitrary paths or uploads from another conversation.',
     ].join(' '),
     parameters: DOCUMENT_TOOL_PARAMETERS,
     output: {
