@@ -122,7 +122,7 @@ export function createElectronBuilderConfig(
     productName: identity.productName,
     // Unsigned builds carry their own suffix so a shared file can never pass for a release artifact.
     // Keep RC1 update artifact keys stable; installed application identity comes from the fields below.
-    artifactName: `deepseek-harness-\${version}-\${os}-\${arch}${output.suffix}.\${ext}`,
+    artifactName: `${packagesMacOS && unsigned ? identity.productName : 'deepseek-harness'}-\${version}-\${os}-\${arch}${output.suffix}.\${ext}`,
     directories: { output: output.directory },
     asar: true,
     electronDist: buildPaths.electron,
@@ -176,7 +176,7 @@ export function createElectronBuilderConfig(
       { from: fileURLToPath(new URL('../build/internal-use-notice.txt', import.meta.url)), to: 'legal/Katcat-Internal-Use-Notice.txt' },
     ],
     mac: {
-      icon: fileURLToPath(new URL('../resources/icon-macos.png', import.meta.url)),
+      icon: fileURLToPath(new URL('../build/app-icon.png', import.meta.url)),
       category: 'public.app-category.developer-tools',
       // macOS matches the application locale against this bundle, not Electron Framework resources.
       extendInfo: {

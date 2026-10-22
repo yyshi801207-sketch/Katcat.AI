@@ -66,7 +66,8 @@ These Windows screenshots demonstrate the interface, not model accuracy, speed, 
 | Platform | Status |
 | --- | --- |
 | Windows 10 / 11, x64 | Installer available from the product page |
-| macOS, Apple Silicon / Intel | Inherited packaging scripts; Katcat-specific builds and installation not yet verified |
+| macOS, Apple Silicon | [Cloud test build](.github/workflows/katcat-macos.yml); installation not yet verified |
+| macOS, Intel | Inherited packaging scripts; Katcat-specific builds and installation not yet verified |
 | Linux | Harness source and tools are present; no Katcat desktop installer offered here |
 
 For a Windows development installer, run on Windows:

@@ -68,7 +68,8 @@ pnpm run dev:desktop
 | 平台 | 状态 |
 | --- | --- |
 | Windows 10 / 11，x64 | 产品页面提供安装包 |
-| macOS，Apple Silicon / Intel | 保留上游打包脚本；Katcat 专用构建和安装尚未验证 |
+| macOS，Apple Silicon | 提供[云端测试构建](.github/workflows/katcat-macos.yml)；安装尚未验证 |
+| macOS，Intel | 保留上游打包脚本；Katcat 专用构建和安装尚未验证 |
 | Linux | 包含 Harness 源码和工具；此处不提供 Katcat 桌面安装包 |
 
 需要 Windows 开发测试安装包时，在 Windows 上运行：

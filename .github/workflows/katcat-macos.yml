@@ -1,0 +1,74 @@
+name: Katcat macOS test package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/katcat-macos.yml
+      - apps/desktop/scripts/**
+      - apps/desktop/identity.json
+      - apps/desktop/build/app-icon.png
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: katcat-macos-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DSH_TELEMETRY_DISABLED: '1'
+  DSH_GATE_CONCURRENCY: '1'
+  DSH_GATE_FAIL_FAST: '1'
+  DSH_OXLINT_THREADS: '2'
+
+jobs:
+  package:
+    name: Apple Silicon unsigned DMG
+    runs-on: macos-15
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v5.0.0
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '24'
+          cache: pnpm
+      - name: Check machine capacity
+        run: |
+          uname -m
+          sysctl -n hw.memsize
+          df -h .
+      - name: Install pinned dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Test packaging configuration
+        run: >-
+          pnpm exec vitest run --no-file-parallelism
+          apps/desktop/tests/desktop-package-environment.spec.ts
+          apps/desktop/tests/package-target.spec.ts
+          apps/desktop/tests/installer-packaging.spec.ts
+      - name: Check unsigned packaging configuration
+        run: pnpm run package:desktop:mac:arm64:unsigned --check
+      - name: Build and verify unsigned test DMG
+        run: pnpm run package:desktop:mac:arm64:unsigned
+      - name: Retain test installer
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: Katcat.AI-mac-arm64-unsigned-${{ github.run_id }}
+          path: apps/desktop/.desktop-build/targets/mac-arm64/unsigned-artifacts/Katcat.AI-*-mac-arm64-unsigned.dmg
+          include-hidden-files: true
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+      - name: Retain packaging diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: Katcat-mac-arm64-logs-${{ github.run_id }}
+          path: apps/desktop/.desktop-build/packaging-runs/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 1

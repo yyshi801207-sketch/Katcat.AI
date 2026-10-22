@@ -1,4 +1,5 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -6,6 +7,7 @@ import { loadDesktopPackageEnvironment, localMacOSPackageEnvironment, validateDe
 import { resolveWindowsPackageSettings } from '../scripts/windows-package-settings.mjs'
 
 const WINDOWS = { platform: 'win32', arch: 'x64' } as const
+const identity = JSON.parse(readFileSync(new URL('../identity.json', import.meta.url), 'utf8')) as { appId: string }
 const MACOS = { platform: 'darwin', arch: 'arm64' } as const
 const POLICY = { DSH_DESKTOP_MANDATORY_UPDATE_TEST_ORIGIN: 'https://policy.example.com',
   DSH_DESKTOP_MANDATORY_UPDATE_CONFIG: JSON.stringify({ allowedAuthOrigins: ['https://login.example.com'] }) }
@@ -35,7 +37,7 @@ describe('Desktop local packaging configuration', () => {
     const local = localMacOSPackageEnvironment(parent)
     expect(local).toEqual({
       PATH: parent.PATH, HTTPS_PROXY: parent.HTTPS_PROXY, DSH_DESKTOP_NPM_REGISTRY: parent.DSH_DESKTOP_NPM_REGISTRY,
-      DSH_DESKTOP_APP_ID: 'com.deepseek.harness', DSH_DESKTOP_UNSIGNED: '1',
+      DSH_DESKTOP_APP_ID: identity.appId, DSH_DESKTOP_UNSIGNED: '1',
     })
     expect(() => { validateDesktopPackageEnvironment(local, MACOS, { unsigned: true }) }).not.toThrow()
     expect(parent.DSH_DESKTOP_UNSIGNED).toBe('0')
@@ -175,6 +177,20 @@ describe('Desktop local packaging configuration', () => {
     expect(config.publish).toBeNull()
     expect(config.win.forceCodeSigning).toBe(false)
     expect(() => { validateDesktopPackageEnvironment(local, WINDOWS) }).toThrow('DSH_DESKTOP_MANDATORY_UPDATE_TEST_ORIGIN')
+  })
+
+  it.each(['arm64', 'x64'])('assembles a Katcat %s test app without Apple credentials or an update feed', async (arch) => {
+    const { createElectronBuilderConfig } = await import('../scripts/electron-builder-config.mjs')
+    const config = createElectronBuilderConfig(localMacOSPackageEnvironment({}), 'darwin', arch)
+    expect(config.appId).toBe(identity.appId)
+    expect(config.productName).toBe('Katcat.AI')
+    expect(config.extraMetadata.version).toBe('1.0.0')
+    expect(config.artifactName).toBe('Katcat.AI-${version}-${os}-${arch}-unsigned.${ext}')
+    expect(readFileSync(config.mac.icon)).toEqual(readFileSync(new URL('../build/app-icon.png', import.meta.url)))
+    expect(config.mac.identity).toBe('-')
+    expect(config.mac.notarize).toBe(false)
+    expect(config.publish).toBeNull()
+    expect(config.extraMetadata).not.toHaveProperty('dshMandatoryUpdatePolicy')
   })
 
   it('accepts one local npm registry mirror and rejects other registry forms', () => {
