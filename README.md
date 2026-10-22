@@ -8,7 +8,7 @@ Katcat.AI is a Windows desktop agent built on **DeepSeek Harness (DSH-0.2.1-rc.2
 
 [Download for Windows](https://www.sudotech.ai/katcat.html) · [User guide](https://www.sudotech.ai/katcat-guide.html) · [Report a bug](https://github.com/yyshi801207-sketch/Katcat.AI/issues/new/choose) · [Contribute](CONTRIBUTING.md)
 
-![Katcat.AI light interface](docs/assets/katcat-home-light.png)
+![Katcat.AI light interface](docs/assets/katcat-app-light-en.png)
 
 ## What you can do
 
@@ -57,7 +57,7 @@ The desktop launcher builds the Katcat profile and prepares its runtime before o
 
 ## Interface
 
-![Katcat.AI dark interface](docs/assets/katcat-home-dark.png)
+![Katcat.AI dark interface](docs/assets/katcat-app-dark-en.png)
 
 These Windows screenshots demonstrate the interface, not model accuracy, speed, or typical API costs.
 

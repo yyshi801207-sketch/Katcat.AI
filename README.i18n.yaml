@@ -3,7 +3,7 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write README.md
 /katcat-ai:
-  en: fe937784a9f02919
+  en: 8f58f936ded138b1
   zh: a758c88801d51ee7
 /katcat-ai/what-you-can-do:
   en: a945ea1129696fbe
@@ -21,7 +21,7 @@
   en: 751454ac2a98acb9
   zh: 9cc537ae34f1c676
 /katcat-ai/interface:
-  en: 2c37598f01429ff2
+  en: 7f13fff9a2382d9d
   zh: eddea2dfedfa37cf
 /katcat-ai/platform-and-packaging:
   en: cfeb6d213990f2b5
