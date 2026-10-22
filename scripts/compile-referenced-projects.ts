@@ -90,7 +90,7 @@ export function referencedProjectsCompilerArgs(
 /**
  * Resolve the Node arguments that type-check one aggregate's own test and script program in project mode.
  * Project mode reads the declarations that its references already emitted and never compiles a reference,
- * so missing package outputs surface as compiler diagnostics.
+ * so missing package outputs surface as compiler diagnostics. Host compilation permits an 8 GiB V8 heap.
  * @param face - Compiler face whose aggregate program is checked.
  * @returns Arguments for `process.execPath`, run from the repository root.
  */
@@ -110,7 +110,7 @@ export function aggregateBuildArgs(face: 'host' | 'client'): string[] {
 }
 
 function hostHeapArgs(face: 'host' | 'client'): string[] {
-  return face === 'host' ? ['--max-old-space-size=4096'] : []
+  return face === 'host' ? ['--max-old-space-size=8192'] : []
 }
 
 /**
