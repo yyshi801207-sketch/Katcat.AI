@@ -22,6 +22,18 @@ function clientCssDeclarations(): string[] {
 }
 
 describe('client TypeScript aggregate', () => {
+  it('includes visualization browser tests in the Client program', () => {
+    const configPath = resolve(root, 'tsconfig.client.json')
+    const read = ts.readConfigFile(configPath, file => ts.sys.readFile(file))
+    if (read.error !== undefined) {
+      throw new Error(ts.flattenDiagnosticMessageText(read.error.messageText, '\n'))
+    }
+    const parsed = ts.parseJsonConfigFileContent(read.config, ts.sys, root)
+    const tests = ts.sys.readDirectory(resolve(root, 'packages/xiaojing/xiaojing-visualize/tests'), ['.tsx'])
+    expect(tests.length).toBeGreaterThan(0)
+    for (const file of tests) expect(parsed.fileNames).toContain(file)
+  })
+
   it('loads package CSS declarations without relying on workspace-link realpaths', () => {
     const configPath = resolve(root, 'tsconfig.client.json')
     const read = ts.readConfigFile(configPath, file => ts.sys.readFile(file))

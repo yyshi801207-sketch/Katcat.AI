@@ -58,6 +58,8 @@ jobs:
           packages/client/xiaojing-product/tests/product.client.spec.tsx
           packages/client/xiaojing-product/tests/product.host.spec.ts
           packages/workflow/tool-workflow/tests/tool-workflow.spec.ts
+          packages/xiaojing/xiaojing-visualize/tests/visualize.client.spec.tsx
+          scripts/client-tsconfig.spec.ts
           scripts/verify-product-use.spec.ts
           scripts/translation-pairing.spec.ts
       - name: Check whitespace
