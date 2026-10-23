@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-client-xiaojing-product
 
-当前产品为Katcat V1.0（`1.0.0`），只提供办公能力，移除财务助手入口；现有界面作为后续个人助理设计的开发基线。历史更新条目描述各自版本当时的功能。
+当前产品为 Katcat.AI（`1.0.2`），只提供办公能力，移除财务助手入口，并支持自定义会话头像与轻量动效。历史更新条目描述各自版本当时的功能。
 
 [English](README.md) | 中文
 

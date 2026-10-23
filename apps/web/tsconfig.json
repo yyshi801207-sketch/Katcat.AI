@@ -274,6 +274,7 @@
     "tests/xiaojing-plan-review.e2e.ts",
     "tests/xiaojing-voice-input.e2e.ts",
     "tests/xiaojing-history-management.e2e.ts",
+    "tests/katcat-session-avatar.e2e.ts",
     "tests/workflow-run.e2e.ts"
   ],
   "references": [

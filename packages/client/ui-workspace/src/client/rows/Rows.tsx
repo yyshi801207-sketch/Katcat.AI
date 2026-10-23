@@ -42,6 +42,7 @@ type RowRenderSlots = PropsRenderSlots<
   | 'sidebar.workspaces.session.menu.item'
   | 'sidebar.workspaces.session.row.action'
   | 'sidebar.session.row.leading'
+  | 'sidebar.session.row.avatar'
   | 'sidebar.session.row.hover'
 >['renderSlot']
 
@@ -513,16 +514,17 @@ function SessionHoverContent({ node, now, renderSlot, t }: {
  * @param props.currentId - selected session id.
  * @param props.onOpen - open the selected session.
  * @param props.onUnarchive - unarchive an archived result row.
+ * @param props.renderSlot - session avatar renderer shared with ordinary rows.
  * @param props.t - Workspace-browser translation seat.
  * @returns the result row.
  */
-export function SearchResultItem({ result, currentId, onOpen, onUnarchive, t }: {
+export function SearchResultItem({ result, currentId, onOpen, onUnarchive, renderSlot, t }: {
   result: SearchResultNode
   currentId: string | undefined
   onOpen: (id: SearchResultNode['id']) => void
   onUnarchive: (id: SearchResultNode['id']) => void
   t: RowTranslate
-}) {
+} & PropsRenderSlots<'sidebar.session.row.avatar'>) {
   const selected = result.id === currentId
   const statuses = sessionStatuses(result, t)
   const primaryStatus = statuses[0]
@@ -535,6 +537,7 @@ export function SearchResultItem({ result, currentId, onOpen, onUnarchive, t }: 
       onClick={() => { onOpen(result.id) }}
     >
       <span className={css.searchResultHeading}>
+        <span className={css.avatar}>{renderSlot('sidebar.session.row.avatar', { sessionId: result.id, status: result.archived ? 'archived' : primaryStatus.state })}</span>
         {/* Like session rows, the leading slot owns every row marker; on
             archived rows it stays blank — the grayed row carries the
             archived look. */}
@@ -570,7 +573,7 @@ export function SearchResultItem({ result, currentId, onOpen, onUnarchive, t }: 
 }
 
 /**
- * One top-level 32px session row: leading 16px cell (status dot, or the
+ * One session row: avatar followed by a leading 16px cell (status dot, or the
  * leading seat while the row's primary state is idle), title, relative time or
  * compact pending label, and the row actions menu. A row that owns a state dot
  * keeps that cell and renders no seat, so an ambient automation mark never
@@ -607,6 +610,7 @@ export function SessionNodeItem({
   | 'sidebar.workspaces.session.menu.item'
   | 'sidebar.workspaces.session.row.action'
   | 'sidebar.session.row.leading'
+  | 'sidebar.session.row.avatar'
   | 'sidebar.session.row.hover'
 >) {
   const row = node
@@ -676,6 +680,7 @@ export function SessionNodeItem({
           and is cleared by opening the session. Archived rows keep the slot
           blank — the grayed row carries the archived look — and their live
           status stays on the hover card only. */}
+      <span className={css.avatar}>{renderSlot('sidebar.session.row.avatar', { sessionId: node.id, status: row.archived ? 'archived' : row.blank ? 'idle' : primaryStatus.state })}</span>
       <span className={css.slot}>
         {!row.archived && !row.blank && (showStatus
           ? <SessionStatusDots statuses={statuses} />
@@ -728,7 +733,7 @@ export function SessionNodeItem({
           >
             {renderSlot(
               'sidebar.workspaces.session.menu.item',
-              { sessionId: node.id, displayTitle: row.title },
+              { sessionId: node.id, displayTitle: row.title, menuAnchor: rowRef.current },
               { hookContext: menuOpenState },
             )}
           </Menu>

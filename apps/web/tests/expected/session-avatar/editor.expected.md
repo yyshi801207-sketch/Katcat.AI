@@ -1,0 +1,29 @@
+- dialog "Set avatar":
+  - banner:
+    - heading "Set avatar" [level=2]
+    - button "Reset"
+  - text: Research Cat shape
+  - group "Cat shape":
+    - button "Classic" [pressed]
+    - button "Round"
+    - button "Pointed"
+    - button "Folded"
+    - button "Tilted"
+    - button "Fluffy"
+    - button "Slim"
+  - text: Avatar color
+  - group "Avatar color":
+    - button "Neutral"
+    - button "Brand red" [pressed]
+    - button "Orange"
+    - button "Green"
+    - button "Blue"
+    - button "Violet"
+    - button "Pink"
+    - button "Teal"
+  - text: Custom color
+  - textbox "Custom color": "#FF2849"
+  - textbox "Choose a custom color": "#ff2849"
+  - contentinfo:
+    - button "Cancel"
+    - button "Done"

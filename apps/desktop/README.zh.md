@@ -1,6 +1,6 @@
 # 小兢办公 Windows 桌面端
 
-Katcat.AI V1.0 的产品版本为 `1.0.0`，应用标识为 `com.sudotech.xiaojing-office`，安装目录为 `Katcat-desktop`，并使用独立文档工作区；不导入或覆盖小兢会计数据。本地未签名 Windows 包只需在 `.env.windows` 配置 `DSH_DESKTOP_APP_ID=com.sudotech.xiaojing-office`，不嵌入强制更新策略和更新源；签名构建仍执行发布策略校验。
+Katcat.AI V1.0.2 的产品版本为 `1.0.2`，应用标识为 `com.sudotech.xiaojing-office`，安装目录为 `Katcat-desktop`，并使用独立文档工作区；不导入或覆盖小兢会计数据。本地未签名 Windows 包只需在 `.env.windows` 配置 `DSH_DESKTOP_APP_ID=com.sudotech.xiaojing-office`，不嵌入强制更新策略和更新源；签名构建仍执行发布策略校验。
 
 [English](README.md) | 中文
 

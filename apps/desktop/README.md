@@ -1,6 +1,6 @@
 # Katcat.AI Windows desktop
 
-Katcat.AI V1.0 uses product version `1.0.0`, app ID `com.sudotech.xiaojing-office`, install directory `Katcat-desktop`, and a separate Documents workspace. It does not import or overwrite Xiaojing Accounting data. Local unsigned Windows packages require only `DSH_DESKTOP_APP_ID=com.sudotech.xiaojing-office` in `.env.windows`; they omit mandatory-update policy metadata and update feeds. Signed builds retain release-policy validation.
+Katcat.AI V1.0.2 uses product version `1.0.2`, app ID `com.sudotech.xiaojing-office`, install directory `Katcat-desktop`, and a separate Documents workspace. It does not import or overwrite Xiaojing Accounting data. Local unsigned Windows packages require only `DSH_DESKTOP_APP_ID=com.sudotech.xiaojing-office` in `.env.windows`; they omit mandatory-update policy metadata and update feeds. Signed builds retain release-policy validation.
 
 English | [中文](README.zh.md)
 

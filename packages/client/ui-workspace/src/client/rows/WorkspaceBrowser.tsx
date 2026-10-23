@@ -1003,8 +1003,9 @@ function SearchResults({
   resultLimit,
   usePanelInfo,
   visibleSessionIds: categorySessionIds,
+  renderSlot,
   t,
-}: Pick<WorkspaceBrowserProps, 'useSessions' | 'useSessionStatus' | 'open' | 't' | 'usePanelInfo'> & {
+}: Pick<WorkspaceBrowserProps, 'useSessions' | 'useSessionStatus' | 'open' | 't' | 'usePanelInfo' | 'renderSlot'> & {
   workspaces: readonly WorkspaceView[]
   archivedSessionIds: readonly SessionNode['id'][]
   /** Search matches follow the archived filter selected for the list. */
@@ -1051,6 +1052,7 @@ function SearchResults({
           {results.items.map(result => (
             <SearchResultItem
               key={result.id}
+              renderSlot={renderSlot}
               result={result}
               currentId={currentId}
               onOpen={open}
@@ -1723,6 +1725,7 @@ export function WorkspaceBrowser({
         {wide && (normalizedQuery !== ''
           ? (
             <SearchResults
+              renderSlot={renderSlot}
               usePanelInfo={usePanelInfo}
               useSessions={useSessions}
               useSessionStatus={useSessionStatus}

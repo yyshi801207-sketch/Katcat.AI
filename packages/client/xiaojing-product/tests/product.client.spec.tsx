@@ -183,7 +183,7 @@ describe('Xiaojing product UI', () => {
     const versions = XIAOJING_RELEASE_HISTORY.map(release => release.version)
     expect(versions[0]).toBe(XIAOJING_PRODUCT_VERSION)
     expect(new Set(versions).size).toBe(versions.length)
-    expect(versions).toEqual(['1.0.0', '0.3.3', '0.3.2', '0.3.1', '0.2.4', '0.2.3', '0.2.2'])
+    expect(versions).toEqual(['1.0.2', '1.0.0', '0.3.3', '0.3.2', '0.3.1', '0.2.4', '0.2.3', '0.2.2'])
   })
 
   it('hides system prompts in Xiaojing transcripts without removing the generic renderer', async () => {

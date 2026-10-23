@@ -1,6 +1,11 @@
 /** Katcat product copy. */
 
 export const zh = {
+  summary102: '会话头像与轻量动效',
+  title102Avatars: '自定义会话头像',
+  feature102Avatars: '七款猫头、鲜亮配色与自定义颜色，默认使用 24px 经典红色猫头。可从会话菜单底部设置头像。',
+  title102Motion: '猫头专属动效',
+  feature102Motion: '悬停时播放专属动作，任务执行中缓慢呼吸，结束时轻弹一次；适配系统的减少动态效果设置。',
   summary100: 'Katcat首版，专注个人办公任务',
   note100: '沿用现有界面作为开发基线，后续继续设计个性化个人助理界面。',
   title100Office: '个人办公工作区',
@@ -156,6 +161,11 @@ export const zh = {
 
 /** English Katcat product dictionary. */
 export const en: { [Key in keyof typeof zh]: string } = {
+  summary102: 'Session avatars and subtle motion',
+  title102Avatars: 'Custom session avatars',
+  feature102Avatars: 'Seven cat silhouettes, vivid presets, and custom colors, with a 24px classic red cat as the default. Set an avatar from the bottom of the session menu.',
+  title102Motion: 'Distinct cat animations',
+  feature102Motion: 'Each cat moves on hover, breathes gently during tasks, and bounces once on completion. Animations respect the system reduced-motion setting.',
   summary100: 'The first Katcat release for personal office tasks',
   note100: 'The existing interface is retained as the development baseline for a future personalized assistant design.',
   title100Office: 'Personal office workspace',

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 /** Web fallback kept in lockstep with the desktop package by the product-layer gate. */
-export const XIAOJING_PRODUCT_VERSION = '1.0.0'
+export const XIAOJING_PRODUCT_VERSION = '1.0.2'
 
 interface ApplicationInfo {
   version: string

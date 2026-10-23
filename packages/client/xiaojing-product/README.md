@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-client-xiaojing-product
 
-The current product is Katcat.AI (`1.0.0`). It exposes office capabilities without Finance mode and retains the existing interface as the baseline for subsequent personal-assistant design. Historical release entries describe their original versions.
+The current product is Katcat.AI (`1.0.2`). It exposes office capabilities without Finance mode and includes customizable session avatars with subtle animations. Historical release entries describe their original versions.
 
 English | [中文](README.zh.md)
 

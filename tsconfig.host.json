@@ -36,6 +36,7 @@
     "apps/web/tests/xiaojing-plan-review.e2e.ts",
     "apps/web/tests/xiaojing-voice-input.e2e.ts",
     "apps/web/tests/xiaojing-history-management.e2e.ts",
+    "apps/web/tests/katcat-session-avatar.e2e.ts",
     "apps/web/tests/voice-input.e2e.ts",
     "apps/web/tests/cot-translation.e2e.ts",
     "apps/web/tests/cot-translation-paid.e2e.ts",

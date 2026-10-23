@@ -156,6 +156,22 @@
   margin: 0 6px 0 4px;
 }
 
+.avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 6px;
+}
+
+.avatar:empty { display: none; }
+.avatar:not(:empty) + .slot:empty { display: none; }
+.avatar:not(:empty) + .slot:has(> :global([data-slot]):empty) { display: none; }
+.sessionRow:has(.avatar:not(:empty)) { height: 36px; }
+.searchResultRow:has(.avatar:not(:empty)) .searchResultMeta { margin-left: 38px; }
+
 .slot {
   flex: none;
   width: 16px;

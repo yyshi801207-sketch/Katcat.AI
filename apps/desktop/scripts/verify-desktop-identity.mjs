@@ -39,7 +39,7 @@ const builder = createElectronBuilderConfig({
 
 const expected = Object.freeze({
   packageName: '@deepseek-ai/dsh-desktop',
-  productVersion: '1.0.0',
+  productVersion: '1.0.2',
   appId: 'com.sudotech.xiaojing-office',
   nsisGuid: 'ddf2b5a9-34d7-4a3b-8f09-71ca62b6f58f',
   installDirectoryName: 'Katcat-desktop',

@@ -36,6 +36,8 @@ description: "在本地或 Windows／macOS Actions 中生成 Desktop 安装包�
 
 ## 发布版本
 
+Windows 安装包通过成品运行检查后，打包命令会将其复制到 `output/releases/windows/<版本>/Katcat.AI-V<版本>-Windows-x64-<YYYYMMDD>.exe`。日期采用 Asia/Shanghai 时区下的打包开始日期；同一版本在同一天再次打包时覆盖该交付副本。内部更新产物保留现有文件名。
+
 每次 Desktop 打包前，第一步都要与当前用户确认完整版本号。检查所选部署环境、dsh 基础版本、保留的发布记录和已发布对象，再提出准确版本供用户确认。用户确认前不得启动打包；仅选择部署环境不代表用户已认可版本号。
 
 记录当前 dsh 版本作为基础版本。production Desktop 使用完全相同的版本，包括其中的 `alpha`、`beta` 或 `rc` 标识。test 发布保留完整的预发布基础版本并追加 `.YYYYMMDD.index`；稳定基础版本则追加 `-test.YYYYMMDD.index`。

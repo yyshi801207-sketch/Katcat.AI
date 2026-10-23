@@ -58,6 +58,11 @@ import { registerToasts } from './toast/register.ts'
 import { SessionIdMenuItem } from './session-actions/SessionId.tsx'
 import { WorkspacePicker } from './WorkspacePicker.tsx'
 import { en, zh, type WorkspaceKey } from './locales.ts'
+import { createSessionAvatarStore } from './session-avatar/store.ts'
+import {
+  SessionAvatarEditor, SessionAvatarMenuItem, SessionAvatarRow,
+  type AvatarEditorInjected, type AvatarMenuInjected, type AvatarRequest,
+} from './session-avatar/SessionAvatar.tsx'
 
 export type { StartSessionOptions, UiWorkspace } from './navigation.ts'
 export {
@@ -130,6 +135,12 @@ export function apply(ctx: Context): void {
   const viewInstance = viewHandle.create()
   const viewStore: typeof viewHandle = { ...viewHandle, create: () => viewInstance }
   const rowToast = createSnapshotStore<RowToastState | null>(null)
+  const avatarStore = createSessionAvatarStore()
+  const avatarRequest = createSnapshotStore<AvatarRequest | null>(null)
+  const avatarMenuInjected = (): AvatarMenuInjected => ({ requestAvatar: (request) => { avatarRequest.set(request) } })
+  const avatarEditorInjected = (): AvatarEditorInjected => ({
+    hooks: { avatarRequest }, dismissAvatar: () => { avatarRequest.set(null) },
+  })
   let toastSeq = 0
   const notify = (toast: RowToast): void => { rowToast.set({ ...toast, seq: ++toastSeq }) }
   const uiWorkspace = new UiWorkspaceService(
@@ -331,6 +342,7 @@ export function apply(ctx: Context): void {
         },
         'sidebar.workspaces.session.row.action': { kind: 'list', scope: 'root' },
         'sidebar.session.row.leading': { kind: 'list', scope: 'root' },
+        'sidebar.session.row.avatar': { kind: 'single', scope: 'root' },
         'sidebar.session.row.hover': { kind: 'list', scope: 'root' },
       },
       store: viewStore,
@@ -348,14 +360,21 @@ export function apply(ctx: Context): void {
     yield ctx.slots.register({ name: 'sidebar.workspaces.session.menu.item', id: 'fork', order: 300, locale: NS, inject: forkInjected }, ForkSessionMenuItem)
     yield ctx.slots.register({ name: 'sidebar.workspaces.session.menu.item', id: 'archive', order: 400, locale: NS, inject: archiveInjected }, ArchiveSessionMenuItem)
     yield ctx.slots.register({ name: 'sidebar.workspaces.session.menu.item', id: 'session-id', order: 450, locale: NS, inject: sessionIdInjected }, SessionIdMenuItem)
+    yield ctx.slots.register({ name: 'sidebar.workspaces.session.menu.item', id: 'avatar', order: 1000, locale: NS, inject: avatarMenuInjected }, SessionAvatarMenuItem)
   })
   ctx.slots.inject('sidebar.workspaces.session.row.action', function* () {
     yield ctx.slots.register({ name: 'sidebar.workspaces.session.row.action', id: 'archive', order: 100, locale: NS, inject: archiveInjected }, ArchiveSessionRowButton)
     yield ctx.slots.register({ name: 'sidebar.workspaces.session.row.action', id: 'pin', order: 200, locale: NS, inject: pinInjected }, PinSessionRowButton)
   })
+  ctx.slots.inject('sidebar.session.row.avatar', () => ctx.slots.register({
+    name: 'sidebar.session.row.avatar', store: avatarStore,
+  }, SessionAvatarRow))
   // The surfaces the actions raise live in the frame-wide layer: they must
   // outlive the row menu the action sat in.
   ctx.slots.inject('shell.overlay', function* () {
+    yield ctx.slots.register({
+      name: 'shell.overlay', id: 'workspace.session-avatar', locale: NS, store: avatarStore, inject: avatarEditorInjected,
+    }, SessionAvatarEditor)
     yield ctx.slots.register({
       name: 'shell.overlay', id: 'workspace.session-rename', locale: NS, inject: renameDialogInjected,
     }, SessionRenameDialog)

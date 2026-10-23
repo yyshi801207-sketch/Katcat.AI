@@ -31,6 +31,7 @@ type RowSlotName =
   | 'sidebar.workspaces.session.menu.item'
   | 'sidebar.workspaces.session.row.action'
   | 'sidebar.session.row.leading'
+  | 'sidebar.session.row.avatar'
   | 'sidebar.session.row.hover'
 type RowRenderSlot = PropsRenderSlots<RowSlotName>['renderSlot']
 type SessionNodeItemProps = ComponentProps<typeof SessionNodeItemComponent>
@@ -205,7 +206,7 @@ describe('workspace browser rows', () => {
       archived: false,
       snippet: 'matching message excerpt',
     }
-    render(<SearchResultItem result={result} currentId={result.id} onOpen={onOpen} onUnarchive={vi.fn()} t={t} />)
+    render(<SearchResultItem renderSlot={() => null} result={result} currentId={result.id} onOpen={onOpen} onUnarchive={vi.fn()} t={t} />)
     const row = screen.getByRole('treeitem')
     expect(row.getAttribute('aria-selected')).toBe('true')
     expect(screen.getByText('Workspace context')).toBeTruthy()
@@ -226,7 +227,7 @@ describe('workspace browser rows', () => {
       id: sid(pendingInteraction), title: 'Needs input', workspace: 'Project',
       pendingInteraction, running: true, runningSubagentCount: 0, completed: false, archived: false,
     }
-    render(<SearchResultItem result={result} currentId={undefined} onOpen={vi.fn()} onUnarchive={vi.fn()} t={t} />)
+    render(<SearchResultItem renderSlot={() => null} result={result} currentId={undefined} onOpen={vi.fn()} onUnarchive={vi.fn()} t={t} />)
     const row = screen.getByRole('treeitem')
     expect(row.querySelector('[data-state="warning"]')).toBeTruthy()
     expect(row.querySelector('[data-state="ongoing"]')).toBeNull()
@@ -509,7 +510,7 @@ describe('workspace browser rows', () => {
   })
 
   it('shows the green done dot on a finished search result row', () => {
-    render(<SearchResultItem
+    render(<SearchResultItem renderSlot={() => null}
       result={{
         id: sid('result'), title: 'Done', workspace: 'Workspace', running: false,
         runningSubagentCount: 0, completed: true, archived: false,
@@ -709,7 +710,7 @@ describe('workspace browser rows', () => {
       // The placeholder has no content yet: no row verbs (neither list is
       // asked for anything), no "now" stamp.
       expect(screen.queryByRole('button', { name: /会话.*的操作/ })).toBeNull()
-      expect(rendered).not.toHaveBeenCalled()
+      expect(rendered).toHaveBeenCalledExactlyOnceWith('sidebar.session.row.avatar')
       expect(screen.queryByText('刚刚')).toBeNull()
       // The hover card keeps title + status but drops the timestamp line.
       const wrapper = screen.getByRole('treeitem').parentElement as HTMLElement
@@ -776,7 +777,7 @@ describe('workspace browser rows', () => {
 
     // Both lists receive the row identity; only the menu list carries the open state.
     expect(rendered).toHaveBeenCalledWith(
-      'sidebar.workspaces.session.menu.item', { sessionId: node.id, displayTitle: 'One' }, [false, expect.any(Function)],
+      'sidebar.workspaces.session.menu.item', expect.objectContaining({ sessionId: node.id, displayTitle: 'One' }), [false, expect.any(Function)],
     )
     expect(rendered).toHaveBeenCalledWith(
       'sidebar.workspaces.session.row.action', { sessionId: node.id, displayTitle: 'One' }, undefined,
@@ -787,7 +788,7 @@ describe('workspace browser rows', () => {
     fireEvent.click(trigger)
     expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual(['Export'])
     expect(rendered).toHaveBeenCalledWith(
-      'sidebar.workspaces.session.menu.item', { sessionId: node.id, displayTitle: 'One' }, [true, expect.any(Function)],
+      'sidebar.workspaces.session.menu.item', expect.objectContaining({ sessionId: node.id, displayTitle: 'One' }), [true, expect.any(Function)],
     )
     fireEvent.click(screen.getByRole('menuitem', { name: 'Export' }))
     expect(onEntry).toHaveBeenCalledWith(node.id, 'One', true)
@@ -1140,7 +1141,7 @@ describe('workspace browser rows', () => {
       id: sid('result'), title: 'Old result', workspace: 'Workspace context',
       running: false, runningSubagentCount: 0, completed: false, archived: true,
     }
-    render(<SearchResultItem result={result} currentId={undefined} onOpen={vi.fn()} onUnarchive={vi.fn()} t={t} />)
+    render(<SearchResultItem renderSlot={() => null} result={result} currentId={undefined} onOpen={vi.fn()} onUnarchive={vi.fn()} t={t} />)
     const row = screen.getByRole('treeitem')
     expect(row.className).toMatch(/archived/)
     // No leading marker: the grayed row alone carries the archived look.
@@ -1185,7 +1186,7 @@ describe('session row schedule seats', () => {
     const assertPlacement = (): void => {
       const cell = screen.getByRole('treeitem')
         .querySelector('[data-seat="sidebar.session.row.leading"]')?.parentElement
-      expect(cell?.previousElementSibling ?? null).toBeNull()
+      expect(cell?.previousElementSibling?.querySelector('[data-seat="sidebar.session.row.avatar"]')).toBeTruthy()
       expect(cell?.nextElementSibling?.textContent).toBe('Idle Session')
       expect(cell?.nextElementSibling?.nextElementSibling?.textContent).toBe('刚刚')
     }
@@ -1207,7 +1208,7 @@ describe('session row schedule seats', () => {
     renderRow(node, renderSlot)
     const row = screen.getByRole('treeitem')
     // The dot occupies the same leading cell the idle row gave the seat.
-    const dotCell = row.firstElementChild
+    const dotCell = row.querySelector('[data-state]')?.parentElement
     expect(dotCell?.querySelector(`[data-state="${state}"]`)).toBeTruthy()
     expect(row.querySelector('[data-seat="sidebar.session.row.leading"]')).toBeNull()
     expect(renderSlot).not.toHaveBeenCalledWith('sidebar.session.row.leading', expect.anything())
@@ -1270,7 +1271,7 @@ it.each([['未命名', t], ['Untitled', tEn]])('labels unnamed search results as
   const result: SearchResultNode = { id: sid('unnamed-search'), title: '', workspace: 'Project',
     running: false, runningSubagentCount: 0, completed: false, archived: false }
   const onOpen = vi.fn()
-  render(<SearchResultItem result={result} currentId={undefined} onOpen={onOpen}
+  render(<SearchResultItem renderSlot={() => null} result={result} currentId={undefined} onOpen={onOpen}
     onUnarchive={vi.fn()} t={translate} />)
   fireEvent.click(screen.getByText(label))
   expect(onOpen).toHaveBeenCalledWith(result.id)

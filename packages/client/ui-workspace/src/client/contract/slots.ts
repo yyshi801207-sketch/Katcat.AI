@@ -83,6 +83,8 @@ export interface SessionRowOwnerProps {
   sessionId: SessionId
   /** Row display title: persisted title, or empty when the Session has none. */
   displayTitle: string
+  /** Session row anchoring a settings surface after this menu closes. */
+  menuAnchor?: HTMLElement | null
 }
 
 /** The row menu's open state as its owner holds it: the `useState` pair. */
@@ -139,8 +141,8 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
     'sidebar.session.row.hover': { kind: 'list'; scope: 'root'; owner: SessionRowScheduleOwnerProps }
     /**
      * The rows of one Session's "..." menu, in ascending `order`. ui-workspace
-     * registers the shipped rows here — `pin` (100), `rename` (200), `fork`
-     * (300), `archive` (400), and `session-id` (450) — so a plugin row is placed
+     * registers the shipped rows here — `pin` (100), `rename` (200), `fork` (300),
+     * `archive` (400), `session-id` (450), and `avatar` (1000) — so a plugin row is placed
      * by its own `order` among them. Use a package-namespaced `id`; reusing a shipped id at
      * another `priority` shadows that row. Each entry renders one
      * `role="menuitem"` `<button>` (the shipped rows use ui-primitives'
@@ -499,6 +501,7 @@ export type WorkspaceBrowserProps =
     | 'sidebar.workspaces.session.menu.item'
     | 'sidebar.workspaces.session.row.action'
     | 'sidebar.session.row.leading'
+    | 'sidebar.session.row.avatar'
     | 'sidebar.session.row.hover'
   >
   & PropsStore<WorkspaceViewStoreHandle>

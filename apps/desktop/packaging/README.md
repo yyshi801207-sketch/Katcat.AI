@@ -36,6 +36,8 @@ Run local commands from the repository root after installing locked dependencies
 
 ## Release versions
 
+After a Windows installer passes the packaged runtime checks, the package command copies it to `output/releases/windows/<version>/Katcat.AI-V<version>-Windows-x64-<YYYYMMDD>.exe`. The date is the packaging start date in Asia/Shanghai; another build of the same version on that date replaces that delivery copy. Internal update artifacts retain their existing names.
+
 Before each Desktop packaging run, first confirm the complete version string with the current user. Check the selected deployment, dsh base version, retained release records, and published objects, then propose the exact version for approval. Do not start packaging until the user confirms that version; the deployment setting alone does not authorize a version choice.
 
 Record the current dsh version as the base. A production Desktop release uses that exact version, including any `alpha`, `beta`, or `rc` identifiers. A test release preserves the complete prerelease base and appends `.YYYYMMDD.index`; a stable base uses `-test.YYYYMMDD.index` instead.

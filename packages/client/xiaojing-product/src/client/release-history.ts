@@ -18,6 +18,13 @@ interface ProductRelease {
 /** Newest-first records; changes retain their introduction release, while available entries describe current capabilities. */
 export const XIAOJING_RELEASE_HISTORY = [
   {
+    version: '1.0.2', summaryKey: 'summary102',
+    features: [
+      { category: 'added', titleKey: 'title102Avatars', copyKey: 'feature102Avatars' },
+      { category: 'added', titleKey: 'title102Motion', copyKey: 'feature102Motion' },
+    ],
+  },
+  {
     version: '1.0.0', summaryKey: 'summary100', noteKey: 'note100',
     features: [
       { category: 'improved', titleKey: 'title100Office', copyKey: 'feature100Office' },
