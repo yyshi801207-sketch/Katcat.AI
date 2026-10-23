@@ -7,7 +7,7 @@ import { loadDesktopPackageEnvironment, localMacOSPackageEnvironment, validateDe
 import { resolveWindowsPackageSettings } from '../scripts/windows-package-settings.mjs'
 
 const WINDOWS = { platform: 'win32', arch: 'x64' } as const
-const identity = JSON.parse(readFileSync(new URL('../identity.json', import.meta.url), 'utf8')) as { appId: string }
+const identity = JSON.parse(readFileSync(new URL('../identity.json', import.meta.url), 'utf8')) as { appId: string; productVersion: string }
 const MACOS = { platform: 'darwin', arch: 'arm64' } as const
 const POLICY = { DSH_DESKTOP_MANDATORY_UPDATE_TEST_ORIGIN: 'https://policy.example.com',
   DSH_DESKTOP_MANDATORY_UPDATE_CONFIG: JSON.stringify({ allowedAuthOrigins: ['https://login.example.com'] }) }
@@ -184,7 +184,7 @@ describe('Desktop local packaging configuration', () => {
     const config = createElectronBuilderConfig(localMacOSPackageEnvironment({}), 'darwin', arch)
     expect(config.appId).toBe(identity.appId)
     expect(config.productName).toBe('Katcat.AI')
-    expect(config.extraMetadata.version).toBe('1.0.0')
+    expect(config.extraMetadata.version).toBe(identity.productVersion)
     expect(config.artifactName).toBe('Katcat.AI-${version}-${os}-${arch}-unsigned.${ext}')
     expect(readFileSync(config.mac.icon)).toEqual(readFileSync(new URL('../build/app-icon.png', import.meta.url)))
     expect(config.mac.identity).toBe('-')
