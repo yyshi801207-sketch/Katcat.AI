@@ -1,12 +1,1 @@
-<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g transform="translate(1.5 1.5) scale(0.9166666667)">
-    <path d="M18 6L28.5 9.5V17.2C28.5 23.1 24.08 28.4 18 30C11.92 28.4 7.5 23.1 7.5 17.2V9.5L18 6Z" fill="url(#a)" fill-opacity="0.8" />
-    <path d="M14.2 18L16.84 20.63L22.2 15.27" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-  </g>
-  <defs>
-    <linearGradient id="a" x1="18" y1="6" x2="18" y2="30" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7AC2FF" />
-      <stop offset="1" stop-color="#4A65E8" />
-    </linearGradient>
-  </defs>
-</svg>
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" color="light-dark(#62666f,#b9bdc6)" style="color-scheme:light dark"><defs><mask id="katcat-set-5"><rect width="36" height="36" fill="white"/><g transform="translate(11 10.5) scale(0.25925925925925924) translate(-4 -10)"><path d="M10 28C9 22 9 13 12 10C14 9 21 13 24 16C29 14 35 14 40 16C44 13 51 9 53 10C56 13 55 22 54 28C59 35 59 42 55 48C50 56 40 59 32 59C22 59 13 56 8 49C3 42 4 34 10 28Z" fill="black"/></g></mask></defs><g mask="url(#katcat-set-5)"><path d="M18 5.6L28.2 9.6V16.9C28.2 23.1 23.9 27.4 18 30.4C12.1 27.4 7.8 23.1 7.8 16.9V9.6L18 5.6Z" fill="currentColor"/></g></svg>

@@ -25,29 +25,40 @@ describe('plugin artwork', () => {
     expect(svg?.getAttribute('viewBox')).toBe('0 0 36 36')
     expect(svg?.getAttribute('width')).toBe('30')
     expect(svg?.getAttribute('height')).toBe('30')
-    expect(svg?.getAttribute('class')).toBe('deco')
+    expect(svg?.classList.contains('deco')).toBe(true)
   })
 
-  it('clips the search ring through its per-instance clipPath around the conic-gradient div', () => {
+  it('cuts the cat silhouette out of the search lens without embedded HTML', () => {
     const { container } = render(<PluginArtworkSearch />)
-    const clipId = container.querySelector('clipPath')?.id ?? ''
-    expect(clipId).not.toBe('')
-    expect(container.querySelector('g[clip-path]')?.getAttribute('clip-path')).toBe(`url(#${clipId})`)
-    expect(container.querySelector('foreignObject div')).not.toBeNull()
+    expect(container.querySelector('svg')?.getAttribute('fill')).toBe('none')
+    expect(container.querySelector('circle')?.getAttribute('mask')).toMatch(/^url\(#.+\)$/)
+    expect(container.querySelector('mask path')?.getAttribute('fill')).toBe('black')
+    expect(container.querySelector('foreignObject')).toBeNull()
   })
 
-  it('pairs the search green with the loop upper-right blue-violet in its ring and handle', () => {
-    const { container } = render(<PluginArtworkSearch />)
-    const ring = container.querySelector<HTMLElement>('foreignObject div')
-    expect(ring?.style.background).toBe('conic-gradient(from 90deg, rgb(65, 225, 172) 0deg, rgb(101, 142, 255) 62.0619deg, rgb(65, 225, 172) 360deg)')
-    expect(container.querySelector('path[stroke]')?.getAttribute('stroke')).toBe('#658EFF')
+  it.each(Object.entries({ PluginArtworkTerminal, PluginArtworkLoop, PluginArtworkSubagent, PluginArtworkSearch }))(
+    '%s uses adaptive gray without accent colors', (_name, Artwork) => {
+      const { container } = render(<Artwork />)
+      expect(container.querySelector('svg')?.getAttribute('color')).toBe('light-dark(#62666f,#b9bdc6)')
+      const paint = [...container.querySelectorAll('[stroke], [fill]')].filter(node => node.closest('defs') === null)
+      expect(paint.every(node => ['stroke', 'fill'].every(attribute =>
+        [null, 'none', 'currentColor'].includes(node.getAttribute(attribute))))).toBe(true)
+      expect(container.querySelector('linearGradient')).toBeNull()
+      expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
+    },
+  )
+
+  it('renders the dispatch cat without a circular backing', () => {
+    const { container } = render(<PluginArtworkLoop />)
+    expect(container.querySelector('circle')).toBeNull()
+    expect(container.querySelector('mask')).toBeNull()
+    expect(container.querySelector('path[fill="currentColor"]')).not.toBeNull()
   })
 
-  it('uses light blue for both terminal strokes', () => {
+  it('cuts the terminal prompt through the window instead of painting a background color', () => {
     const { container } = render(<PluginArtworkTerminal />)
-    const strokes = [...container.querySelectorAll('path')].map(path => path.getAttribute('stroke'))
-    expect(strokes).toEqual(['#679EFE', '#679EFE'])
-    expect(container.querySelector('linearGradient')).toBeNull()
+    expect(container.querySelector('mask path[stroke="black"]')).not.toBeNull()
+    expect(container.querySelector('rect[mask]')?.getAttribute('fill')).toBe('currentColor')
   })
 
   it.each(Object.entries(artworks))('%s renders at 36 by default and repeats without document-global ids', (_name, Artwork) => {
@@ -60,9 +71,11 @@ describe('plugin artwork', () => {
     for (const svg of container.querySelectorAll('svg')) expect(svg.getAttribute('width')).toBe('36')
     const ids = [...container.querySelectorAll('[id]')].map(node => node.id)
     expect(new Set(ids).size).toBe(ids.length)
-    for (const reference of container.querySelectorAll('[fill^="url("], [stroke^="url("], [clip-path^="url("]')) {
-      const target = (reference.getAttribute('fill') ?? reference.getAttribute('stroke') ?? reference.getAttribute('clip-path') ?? '').slice('url(#'.length, -1)
-      expect(ids).toContain(target)
+    for (const node of container.querySelectorAll('[fill], [stroke], [clip-path], [mask]')) {
+      for (const attribute of ['fill', 'stroke', 'clip-path', 'mask']) {
+        const reference = node.getAttribute(attribute)
+        if (reference?.startsWith('url(#')) expect(ids).toContain(reference.slice('url(#'.length, -1))
+      }
     }
   })
 })

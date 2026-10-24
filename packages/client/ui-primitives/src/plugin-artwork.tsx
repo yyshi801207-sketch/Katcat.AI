@@ -1,10 +1,12 @@
 /**
- * Fixed-palette plugin artwork for the plugin management surfaces. Unlike the
- * ic_ds_* set these glyphs carry their own brand colors and gradients instead
- * of riding currentColor; all draw on a 36×36 viewBox and take {size, className}.
+ * Plugin artwork on a 36×36 canvas. Configuration glyphs use adaptive gray
+ * Katcat silhouettes and transparent counters; the default retains its gradient.
  */
 import { useId } from 'react'
 import type { IconProps } from './icons/props.ts'
+
+const ARTWORK_INK = 'light-dark(#62666f,#b9bdc6)'
+const CAT_HEAD_PATH = 'M10 28C9 22 9 13 12 10C14 9 21 13 24 16C29 14 35 14 40 16C44 13 51 9 53 10C56 13 55 22 54 28C59 35 59 42 55 48C50 56 40 59 32 59C22 59 13 56 8 49C3 42 4 34 10 28Z'
 
 /**
  * A per-instance SVG def id prefix: the artwork repeats across cards and rows,
@@ -12,83 +14,76 @@ import type { IconProps } from './icons/props.ts'
  */
 const useArtworkId = (): string => `dsh_plugin_art_${useId().replaceAll(':', '')}`
 
-/** Light-blue terminal artwork shared by plugin cards and sidebar guide entries. */
-export const PluginArtworkTerminal = ({ size = 36, className }: IconProps) => (
-  <svg width={size} height={size} className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M10 11L16.606 17.606C16.6841 17.6841 16.6841 17.8107 16.606 17.8888L10 24.4948" stroke="#679EFE" strokeWidth="3.5" />
-    <path d="M20.1211 24.4946H26.8685" stroke="#679EFE" strokeWidth="3.5" />
+/** Terminal window with a transparent cat and prompt, also used in sidebar guide entries. */
+export const PluginArtworkTerminal = ({ size = 36, className }: IconProps) => {
+  const uid = useArtworkId()
+  return (
+    <svg width={size} height={size} className={className} color={ARTWORK_INK} aria-hidden="true" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id={`${uid}mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36">
+          <rect width="36" height="36" fill="white" />
+          <g transform="translate(8.4 12.3) scale(0.21666666666666665) translate(-4 -10)">
+            <path d={CAT_HEAD_PATH} fill="black" />
+          </g>
+          <path d="M23 13.8L26.1 17L23 20.2M26.8 22H28.2" stroke="black" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+        </mask>
+      </defs>
+      <rect x="4.8" y="8.2" width="26.4" height="20" rx="5.2" fill="currentColor" mask={`url(#${uid}mask)`} />
+    </svg>
+  )
+}
+
+/** Two dispatch arrows surround a standalone cat silhouette without a circular backing. */
+export const PluginArtworkLoop = ({ size = 36, className }: IconProps) => (
+  <svg width={size} height={size} className={className} color={ARTWORK_INK} aria-hidden="true" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" strokeLinecap="round" strokeLinejoin="round">
+    <g stroke="currentColor" strokeWidth="2.4">
+      <path d="M7.2 13.7A11.3 11.3 0 0 1 28 11.3M23.8 11.3H28V7.1" />
+      <path d="M28.8 22.3A11.3 11.3 0 0 1 8 24.7M12.2 24.7H8V28.9" />
+    </g>
+    <g transform="translate(12.75 13.2) scale(0.19444444444444445) translate(-4 -10)">
+      <path d={CAT_HEAD_PATH} fill="currentColor" />
+    </g>
   </svg>
 )
 
-/** Agent-loop plugin artwork (four leaves circling a center). */
-export const PluginArtworkLoop = ({ size = 36, className }: IconProps) => {
-  const uid = useArtworkId()
-  return (
-    <svg width={size} height={size} className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18.0486 28.4901C12.0858 28.4901 7.25195 23.6562 7.25195 17.6934C13.2148 17.6934 18.0486 22.5272 18.0486 28.4901Z" fill="#A797FC" />
-      <path d="M18.0486 6.89667C12.0858 6.89667 7.25195 11.7305 7.25195 17.6934C13.2148 17.6934 18.0486 12.8595 18.0486 6.89667Z" fill={`url(#${uid}a)`} />
-      <path d="M18.0485 28.4901C24.0114 28.4901 28.8452 23.6562 28.8452 17.6934C22.8824 17.6934 18.0485 22.5272 18.0485 28.4901Z" fill="#4561EE" />
-      <path d="M18.0485 6.89667C24.0114 6.89667 28.8452 11.7305 28.8452 17.6934C22.8824 17.6934 18.0485 12.8595 18.0485 6.89667Z" fill="#658EFF" />
-      <defs>
-        <linearGradient id={`${uid}a`} x1="16.7911" y1="16.1655" x2="8.98192" y2="8.74289" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#A23AE7" />
-          <stop offset="1" stopColor="#E2E2E2" />
-        </linearGradient>
-      </defs>
-    </svg>
-  )
-}
-
-/** Subagent plugin artwork (two stacked rounded squares); also marks every row inside a bundle. */
+/** A cat parent delegates to two task nodes; also supplies missing bundle-row artwork. */
 export const PluginArtworkSubagent = ({ size = 36, className }: IconProps) => {
   const uid = useArtworkId()
   return (
-    <svg width={size} height={size} className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="14.9893" y="15.1877" width="12.2365" height="12.2365" rx="2" fill={`url(#${uid}a)`} fillOpacity="0.8" />
-      <rect x="8.87109" y="9.0697" width="12.2365" height="12.2365" rx="2" fill={`url(#${uid}b)`} fillOpacity="0.8" />
+    <svg width={size} height={size} className={className} color={ARTWORK_INK} aria-hidden="true" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id={`${uid}a`} x1="21.1075" y1="15.1877" x2="21.1075" y2="27.4243" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#45E7A4" />
-          <stop offset="1" stopColor="#05909D" />
-        </linearGradient>
-        <linearGradient id={`${uid}b`} x1="14.9894" y1="9.0697" x2="14.9894" y2="21.3063" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#69B9FF" />
-          <stop offset="1" stopColor="#324DE2" />
-        </linearGradient>
+        <mask id={`${uid}mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36">
+          <rect width="36" height="36" fill="white" />
+          <g transform="translate(14 6.9) scale(0.14814814814814814) translate(-4 -10)">
+            <path d={CAT_HEAD_PATH} fill="black" />
+          </g>
+        </mask>
       </defs>
+      <g mask={`url(#${uid}mask)`}>
+        <path d="M18 16.1V20M10.4 24.1V20H25.6V24.1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <rect x="6.2" y="24" width="8.4" height="6.4" rx="2.1" fill="currentColor" />
+        <rect x="21.4" y="24" width="8.4" height="6.4" rx="2.1" fill="currentColor" />
+        <rect x="12" y="4.7" width="12" height="11.6" rx="3.6" fill="currentColor" />
+      </g>
     </svg>
   )
 }
 
-/**
- * Web-search plugin artwork (conic-gradient ring and handle). SVG has no
- * native conic gradient, so the ring clips an HTML div painted with CSS
- * `conic-gradient` — the same emulation Figma exports; it renders inline in
- * the browser UI but would stay empty in an `<img>` or mask context.
- */
+/** A search lens with a transparent cat silhouette. */
 export const PluginArtworkSearch = ({ size = 36, className }: IconProps) => {
   const uid = useArtworkId()
   return (
-    <svg width={size} height={size} className={className} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M26.5362 26.9865L22.3813 22.8317" stroke="#658EFF" strokeWidth="3" />
-      <g clipPath={`url(#${uid}ring)`}>
-        <g transform="matrix(0.0119394 -0.00173904 0.00173904 0.0119394 15.7661 16.2159)">
-          <foreignObject x="-958.94" y="-958.94" width="1917.88" height="1917.88">
-            <div
-              style={{
-                background: 'conic-gradient(from 90deg, rgb(65, 225, 172) 0deg, rgb(101, 142, 255) 62.0619deg, rgb(65, 225, 172) 360deg)',
-                height: '100%',
-                width: '100%',
-              }}
-            />
-          </foreignObject>
-        </g>
-      </g>
+    <svg width={size} height={size} className={className} color={ARTWORK_INK} aria-hidden="true" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <clipPath id={`${uid}ring`}>
-          <path d="M21.9717 16.2159H19.9717C19.9717 18.5386 18.0888 20.4215 15.7661 20.4215V22.4215V24.4215C20.2979 24.4215 23.9717 20.7478 23.9717 16.2159H21.9717ZM15.7661 22.4215V20.4215C13.4434 20.4215 11.5605 18.5386 11.5605 16.2159H9.56055H7.56055C7.56055 20.7478 11.2343 24.4215 15.7661 24.4215V22.4215ZM9.56055 16.2159H11.5605C11.5605 13.8933 13.4434 12.0104 15.7661 12.0104V10.0104V8.01038C11.2343 8.01038 7.56055 11.6841 7.56055 16.2159H9.56055ZM15.7661 10.0104V12.0104C18.0888 12.0104 19.9717 13.8933 19.9717 16.2159H21.9717H23.9717C23.9717 11.6841 20.2979 8.01038 15.7661 8.01038V10.0104Z" />
-        </clipPath>
+        <mask id={`${uid}mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36">
+          <rect width="36" height="36" fill="white" />
+          <g transform="translate(9.7 9.7) scale(0.21851851851851853) translate(-4 -10)">
+            <path d={CAT_HEAD_PATH} fill="black" />
+          </g>
+        </mask>
       </defs>
+      <circle cx="15.6" cy="15.4" r="9.4" fill="currentColor" mask={`url(#${uid}mask)`} />
+      <path d="M22.8 22.6L29 28.8" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   )
 }

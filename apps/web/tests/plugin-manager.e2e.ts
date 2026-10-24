@@ -14,7 +14,7 @@ import { afterAll, beforeAll, describe, expect, it, onTestFailed, onTestFinished
 import { join } from 'node:path'
 import {
   SCAFFOLD_DEFAULTS_BUNDLE, assertFixtureInventory, captureStableAria, compareOrRefreshGolden,
-  launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
+  launchWebScaffold, watchConsole, webClientProfile, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
 import {
   ZH_BROWSER_LOCALE, connectFreshWorkspaceZh, openSettings, PLUGIN_TOGGLE_SETTLE_MS, saveFailureShot,
@@ -40,6 +40,7 @@ describe('web e2e: plugin manager', () => {
   let tripwire: ReturnType<typeof watchConsole>
 
   beforeAll(async () => {
+    vi.stubEnv('DSH_CLIENT_BUILD_PROFILE', webClientProfile())
     scaffold = await launchWebScaffold({
       extraOverlayPath: fileURLToPath(new URL('./pin-browse-picker.overlay.yml', import.meta.url)),
       profile: { packages: [{ dir: join(FIXTURE_PLUGINS, 'fixture-bundle') }], bundles: ['@fixture/missing-bundle'] },
@@ -54,6 +55,7 @@ describe('web e2e: plugin manager', () => {
   afterAll(async () => {
     await browser?.close()
     await scaffold?.close()
+    vi.unstubAllEnvs()
   })
 
   /** Close any open settings dialog, so the sidebar and the main column are clickable. */
@@ -667,10 +669,68 @@ describe('web e2e: plugin manager', () => {
     const team = panel.locator('[data-plugin-package="@deepseek-ai/dsh-experimental-agent-team-profile"]')
     expect(await team.getByRole('switch').getAttribute('aria-checked')).toBe('false')
     await checkImage('[data-plugin-package="@deepseek-ai/dsh-experimental-agent-team-profile"]', teamIcon, 'Disabled Agent Teams card')
+    const configurationArtwork = [
+      ...['subagent', 'web-search', 'agent-loop', 'shell'].map(id => ({
+        label: id, icon: panel.locator(`[data-plugin-item="${id}"] svg`).first(),
+      })),
+      ...['agent-team-profile', 'voice-input-bundle', 'auto-review', 'inspector-profile'].map(id => ({
+        label: id, icon: panel.locator(`[data-plugin-package="@deepseek-ai/dsh-experimental-${id}"] img`).first(),
+      })),
+    ]
+    const lightArtwork = new Map<string, Buffer>()
+    const setTheme = async (theme: 'light' | 'dark') => {
+      await openSettings(page, 'zh')
+      const settings = page.getByRole('dialog', { name: '设置', exact: true })
+      await settings.getByRole('button', { name: '通用设置', exact: true }).click()
+      await settings.getByRole('button', { name: theme === 'light' ? '浅色' : '深色', exact: true }).click()
+      await expect.poll(() => page.evaluate(() => document.body.hasAttribute('data-ds-dark-theme'))).toBe(theme === 'dark')
+      await closeSettings()
+    }
+    for (const { icon } of configurationArtwork) {
+      await icon.evaluate((node) => { node.style.backgroundColor = '#888' })
+    }
     try {
       for (const colorScheme of ['light', 'dark'] as const) {
-        await page.emulateMedia({ colorScheme })
+        await setTheme(colorScheme)
+        await page.emulateMedia({ colorScheme: colorScheme === 'light' ? 'dark' : 'light' })
         expect(await team.locator('img').evaluate((node: HTMLImageElement) => node.naturalWidth)).toBe(36)
+        for (const { label, icon } of configurationArtwork) {
+          if (await icon.evaluate(node => node instanceof HTMLImageElement)) {
+            await icon.evaluate(async (node: HTMLImageElement) => { await node.decode() })
+          }
+          const screenshot = await icon.screenshot({ scale: 'css' })
+          const expectedInk = colorScheme === 'light' ? [98, 102, 111] : [185, 189, 198]
+          const raster = await page.evaluate(async ({ png, ink, label }) => {
+            const image = new Image()
+            image.src = png
+            await image.decode()
+            const canvas = document.createElement('canvas')
+            canvas.width = image.naturalWidth
+            canvas.height = image.naturalHeight
+            const context = canvas.getContext('2d')!
+            context.drawImage(image, 0, 0)
+            const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data
+            let inkPixels = 0
+            for (let offset = 0; offset < pixels.length; offset += 4) {
+              if (ink.every((value, channel) => Math.abs(pixels[offset + channel]! - value) <= 2)) inkPixels++
+            }
+            const counters: Record<string, [number, number]> = {
+              subagent: [18, 10], 'web-search': [15, 16], 'agent-loop': [18, 18], shell: [14, 18],
+              'agent-team-profile': [18, 22], 'voice-input-bundle': [18, 13],
+              'auto-review': [17, 20], 'inspector-profile': [14, 17],
+            }
+            const [x, y] = counters[label]!
+            return { inkPixels, counter: [...context.getImageData(x, y, 1, 1).data].slice(0, 3) }
+          }, { png: `data:image/png;base64,${screenshot.toString('base64')}`, ink: expectedInk, label })
+          expect(raster.inkPixels).toBeGreaterThan(10)
+          expect(raster.counter).toEqual(label === 'agent-loop' ? expectedInk : [136, 136, 136])
+          if (colorScheme === 'light') images.push(`${label}: adaptive gray with ${label === 'agent-loop' ? 'a standalone cat' : 'a transparent cat counter'}`)
+          if (colorScheme === 'light') lightArtwork.set(label, screenshot)
+          else {
+            expect(screenshot.equals(lightArtwork.get(label)!)).toBe(false)
+            images.push(`${label}: artwork follows the app theme independently of the OS theme`)
+          }
+        }
         if (MODE === 'refresh') {
           const path = fileURLToPath(new URL(`../../../.artifacts/plugin-icons-${process.pid}-${colorScheme}.png`, import.meta.url))
           await page.screenshot({ path })
@@ -678,7 +738,11 @@ describe('web e2e: plugin manager', () => {
         }
       }
     } finally {
+      for (const { icon } of configurationArtwork) {
+        await icon.evaluate((node) => { node.style.removeProperty('background-color') })
+      }
       await page.emulateMedia({ colorScheme: null })
+      await setTheme('light')
     }
     await panel.getByRole('button', { name: '查看 智能体团队', exact: true }).click()
     await checkImage('[data-plugin-detail]', teamIcon, 'Agent Teams detail')

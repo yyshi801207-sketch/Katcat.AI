@@ -1,9 +1,1 @@
-<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M23.7324 8.77148V27.2295L21.2324 27.2285V8.77051L23.7324 8.77148ZM14.6797 10.7715L14.6787 25.2295L12.1787 25.2285L12.1797 10.7705L14.6797 10.7715ZM19.3926 22.4131H16.8926V13.5859H19.3926V22.4131ZM10.0625 20.708H7.5625V15.291H10.0625V20.708ZM28.4375 20.708H25.9375V15.291H28.4375V20.708Z" fill="url(#paint0_linear_3371_85203)" />
-  <defs>
-    <linearGradient id="paint0_linear_3371_85203" x1="8.24602" y1="16.4083" x2="32.5611" y2="22.9699" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#67C7FE" />
-      <stop offset="1" stop-color="#3F77D8" />
-    </linearGradient>
-  </defs>
-</svg>
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" color="light-dark(#62666f,#b9bdc6)" style="color-scheme:light dark"><defs><mask id="katcat-set-4"><rect width="36" height="36" fill="white"/><g transform="translate(14.1 9.1) scale(0.14444444444444443) translate(-4 -10)"><path d="M10 28C9 22 9 13 12 10C14 9 21 13 24 16C29 14 35 14 40 16C44 13 51 9 53 10C56 13 55 22 54 28C59 35 59 42 55 48C50 56 40 59 32 59C22 59 13 56 8 49C3 42 4 34 10 28Z" fill="black"/></g></mask></defs><g mask="url(#katcat-set-4)"><rect x="12.4" y="5.2" width="11.2" height="17.2" rx="5.6" fill="currentColor"/><path d="M9.1 17.5V18.8A8.9 8.9 0 0 0 26.9 18.8V17.5M18 27.7V30.5" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M14.5 30.5H21.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
